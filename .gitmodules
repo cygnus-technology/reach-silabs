@@ -3,7 +3,7 @@
 	url = ../reach-protobuf
 [submodule "reach-c-stack"]
 	path = reach-c-stack
-	url = git@github.com:cygnus-technology/reach-c-stack.git
+	url = https://github.com/cygnus-technology/reach-c-stack
 [submodule "reach-protobuf"]
 	path = reach-protobuf
 	url = git@github.com:cygnus-technology/reach-protobuf.git

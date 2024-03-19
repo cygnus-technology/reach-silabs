@@ -85,7 +85,7 @@ const cr_CommandInfo sCommands[NUM_COMMANDS] =
     {6,       "Fake 6", true, "I've seen things you people wouldn't believe", true, 0},
     {7,       "Error Test", true, "Attack ships on fire off the shoulder of Orion", true, 1000},
     {8,       "Fake 8", true, "", true, 65538},
-    {9,       "Fake 9", false, "", false, 0},
+    {9,       "Future Error Test", false, "", false, 0},
     {10,      "Fake 10", true, "I'm a potato", false, 0}
 
     //    {47, "Trigger OTA"},        // example not implemented here.
@@ -162,12 +162,20 @@ int crcb_command_execute(const uint8_t cid)
                 }
                 break;
             }
-            case 9:
+            case 7:
                 LOG_ERROR("Command 7 triggers an error for testing.");
-                cr_report_error(0, "And in the death, as the last few corpses "
+                cr_report_error(7, "And in the death, as the last few corpses "
                                 "lay rotting on the slimy thoroughfare, "
                                 "Fleas the size of rats sucked on rats the size of cats "
                                 "and ten thousand peoploids split into small tribes...\n");
+                break;
+            case 9:
+                LOG_ERROR("Command 9 triggers an error for testing.");
+                cr_report_error(9, "As they pulled you out of the oxygen tent"
+                                " You asked for the latest party."
+                                " With your silicone hump and your ten inch stump"
+                                " Dressed like a priest you was"
+                                " Todd Browning's freak you was\n");
                 break;
             default:
                 i3_log(LOG_MASK_ALWAYS, "Command %d not implemented.", cid);
