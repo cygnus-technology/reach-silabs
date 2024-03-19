@@ -53,11 +53,11 @@ void print_versions(sl_cli_command_arg_t *args)
     (void)args;
     i3_log(LOG_MASK_ALWAYS, TEXT_GREEN "!!! Cygnus Reach Protobuf Server, built %s, %s", __DATE__, __TIME__);
   #ifdef BUILT_BY_PIPELINE
-    i3_log(LOG_MASK_ALWAYS, TEXT_GREEN "!!!   App version %u.%u.%u.%u",
-           APP_MAJOR_VERSION, APP_MINOR_VERSION, APP_PATCH_VERSION, APP_BUILD_VERSION);
+    i3_log(LOG_MASK_ALWAYS, TEXT_GREEN "!!!   App version %u.%u.%u",
+           APP_MAJOR_VERSION, APP_MINOR_VERSION, APP_PATCH_VERSION);
   #else
-    i3_log(LOG_MASK_ALWAYS, TEXT_GREEN "!!!   App version %u.%u.%u.%u-dev",
-           APP_MAJOR_VERSION, APP_MINOR_VERSION, APP_BUILD_VERSION, APP_PATCH_VERSION);
+    i3_log(LOG_MASK_ALWAYS, TEXT_GREEN "!!!   App version %u.%u.%u-dev",
+           APP_MAJOR_VERSION, APP_MINOR_VERSION, APP_PATCH_VERSION);
   #endif
     i3_log(LOG_MASK_ALWAYS, TEXT_GREEN "!!!   Reach C-stack version %s", cr_get_reach_version() );
     i3_log(LOG_MASK_ALWAYS, TEXT_GREEN "!!!   Reach protobuf version %s", cr_get_proto_version());

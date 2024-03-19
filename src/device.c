@@ -184,7 +184,11 @@ int crcb_device_get_info(const cr_DeviceInfoRequest *request, cr_DeviceInfoRespo
       #endif
     }
 
-    sprintf(pDi->firmware_version, "%d.%d.%d", APP_MAJOR_VERSION, APP_MINOR_VERSION, APP_PATCH_VERSION);
+  #ifdef BUILT_BY_PIPELINE
+    sprintf(pDi->firmware_version, "%u.%u.%u", APP_MAJOR_VERSION, APP_MINOR_VERSION, APP_PATCH_VERSION);
+  #else
+    sprintf(pDi->firmware_version, "%u.%u.%u-dev", APP_MAJOR_VERSION, APP_MINOR_VERSION, APP_PATCH_VERSION);
+  #endif
 
     snprintf(pDi->device_name, REACH_DEVICE_NAME_LEN, "%s", rsl_get_advertised_name());
     return 0;

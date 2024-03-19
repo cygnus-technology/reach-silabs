@@ -240,7 +240,6 @@ int crcb_cli_enter(const char *ins)
     if ((*ins == '?') || (!strncmp("help", ins, 4)) )
     {
         I3_LOG(LOG_MASK_ALWAYS, TEXT_GREEN "!!! Cygnus Reach Server, built %s, %s", __DATE__, __TIME__);
-        I3_LOG(LOG_MASK_ALWAYS, TEXT_GREEN "!!! App Version %d.%d.%d", APP_MAJOR_VERSION, APP_MINOR_VERSION, APP_PATCH_VERSION);
         I3_LOG(LOG_MASK_ALWAYS, TEXT_CLI "Commands:");
         I3_LOG(LOG_MASK_ALWAYS, TEXT_CLI "  ver : Print versions");
         I3_LOG(LOG_MASK_ALWAYS, TEXT_CLI "  /   : Display status");
