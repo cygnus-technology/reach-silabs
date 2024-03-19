@@ -1,0 +1,14 @@
+/GNU ARM v7.2.1 - Default/
+/GNU ARM v10.2.1 - Default/
+/GNU ARM v10.3.1 - Default/
+/GNU ARM v12.2.1/
+/reach-silabs GNU*
+/output_gbl/
+/Debug/
+/Release/
+/slick/
+/.uceditor/
+*.bak
+.trash
+.settings
+.obsidian/

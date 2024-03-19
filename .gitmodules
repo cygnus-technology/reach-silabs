@@ -1,0 +1,9 @@
+[submodule "reach_proto"]
+	path = reach_proto
+	url = ../reach-protobuf
+[submodule "reach-c-stack"]
+	path = reach-c-stack
+	url = git@github.com:cygnus-technology/reach-c-stack.git
+[submodule "reach-protobuf"]
+	path = reach-protobuf
+	url = git@github.com:cygnus-technology/reach-protobuf.git
