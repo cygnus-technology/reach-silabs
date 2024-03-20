@@ -132,7 +132,8 @@
 /// You must also change reach.proto.
 // #define AHSOKA_HEADER
 
-
+// prints out buffer sizes for tuning.
+// #define VERBOSE_SIZES
 
 #endif  // ndef _REACH_SERVER_H_
 

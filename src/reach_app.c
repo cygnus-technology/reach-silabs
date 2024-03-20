@@ -47,18 +47,25 @@
 #include "reach_version.h"
 #include "reach_silabs.h"
 
+char sAppVersion[CR_STACK_VERSION_LEN];
+const char *get_app_version()
+{
+  #ifdef DEV_BUILD
+    snprintf(sAppVersion, CR_STACK_VERSION_LEN, "%u.%u.%u-rc", 
+             APP_MAJOR_VERSION, APP_MINOR_VERSION, APP_PATCH_VERSION);
+  #else
+    snprintf(sAppVersion, CR_STACK_VERSION_LEN, "%u.%u.%u", 
+             APP_MAJOR_VERSION, APP_MINOR_VERSION, APP_PATCH_VERSION);
+  #endif
+    return sAppVersion;
+}
+
 // Change this to report appropriately about your applicaton.
 void print_versions(sl_cli_command_arg_t *args)
 {
     (void)args;
     i3_log(LOG_MASK_ALWAYS, TEXT_GREEN "!!! Cygnus Reach Protobuf Server, built %s, %s", __DATE__, __TIME__);
-  #ifdef BUILT_BY_PIPELINE
-    i3_log(LOG_MASK_ALWAYS, TEXT_GREEN "!!!   App version %u.%u.%u",
-           APP_MAJOR_VERSION, APP_MINOR_VERSION, APP_PATCH_VERSION);
-  #else
-    i3_log(LOG_MASK_ALWAYS, TEXT_GREEN "!!!   App version %u.%u.%u-dev",
-           APP_MAJOR_VERSION, APP_MINOR_VERSION, APP_PATCH_VERSION);
-  #endif
+    i3_log(LOG_MASK_ALWAYS, TEXT_GREEN "!!!   App version %s", get_app_version() );
     i3_log(LOG_MASK_ALWAYS, TEXT_GREEN "!!!   Reach C-stack version %s", cr_get_reach_version() );
     i3_log(LOG_MASK_ALWAYS, TEXT_GREEN "!!!   Reach protobuf version %s", cr_get_proto_version());
     i3_log(LOG_MASK_ALWAYS, TEXT_GREEN "!!! SiLabs Thunderboard hardware");

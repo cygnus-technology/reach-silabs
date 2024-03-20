@@ -25,16 +25,14 @@ make
 rem:  echo With Microsoft
 rem:  cmake --build .
 
-echo copy from build to built
-cp reach.pb.c ../build
-cp reach.pb.h ../build
-
-
+echo Copy generated reach.pb.h
 cp reach.pb.c %curdir%\reach-c-stack\src
 cp reach.pb.h %curdir%\reach-c-stack\include
+echo Copy nanopb files
 xcopy /Y ..\nanopb\*.c %curdir%\reach-c-stack\third_party\nanopb
 xcopy /Y ..\nanopb\*.h %curdir%\reach-c-stack\third_party\nanopb
 xcopy /Y ..\nanopb\*.txt %curdir%\reach-c-stack\third_party\nanopb
 xcopy /Y ..\nanopb\*.md %curdir%\reach-c-stack\third_party\nanopb
 
 cd %curdir%
+echo Done.
