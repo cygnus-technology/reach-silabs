@@ -82,10 +82,10 @@ const cr_CommandInfo sCommands[NUM_COMMANDS] =
     {COMMAND_MAX_LOG,       "Much Logging (lm 7C0)", true, "Maximize the log level", false, 0},
     {COMMAND_FACTORY,       "Factory Reset", true, "Perform a factory reset", false, 0},     // erases NVM, restores serial number
 
-    {6,       "Fake 6", true, "I've seen things you people wouldn't believe", true, 0},
-    {7,       "Error Test", true, "Attack ships on fire off the shoulder of Orion", true, 1000},
-    {8,       "Fake 8", true, "", true, 65538},
-    {9,       "Future Error Test", false, "", false, 0},
+    {6,       "Error Demo", true, "I've seen things you people wouldn't believe", true, 0},
+    {7,       "Alice", true, "Attack ships on fire off the shoulder of Orion", true, 1000},
+    {8,       "David 1", true, "", true, 65538},
+    {9,       "David 2", false, "", false, 0},
     {10,      "Fake 10", true, "I'm a potato", false, 0}
 
     //    {47, "Trigger OTA"},        // example not implemented here.
@@ -162,20 +162,30 @@ int crcb_command_execute(const uint8_t cid)
                 }
                 break;
             }
+            case 6:
+                LOG_ERROR("Command 6 triggers an error for testing.");
+                cr_report_error(6, "(demonstration) The message reported by cr_report_error() "
+                                   "can be up to 180 characters long.\n");
+                break;
             case 7:
                 LOG_ERROR("Command 7 triggers an error for testing.");
-                cr_report_error(7, "And in the death, as the last few corpses "
-                                "lay rotting on the slimy thoroughfare, "
-                                "Fleas the size of rats sucked on rats the size of cats "
-                                "and ten thousand peoploids split into small tribes...\n");
+                cr_report_error(7, "Why, sometimes I've believed as many as six "
+                                   "impossible things before breakfast.\n");
+                break;
+            case 8:
+                LOG_ERROR("Command 8 triggers an error for testing.");
+                cr_report_error(8, "I'm looking for backing for an unauthorized "
+                                   "auto-biography that I am writing.\n");
                 break;
             case 9:
                 LOG_ERROR("Command 9 triggers an error for testing.");
-                cr_report_error(9, "As they pulled you out of the oxygen tent"
-                                " You asked for the latest party."
-                                " With your silicone hump and your ten inch stump"
-                                " Dressed like a priest you was"
-                                " Todd Browning's freak you was\n");
+                cr_report_error(9, "Hopefully, this will sell in such huge numbers "
+                                   "that I will be able to sue myself for an "
+                                   "extraordinary amount of money and finance "
+                                   "the film version in which I will play everybody.\n");
+            case 10:
+                LOG_ERROR("Command 10 triggers an error for testing.");
+                cr_report_error(9, "Is that all there is?\n");
                 break;
             default:
                 i3_log(LOG_MASK_ALWAYS, "Command %d not implemented.", cid);
