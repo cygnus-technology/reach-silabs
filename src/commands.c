@@ -122,6 +122,8 @@ int crcb_command_discover_reset(const uint32_t cid)
     return 0;
 }
 
+static uint8_t sEasterEggCount = 0;
+
 // actually execute the command
 int crcb_command_execute(const uint8_t cid)
 {
@@ -163,30 +165,70 @@ int crcb_command_execute(const uint8_t cid)
                 break;
             }
             case 6:
+                sEasterEggCount++;
                 LOG_ERROR("Command 6 triggers an error for testing.");
                 cr_report_error(6, "(demonstration) The message reported by cr_report_error() "
                                    "can be up to 180 characters long.\n");
                 break;
             case 7:
+                sEasterEggCount++;
                 LOG_ERROR("Command 7 triggers an error for testing.");
                 cr_report_error(7, "Why, sometimes I've believed as many as six "
                                    "impossible things before breakfast.\n");
                 break;
             case 8:
+                sEasterEggCount++;
                 LOG_ERROR("Command 8 triggers an error for testing.");
-                cr_report_error(8, "I'm looking for backing for an unauthorized "
-                                   "auto-biography that I am writing.\n");
+                if ((sEasterEggCount%4) == 0)
+                {
+                    cr_report_error(8, "And in the death, as the last few corpses "
+                                    "lay rotting on the slimy thoroughfare, "
+                                    "Fleas the size of rats sucked on rats the size of cats "
+                                    "and ten thousand peoploids split into small tribes...\n");
+                    break;
+                }
+                else if ((sEasterEggCount%5) == 0)
+                {
+                    cr_report_error(8, "I'm looking for backing for an unauthorized "
+                                       "auto-biography that I am writing.\n");
+                    break;
+                }
+                cr_report_error(8, "Informative error reporting code can often make it "
+                                   "easy to locate the source of an error. "
+                                   "Large and layered systems often have no way to "
+                                   "report errors up the chain.\n");
                 break;
             case 9:
+                sEasterEggCount++;
                 LOG_ERROR("Command 9 triggers an error for testing.");
-                cr_report_error(9, "Hopefully, this will sell in such huge numbers "
-                                   "that I will be able to sue myself for an "
-                                   "extraordinary amount of money and finance "
-                                   "the film version in which I will play everybody.\n");
-            case 10:
-                LOG_ERROR("Command 10 triggers an error for testing.");
-                cr_report_error(9, "Is that all there is?\n");
+
+                if ((sEasterEggCount%4) == 0)
+                {
+                    cr_report_error(9, "As they pulled you out of the oxygen tent"
+                                    " You asked for the latest party."
+                                    " With your silicone hump and your ten inch stump"
+                                    " Dressed like a priest you was"
+                                    " Todd Browning's freak you was\n");
+                    break;
+                }
+                else if ((sEasterEggCount%5) == 0)
+                {
+                    cr_report_error(9, "Hopefully, this will sell in such huge numbers "
+                                       "that I will be able to sue myself for an "
+                                       "extraordinary amount of money and finance "
+                                       "the film version in which I will play everybody.\n");
+                    break;
+                }
+                cr_report_error(9, "Reach offers a way to communicate errors from the "
+                                   "device to the developer. Calls to cr_report_errror() "
+                                   "result in messages like this.\n");
                 break;
+            case 10:
+                sEasterEggCount++;
+                LOG_ERROR("Command 10 triggers an error for testing.");
+                cr_report_error(10, "Is that all there is?\n");
+                break;
+
             default:
                 i3_log(LOG_MASK_ALWAYS, "Command %d not implemented.", cid);
                 break;
