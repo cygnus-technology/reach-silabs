@@ -131,6 +131,7 @@
 /// Define this to test compatibility with the Ahsoka header.
 /// You must also change reach.proto.
 #define AHSOKA_HEADER
+#define TEST_HEADER
 
 // prints out buffer sizes for tuning.
 #define VERBOSE_SIZES
