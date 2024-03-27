@@ -83,18 +83,31 @@ const cr_DeviceInfoResponse test1_di =
 /// crcb_challenge_key_is_valid(). More fine grained access 
 /// control is handled at the level of these crcb callbacks. 
 
-static bool sDev_challenge_key_required = false;
-#ifdef LONG_KEYS
-   // The keys must be null terminated, at most 32 chars including the null.
-  static const char sDev_basic_access_key[REACH_LONG_STRING_LEN] = "0123456789012345678901234567890";
-  static const char sDev_full_access_key[REACH_LONG_STRING_LEN] = "9876543210987654321098765432109";
+#ifdef DEMO_ACCESS_CONTROL
+  /// set this to expose only a limited set of parameters by 
+  /// default. 
+  static bool sDev_challenge_key_required = true;
+
+  #ifdef LONG_KEYS
+     // The keys must be null terminated, at most 32 chars including the null.
+    static const char sDev_basic_access_key[REACH_LONG_STRING_LEN] = "0123456789012345678901234567890";
+    static const char sDev_full_access_key[REACH_LONG_STRING_LEN] = "9876543210987654321098765432109";
+  #else
+    static const char sDev_basic_access_key[REACH_LONG_STRING_LEN] = "basic";
+    static const char sDev_full_access_key[REACH_LONG_STRING_LEN] = "full";
+  #endif
+
+  // In this demo, basic access is always available.
+  static bool sDev_basic_access_OK = true;
+  // full access is granted via the challenge key.
+  static bool sDev_full_access_OK = false;
 #else
+  static bool sDev_challenge_key_required = false;
   static const char sDev_basic_access_key[REACH_LONG_STRING_LEN] = "basic";
   static const char sDev_full_access_key[REACH_LONG_STRING_LEN] = "full";
-#endif
-
-static bool sDev_basic_access_OK = true;
-static bool sDev_full_access_OK = true;
+  static bool sDev_basic_access_OK = true;
+  static bool sDev_full_access_OK = true;
+#endif  // def DEMO_ACCESS_CONTROL
 
 bool device_get_basic_access_OK() {
     return sDev_basic_access_OK;
@@ -118,7 +131,7 @@ int crcb_device_get_info(const cr_DeviceInfoRequest *request, cr_DeviceInfoRespo
     {
         if (!request->has_challenge_key)
         {
-            sDev_basic_access_OK = false;
+            // sDev_basic_access_OK = false;
             sDev_full_access_OK = false; 
             i3_log(LOG_MASK_ALWAYS, "%s: %s, No key, no access.\n", __FUNCTION__, test1_di.device_name);
         }
@@ -136,7 +149,7 @@ int crcb_device_get_info(const cr_DeviceInfoRequest *request, cr_DeviceInfoRespo
         }
         else
         {
-            sDev_basic_access_OK = false;
+            // sDev_basic_access_OK = false;
             sDev_full_access_OK = false; 
             i3_log(LOG_MASK_ALWAYS, "%s: %s, Wrong key, no access.\n", __FUNCTION__, test1_di.device_name);
         }
@@ -148,13 +161,16 @@ int crcb_device_get_info(const cr_DeviceInfoRequest *request, cr_DeviceInfoRespo
         i3_log(LOG_MASK_ALWAYS, "%s: %s, full access granted without key.\n", __FUNCTION__, test1_di.device_name);
     }
 
-    if (!sDev_basic_access_OK)
+    if (sDev_basic_access_OK)
     {
         pDi->services = 0;
+      #ifdef INCLUDE_PARAMETER_SERVICE
+        pDi->services |= cr_ServiceIds_PARAMETER_REPO;
+      #endif
     }
     else 
     {
-
+        pDi->services = 0;
       #ifdef INCLUDE_PARAMETER_SERVICE
         pDi->services |= cr_ServiceIds_PARAMETER_REPO;
       #endif
@@ -218,7 +234,7 @@ void crcb_invalidate_challenge_key(void)
 {
     if (sDev_challenge_key_required)
     {
-        sDev_basic_access_OK = false;
+        // sDev_basic_access_OK = false;
         sDev_full_access_OK  = false;
     }
 }
