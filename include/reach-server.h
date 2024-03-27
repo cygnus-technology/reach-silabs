@@ -72,7 +72,7 @@
 #define SYS_TICK_RATE   1000
 
 /// #define NO_REACH_LOGGING to completely exclude logging to save space.
-/// #define NO_REACH_LOGGING 
+// #define NO_REACH_LOGGING 
 
 /// What logging should be enabled by default.  See i3_log.h
 #define DEFAULT_LOG_MASK    0xCF7

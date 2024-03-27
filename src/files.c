@@ -135,7 +135,7 @@
     {
         if (sFid_index >= NUM_FILES)
         {
-            i3_log(LOG_MASK_WARN, "%s: sFid_index (%d) >= NUM_FILES (%d)",
+            i3_log(LOG_MASK_FILES, "%s: sFid_index (%d) >= NUM_FILES (%d)",
                    __FUNCTION__, sFid_index, NUM_FILES);
             return cr_ErrorCodes_BAD_FILE;
         }

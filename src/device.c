@@ -93,8 +93,8 @@ static bool sDev_challenge_key_required = false;
   static const char sDev_full_access_key[REACH_LONG_STRING_LEN] = "full";
 #endif
 
-static bool sDev_basic_access_OK = false;
-static bool sDev_full_access_OK = false;
+static bool sDev_basic_access_OK = true;
+static bool sDev_full_access_OK = true;
 
 bool device_get_basic_access_OK() {
     return sDev_basic_access_OK;
