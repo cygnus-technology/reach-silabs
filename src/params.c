@@ -104,7 +104,6 @@ extern bool device_get_full_access_OK();
 
 int  get_param_index_by_pid(int pid)
 {
-    int i;
     for (int i=0; i<NUM_PARAMS; i++)
     {
         if (param_desc[i].id == pid)
@@ -113,6 +112,7 @@ int  get_param_index_by_pid(int pid)
     return -1;
 }
 
+extern bool device_get_basic_access_OK();
 static bool param_access_granted(const uint32_t pid)
 {
     // access permissions can be made arbitrarily simple or complicated.
