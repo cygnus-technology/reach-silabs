@@ -104,8 +104,8 @@ const cr_DeviceInfoResponse test1_di =
 #else
   // all access all the time
   static bool sDev_challenge_key_required = false;
-  static const char sDev_basic_access_key[REACH_LONG_STRING_LEN] = "basic";
-  static const char sDev_full_access_key[REACH_LONG_STRING_LEN] = "full";
+  // static const char sDev_basic_access_key[REACH_LONG_STRING_LEN] = "basic";
+  // static const char sDev_full_access_key[REACH_LONG_STRING_LEN] = "full";
   static bool sDev_basic_access_OK = true;
   static bool sDev_full_access_OK = true;
 #endif  // def DEMO_ACCESS_CONTROL
@@ -213,6 +213,7 @@ static void sConfigure_access_control(const cr_DeviceInfoRequest *request, cr_De
     }
 
   #else
+    (void)request;
 
     sDev_challenge_key_required = false;
     sDev_basic_access_OK = true;

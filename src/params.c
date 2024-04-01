@@ -102,7 +102,7 @@ static int write_param_to_nvm(const uint32_t pid, const cr_ParameterValue *param
 // See device.c.  You can customize access control.
 extern bool device_get_full_access_OK();
 
-int  get_param_index_by_pid(int pid)
+int  get_param_index_by_pid(uint32_t pid)
 {
     for (int i=0; i<NUM_PARAMS; i++)
     {

@@ -58,22 +58,32 @@
     #include "cr_stack.h"
     #include "i3_log.h"
 
-    #define NUM_FILES   2
+    #define NUM_FILES   3
     static const cr_FileInfo sFiles[NUM_FILES] =
     {
         {
-            0,                      // int32_t file_id; /* ID */
-            "log_file.csv",         // char file_name[24]; /* Name */
-            cr_AccessLevel_READ,    // cr_AccessLevel access; /* Access Level (Read / Write) */
-            4000,                   /* size in bytes */
-            cr_StorageLocation_RAM  // cr_StorageLocation storage_location;
+            0,                              // int32_t file_id
+            "log_file.csv",                 // char file_name[24]
+            cr_AccessLevel_READ,            // cr_AccessLevel access (Read / Write)
+            4000,                           // size in bytes
+            cr_StorageLocation_RAM,         // cr_StorageLocation storage_location
+            false                           // requires checksum
         },
         {
-            1,                              // int32_t file_id; /* ID */
-            "ota.bin",                      // char file_name[24]; /* Name */
-            cr_AccessLevel_READ_WRITE,      // cr_AccessLevel access; /* Access Level (Read / Write) */
-            50000,                          /* size in bytes */
-            cr_StorageLocation_NONVOLATILE  // cr_StorageLocation storage_location;
+            1,                              // int32_t file_id
+            "ota.bin",                      // char file_name[24]
+            cr_AccessLevel_READ_WRITE,      // cr_AccessLevel access (Read / Write)
+            50000,                          // size in bytes
+            cr_StorageLocation_NONVOLATILE, // cr_StorageLocation storage_location
+            false                           // requires checksum
+        },
+        {
+            2,                              // int32_t file_id
+            "cs_test.bin",                  // char file_name[24]
+            cr_AccessLevel_READ_WRITE,      // cr_AccessLevel access (Read / Write)
+            2000,                           // size in bytes
+            cr_StorageLocation_RAM,         // cr_StorageLocation storage_location
+            true                            // requires checksum
         }
     };
 
@@ -81,22 +91,26 @@
 
     int crcb_file_get_description(uint32_t fid, cr_FileInfo *file_desc)
     {
-        if (fid == sFiles[0].file_id)
-        {
-            *file_desc = sFiles[0];
-            return 0;
-        }
-        if (fid == sFiles[1].file_id)
-        {
-            *file_desc = sFiles[1];
-            return 0;
-        }
-        return cr_ErrorCodes_BAD_FILE;
+        // This construct assumes that fid's are contiguous with the fid 
+        // matching the index.  More complicated constructions could allow 
+        // for non-contiguous file ID's.
+
+        if (fid >= NUM_FILES)
+            return cr_ErrorCodes_BAD_FILE;
+
+        *file_desc = sFiles[fid];
+        return 0;
     }
 
+    // The "ack_rate" determines how many packets are transmitted 
+    // before an acknowledgement is required. 
+    // The ack rate is determined by the communication method and 
+    // it's not generally different from file to file.
     // The ack rate might be low if the application expects transmission errors.
     // A higher ack rate makes for faster transmission.
     // A lower ack rate allows for faster error recovery.
+    // The client specifies its preferred ack rate as "messages_per_ack" 
+    // in the FileTransferRequest message.
     // Could override the requested ack rate using this.
     // 0 does not override.
     int crcb_file_get_preferred_ack_rate(bool is_write)
@@ -116,18 +130,13 @@
     static uint8_t sFid_index = 0;
     int crcb_file_discover_reset(const uint8_t fid)
     {
-        if (fid == sFiles[0].file_id)
+        if (fid >= NUM_FILES)
         {
+            i3_log(LOG_MASK_ERROR, "crcb_file_discover_reset(%d): invalid FID, using 0.", fid);
             sFid_index = 0;
             return 0;
         }
-        if (fid == sFiles[1].file_id)
-        {
-            sFid_index = 1;
-            return 0;
-        }
-        i3_log(LOG_MASK_ERROR, "crcb_file_discover_reset(%d): invalid FID, using 0.", fid);
-        sFid_index = 0;
+        sFid_index = fid;
         return 0;
     }
 
@@ -154,7 +163,7 @@
                      uint8_t *pData,                // where the data goes
                      int *bytes_read)               // bytes actually read, negative for errors.
     {
-        if (fid > 1)
+        if (fid >= NUM_FILES)
         {
             i3_log(LOG_MASK_ERROR, "%s: File ID %d does not exist.", __FUNCTION__, fid);
             return cr_ErrorCodes_BAD_FILE;
@@ -193,10 +202,12 @@
             return 0;
           }
         case 1:  // ota.bin
+        case 2:
             // copy some code into the buffer
             memcpy(pData, (void*)&crcb_file_get_description, bytes_requested);
             *bytes_read = bytes_requested;
             return 0;
+
         default:
             affirm(false);  
             break;
@@ -217,18 +228,22 @@
         (void)bytes;
         (void)pData;
 
-        if (fid > 1)
+        if (fid >= NUM_FILES)
         {
             i3_log(LOG_MASK_ERROR, "%s: File ID %d does not exist.",
                    __FUNCTION__, fid);
             return cr_ErrorCodes_BAD_FILE;
         }
-        if (fid != 1)
+
+        if (fid == 0)
         {
             i3_log(LOG_MASK_ERROR, "%s: File ID %d has no write permission.",
                    __FUNCTION__, fid);
             return cr_ErrorCodes_PERMISSION_DENIED;
         }
+
+        // the received data is not stored anywhere.
+        // 
         // LOG_DUMP_MASK(LOG_MASK_FILES, "Received File Data", pData, bytes);
         return 0;
     }
@@ -236,13 +251,14 @@
     // returns zero or an error code
     int crcb_erase_file(const uint32_t fid)
     {
-        if (fid > 1)
+        if (fid >= NUM_FILES)
         {
             i3_log(LOG_MASK_ERROR, "%s: File ID %d does not exist.",
                    __FUNCTION__, fid);
             return cr_ErrorCodes_BAD_FILE;
         }
-        if (fid != 1)
+
+        if (fid == 0)
         {
             i3_log(LOG_MASK_ERROR, "%s: File ID %d has no write permission.",
                    __FUNCTION__, fid);
