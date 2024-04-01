@@ -104,115 +104,41 @@
           <file name="btl_reset_info.h" uri="studio:/sdk/platform/bootloader/api/btl_reset_info.h"/>
         </folder>
       </folder>
-      <folder name="service">
-        <folder name="cli">
-          <folder name="inc">
-            <file name="sl_cli.h" uri="studio:/sdk/platform/service/cli/inc/sl_cli.h"/>
-            <file name="sl_cli_types.h" uri="studio:/sdk/platform/service/cli/inc/sl_cli_types.h"/>
-            <file name="sl_cli_command.h" uri="studio:/sdk/platform/service/cli/inc/sl_cli_command.h"/>
-            <file name="sl_cli_input.h" uri="studio:/sdk/platform/service/cli/inc/sl_cli_input.h"/>
-            <file name="sl_cli_tokenize.h" uri="studio:/sdk/platform/service/cli/inc/sl_cli_tokenize.h"/>
-            <file name="sl_cli_arguments.h" uri="studio:/sdk/platform/service/cli/inc/sl_cli_arguments.h"/>
-          </folder>
+      <folder name="driver">
+        <folder name="button">
           <folder name="src">
-            <file name="sl_cli_input.c" uri="studio:/sdk/platform/service/cli/src/sl_cli_input.c"/>
-            <file name="sl_cli_tokenize.c" uri="studio:/sdk/platform/service/cli/src/sl_cli_tokenize.c"/>
-            <file name="sl_cli_command.c" uri="studio:/sdk/platform/service/cli/src/sl_cli_command.c"/>
-            <file name="sl_cli.c" uri="studio:/sdk/platform/service/cli/src/sl_cli.c"/>
-            <file name="sl_cli_io.c" uri="studio:/sdk/platform/service/cli/src/sl_cli_io.c"/>
-            <file name="sl_cli_arguments.c" uri="studio:/sdk/platform/service/cli/src/sl_cli_arguments.c"/>
-            <file name="sli_cli_arguments.h" uri="studio:/sdk/platform/service/cli/src/sli_cli_arguments.h"/>
-            <file name="sli_cli_input.h" uri="studio:/sdk/platform/service/cli/src/sli_cli_input.h"/>
-            <file name="sli_cli_io.h" uri="studio:/sdk/platform/service/cli/src/sli_cli_io.h"/>
+            <file name="sl_button.c" uri="studio:/sdk/platform/driver/button/src/sl_button.c"/>
+            <file name="sl_simple_button.c" uri="studio:/sdk/platform/driver/button/src/sl_simple_button.c"/>
+          </folder>
+          <folder name="inc">
+            <file name="sl_button.h" uri="studio:/sdk/platform/driver/button/inc/sl_button.h"/>
+            <file name="sl_simple_button.h" uri="studio:/sdk/platform/driver/button/inc/sl_simple_button.h"/>
           </folder>
         </folder>
-        <folder name="device_init">
-          <folder name="inc">
-            <file name="sl_device_init_clocks.h" uri="studio:/sdk/platform/service/device_init/inc/sl_device_init_clocks.h"/>
-            <file name="sl_device_init_dcdc.h" uri="studio:/sdk/platform/service/device_init/inc/sl_device_init_dcdc.h"/>
-            <file name="sl_device_init_emu.h" uri="studio:/sdk/platform/service/device_init/inc/sl_device_init_emu.h"/>
-            <file name="sl_device_init_hfxo.h" uri="studio:/sdk/platform/service/device_init/inc/sl_device_init_hfxo.h"/>
-            <file name="sl_device_init_lfrco.h" uri="studio:/sdk/platform/service/device_init/inc/sl_device_init_lfrco.h"/>
-            <file name="sl_device_init_lfxo.h" uri="studio:/sdk/platform/service/device_init/inc/sl_device_init_lfxo.h"/>
-            <file name="sl_device_init_nvic.h" uri="studio:/sdk/platform/service/device_init/inc/sl_device_init_nvic.h"/>
-          </folder>
+        <folder name="debug">
           <folder name="src">
-            <file name="sl_device_init_dcdc_s2.c" uri="studio:/sdk/platform/service/device_init/src/sl_device_init_dcdc_s2.c"/>
-            <file name="sl_device_init_emu_s2.c" uri="studio:/sdk/platform/service/device_init/src/sl_device_init_emu_s2.c"/>
-            <file name="sl_device_init_hfxo_s2.c" uri="studio:/sdk/platform/service/device_init/src/sl_device_init_hfxo_s2.c"/>
-            <file name="sl_device_init_lfrco.c" uri="studio:/sdk/platform/service/device_init/src/sl_device_init_lfrco.c"/>
-            <file name="sl_device_init_lfxo_s2.c" uri="studio:/sdk/platform/service/device_init/src/sl_device_init_lfxo_s2.c"/>
-            <file name="sl_device_init_nvic.c" uri="studio:/sdk/platform/service/device_init/src/sl_device_init_nvic.c"/>
+            <file name="sl_debug_swo.c" uri="studio:/sdk/platform/driver/debug/src/sl_debug_swo.c"/>
+          </folder>
+          <folder name="inc">
+            <file name="sl_debug_swo.h" uri="studio:/sdk/platform/driver/debug/inc/sl_debug_swo.h"/>
           </folder>
         </folder>
-        <folder name="iostream">
+        <folder name="i2cspm">
           <folder name="src">
-            <file name="sl_iostream.c" uri="studio:/sdk/platform/service/iostream/src/sl_iostream.c"/>
-            <file name="sl_iostream_retarget_stdio.c" uri="studio:/sdk/platform/service/iostream/src/sl_iostream_retarget_stdio.c"/>
-            <file name="sl_iostream_stdlib_config.c" uri="studio:/sdk/platform/service/iostream/src/sl_iostream_stdlib_config.c"/>
-            <file name="sl_iostream_uart.c" uri="studio:/sdk/platform/service/iostream/src/sl_iostream_uart.c"/>
-            <file name="sl_iostream_usart.c" uri="studio:/sdk/platform/service/iostream/src/sl_iostream_usart.c"/>
+            <file name="sl_i2cspm.c" uri="studio:/sdk/platform/driver/i2cspm/src/sl_i2cspm.c"/>
           </folder>
           <folder name="inc">
-            <file name="sl_iostream.h" uri="studio:/sdk/platform/service/iostream/inc/sl_iostream.h"/>
-            <file name="sl_iostream_stdlib_config.h" uri="studio:/sdk/platform/service/iostream/inc/sl_iostream_stdlib_config.h"/>
-            <file name="sl_iostream_uart.h" uri="studio:/sdk/platform/service/iostream/inc/sl_iostream_uart.h"/>
-            <file name="sli_iostream_uart.h" uri="studio:/sdk/platform/service/iostream/inc/sli_iostream_uart.h"/>
-            <file name="sl_iostream_usart.h" uri="studio:/sdk/platform/service/iostream/inc/sl_iostream_usart.h"/>
+            <file name="sl_i2cspm.h" uri="studio:/sdk/platform/driver/i2cspm/inc/sl_i2cspm.h"/>
           </folder>
         </folder>
-        <folder name="mpu">
+        <folder name="leddrv">
           <folder name="src">
-            <file name="sl_mpu.c" uri="studio:/sdk/platform/service/mpu/src/sl_mpu.c"/>
+            <file name="sl_led.c" uri="studio:/sdk/platform/driver/leddrv/src/sl_led.c"/>
+            <file name="sl_simple_led.c" uri="studio:/sdk/platform/driver/leddrv/src/sl_simple_led.c"/>
           </folder>
           <folder name="inc">
-            <file name="sl_mpu.h" uri="studio:/sdk/platform/service/mpu/inc/sl_mpu.h"/>
-          </folder>
-        </folder>
-        <folder name="power_manager">
-          <folder name="src">
-            <file name="sl_power_manager.c" uri="studio:/sdk/platform/service/power_manager/src/sl_power_manager.c"/>
-            <file name="sl_power_manager_debug.c" uri="studio:/sdk/platform/service/power_manager/src/sl_power_manager_debug.c"/>
-            <file name="sl_power_manager_hal_s2.c" uri="studio:/sdk/platform/service/power_manager/src/sl_power_manager_hal_s2.c"/>
-            <file name="sli_power_manager_private.h" uri="studio:/sdk/platform/service/power_manager/src/sli_power_manager_private.h"/>
-          </folder>
-          <folder name="inc">
-            <file name="sl_power_manager.h" uri="studio:/sdk/platform/service/power_manager/inc/sl_power_manager.h"/>
-            <file name="sl_power_manager_debug.h" uri="studio:/sdk/platform/service/power_manager/inc/sl_power_manager_debug.h"/>
-            <file name="sli_power_manager.h" uri="studio:/sdk/platform/service/power_manager/inc/sli_power_manager.h"/>
-          </folder>
-        </folder>
-        <folder name="system">
-          <folder name="src">
-            <file name="sl_system_init.c" uri="studio:/sdk/platform/service/system/src/sl_system_init.c"/>
-            <file name="sl_system_process_action.c" uri="studio:/sdk/platform/service/system/src/sl_system_process_action.c"/>
-          </folder>
-          <folder name="inc">
-            <file name="sl_system_init.h" uri="studio:/sdk/platform/service/system/inc/sl_system_init.h"/>
-            <file name="sl_system_process_action.h" uri="studio:/sdk/platform/service/system/inc/sl_system_process_action.h"/>
-          </folder>
-        </folder>
-        <folder name="sleeptimer">
-          <folder name="src">
-            <file name="sl_sleeptimer.c" uri="studio:/sdk/platform/service/sleeptimer/src/sl_sleeptimer.c"/>
-            <file name="sl_sleeptimer_hal_rtcc.c" uri="studio:/sdk/platform/service/sleeptimer/src/sl_sleeptimer_hal_rtcc.c"/>
-            <file name="sl_sleeptimer_hal_prortc.c" uri="studio:/sdk/platform/service/sleeptimer/src/sl_sleeptimer_hal_prortc.c"/>
-            <file name="sl_sleeptimer_hal_burtc.c" uri="studio:/sdk/platform/service/sleeptimer/src/sl_sleeptimer_hal_burtc.c"/>
-            <file name="sl_sleeptimer_hal_timer.c" uri="studio:/sdk/platform/service/sleeptimer/src/sl_sleeptimer_hal_timer.c"/>
-            <file name="sli_sleeptimer_hal.h" uri="studio:/sdk/platform/service/sleeptimer/src/sli_sleeptimer_hal.h"/>
-          </folder>
-          <folder name="inc">
-            <file name="sl_sleeptimer.h" uri="studio:/sdk/platform/service/sleeptimer/inc/sl_sleeptimer.h"/>
-            <file name="sli_sleeptimer.h" uri="studio:/sdk/platform/service/sleeptimer/inc/sli_sleeptimer.h"/>
-          </folder>
-        </folder>
-        <folder name="udelay">
-          <folder name="src">
-            <file name="sl_udelay.c" uri="studio:/sdk/platform/service/udelay/src/sl_udelay.c"/>
-            <file name="sl_udelay_armv6m_gcc.S" uri="studio:/sdk/platform/service/udelay/src/sl_udelay_armv6m_gcc.S"/>
-          </folder>
-          <folder name="inc">
-            <file name="sl_udelay.h" uri="studio:/sdk/platform/service/udelay/inc/sl_udelay.h"/>
+            <file name="sl_led.h" uri="studio:/sdk/platform/driver/leddrv/inc/sl_led.h"/>
+            <file name="sl_simple_led.h" uri="studio:/sdk/platform/driver/leddrv/inc/sl_simple_led.h"/>
           </folder>
         </folder>
       </folder>
@@ -383,23 +309,94 @@
           </folder>
         </folder>
       </folder>
-      <folder name="driver">
-        <folder name="debug">
-          <folder name="src">
-            <file name="sl_debug_swo.c" uri="studio:/sdk/platform/driver/debug/src/sl_debug_swo.c"/>
-          </folder>
+      <folder name="service">
+        <folder name="device_init">
           <folder name="inc">
-            <file name="sl_debug_swo.h" uri="studio:/sdk/platform/driver/debug/inc/sl_debug_swo.h"/>
+            <file name="sl_device_init_clocks.h" uri="studio:/sdk/platform/service/device_init/inc/sl_device_init_clocks.h"/>
+            <file name="sl_device_init_dcdc.h" uri="studio:/sdk/platform/service/device_init/inc/sl_device_init_dcdc.h"/>
+            <file name="sl_device_init_emu.h" uri="studio:/sdk/platform/service/device_init/inc/sl_device_init_emu.h"/>
+            <file name="sl_device_init_hfxo.h" uri="studio:/sdk/platform/service/device_init/inc/sl_device_init_hfxo.h"/>
+            <file name="sl_device_init_lfrco.h" uri="studio:/sdk/platform/service/device_init/inc/sl_device_init_lfrco.h"/>
+            <file name="sl_device_init_lfxo.h" uri="studio:/sdk/platform/service/device_init/inc/sl_device_init_lfxo.h"/>
+            <file name="sl_device_init_nvic.h" uri="studio:/sdk/platform/service/device_init/inc/sl_device_init_nvic.h"/>
+          </folder>
+          <folder name="src">
+            <file name="sl_device_init_dcdc_s2.c" uri="studio:/sdk/platform/service/device_init/src/sl_device_init_dcdc_s2.c"/>
+            <file name="sl_device_init_emu_s2.c" uri="studio:/sdk/platform/service/device_init/src/sl_device_init_emu_s2.c"/>
+            <file name="sl_device_init_hfxo_s2.c" uri="studio:/sdk/platform/service/device_init/src/sl_device_init_hfxo_s2.c"/>
+            <file name="sl_device_init_lfrco.c" uri="studio:/sdk/platform/service/device_init/src/sl_device_init_lfrco.c"/>
+            <file name="sl_device_init_lfxo_s2.c" uri="studio:/sdk/platform/service/device_init/src/sl_device_init_lfxo_s2.c"/>
+            <file name="sl_device_init_nvic.c" uri="studio:/sdk/platform/service/device_init/src/sl_device_init_nvic.c"/>
           </folder>
         </folder>
-        <folder name="leddrv">
+        <folder name="iostream">
           <folder name="src">
-            <file name="sl_led.c" uri="studio:/sdk/platform/driver/leddrv/src/sl_led.c"/>
-            <file name="sl_simple_led.c" uri="studio:/sdk/platform/driver/leddrv/src/sl_simple_led.c"/>
+            <file name="sl_iostream.c" uri="studio:/sdk/platform/service/iostream/src/sl_iostream.c"/>
+            <file name="sl_iostream_retarget_stdio.c" uri="studio:/sdk/platform/service/iostream/src/sl_iostream_retarget_stdio.c"/>
+            <file name="sl_iostream_stdlib_config.c" uri="studio:/sdk/platform/service/iostream/src/sl_iostream_stdlib_config.c"/>
+            <file name="sl_iostream_uart.c" uri="studio:/sdk/platform/service/iostream/src/sl_iostream_uart.c"/>
+            <file name="sl_iostream_usart.c" uri="studio:/sdk/platform/service/iostream/src/sl_iostream_usart.c"/>
           </folder>
           <folder name="inc">
-            <file name="sl_led.h" uri="studio:/sdk/platform/driver/leddrv/inc/sl_led.h"/>
-            <file name="sl_simple_led.h" uri="studio:/sdk/platform/driver/leddrv/inc/sl_simple_led.h"/>
+            <file name="sl_iostream.h" uri="studio:/sdk/platform/service/iostream/inc/sl_iostream.h"/>
+            <file name="sl_iostream_stdlib_config.h" uri="studio:/sdk/platform/service/iostream/inc/sl_iostream_stdlib_config.h"/>
+            <file name="sl_iostream_uart.h" uri="studio:/sdk/platform/service/iostream/inc/sl_iostream_uart.h"/>
+            <file name="sli_iostream_uart.h" uri="studio:/sdk/platform/service/iostream/inc/sli_iostream_uart.h"/>
+            <file name="sl_iostream_usart.h" uri="studio:/sdk/platform/service/iostream/inc/sl_iostream_usart.h"/>
+          </folder>
+        </folder>
+        <folder name="mpu">
+          <folder name="src">
+            <file name="sl_mpu.c" uri="studio:/sdk/platform/service/mpu/src/sl_mpu.c"/>
+          </folder>
+          <folder name="inc">
+            <file name="sl_mpu.h" uri="studio:/sdk/platform/service/mpu/inc/sl_mpu.h"/>
+          </folder>
+        </folder>
+        <folder name="power_manager">
+          <folder name="src">
+            <file name="sl_power_manager.c" uri="studio:/sdk/platform/service/power_manager/src/sl_power_manager.c"/>
+            <file name="sl_power_manager_debug.c" uri="studio:/sdk/platform/service/power_manager/src/sl_power_manager_debug.c"/>
+            <file name="sl_power_manager_hal_s2.c" uri="studio:/sdk/platform/service/power_manager/src/sl_power_manager_hal_s2.c"/>
+            <file name="sli_power_manager_private.h" uri="studio:/sdk/platform/service/power_manager/src/sli_power_manager_private.h"/>
+          </folder>
+          <folder name="inc">
+            <file name="sl_power_manager.h" uri="studio:/sdk/platform/service/power_manager/inc/sl_power_manager.h"/>
+            <file name="sl_power_manager_debug.h" uri="studio:/sdk/platform/service/power_manager/inc/sl_power_manager_debug.h"/>
+            <file name="sli_power_manager.h" uri="studio:/sdk/platform/service/power_manager/inc/sli_power_manager.h"/>
+          </folder>
+        </folder>
+        <folder name="system">
+          <folder name="src">
+            <file name="sl_system_init.c" uri="studio:/sdk/platform/service/system/src/sl_system_init.c"/>
+            <file name="sl_system_process_action.c" uri="studio:/sdk/platform/service/system/src/sl_system_process_action.c"/>
+          </folder>
+          <folder name="inc">
+            <file name="sl_system_init.h" uri="studio:/sdk/platform/service/system/inc/sl_system_init.h"/>
+            <file name="sl_system_process_action.h" uri="studio:/sdk/platform/service/system/inc/sl_system_process_action.h"/>
+          </folder>
+        </folder>
+        <folder name="sleeptimer">
+          <folder name="src">
+            <file name="sl_sleeptimer.c" uri="studio:/sdk/platform/service/sleeptimer/src/sl_sleeptimer.c"/>
+            <file name="sl_sleeptimer_hal_rtcc.c" uri="studio:/sdk/platform/service/sleeptimer/src/sl_sleeptimer_hal_rtcc.c"/>
+            <file name="sl_sleeptimer_hal_prortc.c" uri="studio:/sdk/platform/service/sleeptimer/src/sl_sleeptimer_hal_prortc.c"/>
+            <file name="sl_sleeptimer_hal_burtc.c" uri="studio:/sdk/platform/service/sleeptimer/src/sl_sleeptimer_hal_burtc.c"/>
+            <file name="sl_sleeptimer_hal_timer.c" uri="studio:/sdk/platform/service/sleeptimer/src/sl_sleeptimer_hal_timer.c"/>
+            <file name="sli_sleeptimer_hal.h" uri="studio:/sdk/platform/service/sleeptimer/src/sli_sleeptimer_hal.h"/>
+          </folder>
+          <folder name="inc">
+            <file name="sl_sleeptimer.h" uri="studio:/sdk/platform/service/sleeptimer/inc/sl_sleeptimer.h"/>
+            <file name="sli_sleeptimer.h" uri="studio:/sdk/platform/service/sleeptimer/inc/sli_sleeptimer.h"/>
+          </folder>
+        </folder>
+        <folder name="udelay">
+          <folder name="src">
+            <file name="sl_udelay.c" uri="studio:/sdk/platform/service/udelay/src/sl_udelay.c"/>
+            <file name="sl_udelay_armv6m_gcc.S" uri="studio:/sdk/platform/service/udelay/src/sl_udelay_armv6m_gcc.S"/>
+          </folder>
+          <folder name="inc">
+            <file name="sl_udelay.h" uri="studio:/sdk/platform/service/udelay/inc/sl_udelay.h"/>
           </folder>
         </folder>
       </folder>
@@ -415,6 +412,14 @@
         <folder name="common">
           <folder name="inc">
             <file name="ecode.h" uri="studio:/sdk/platform/emdrv/common/inc/ecode.h"/>
+          </folder>
+        </folder>
+        <folder name="gpiointerrupt">
+          <folder name="src">
+            <file name="gpiointerrupt.c" uri="studio:/sdk/platform/emdrv/gpiointerrupt/src/gpiointerrupt.c"/>
+          </folder>
+          <folder name="inc">
+            <file name="gpiointerrupt.h" uri="studio:/sdk/platform/emdrv/gpiointerrupt/inc/gpiointerrupt.h"/>
           </folder>
         </folder>
         <folder name="nvm3">
@@ -451,6 +456,7 @@
           <file name="em_ldma.c" uri="studio:/sdk/platform/emlib/src/em_ldma.c"/>
           <file name="em_letimer.c" uri="studio:/sdk/platform/emlib/src/em_letimer.c"/>
           <file name="em_msc.c" uri="studio:/sdk/platform/emlib/src/em_msc.c"/>
+          <file name="em_pdm.c" uri="studio:/sdk/platform/emlib/src/em_pdm.c"/>
           <file name="em_prs.c" uri="studio:/sdk/platform/emlib/src/em_prs.c"/>
           <file name="em_rmu.c" uri="studio:/sdk/platform/emlib/src/em_rmu.c"/>
           <file name="em_rtcc.c" uri="studio:/sdk/platform/emlib/src/em_rtcc.c"/>
@@ -485,6 +491,7 @@
           <file name="em_letimer.h" uri="studio:/sdk/platform/emlib/inc/em_letimer.h"/>
           <file name="em_msc.h" uri="studio:/sdk/platform/emlib/inc/em_msc.h"/>
           <file name="em_msc_compat.h" uri="studio:/sdk/platform/emlib/inc/em_msc_compat.h"/>
+          <file name="em_pdm.h" uri="studio:/sdk/platform/emlib/inc/em_pdm.h"/>
           <file name="em_prs.h" uri="studio:/sdk/platform/emlib/inc/em_prs.h"/>
           <file name="em_rmu.h" uri="studio:/sdk/platform/emlib/inc/em_rmu.h"/>
           <file name="em_rtcc.h" uri="studio:/sdk/platform/emlib/inc/em_rtcc.h"/>
@@ -582,6 +589,30 @@
             <file name="sl_bt_in_place_ota_dfu.c" uri="studio:/sdk/app/bluetooth/common/in_place_ota_dfu/sl_bt_in_place_ota_dfu.c"/>
             <file name="sl_bt_in_place_ota_dfu.h" uri="studio:/sdk/app/bluetooth/common/in_place_ota_dfu/sl_bt_in_place_ota_dfu.h"/>
           </folder>
+          <folder name="sensor_hall">
+            <file name="sl_sensor_hall.c" uri="studio:/sdk/app/bluetooth/common/sensor_hall/sl_sensor_hall.c"/>
+            <file name="sl_sensor_hall.h" uri="studio:/sdk/app/bluetooth/common/sensor_hall/sl_sensor_hall.h"/>
+          </folder>
+          <folder name="sensor_imu">
+            <file name="sl_sensor_imu.c" uri="studio:/sdk/app/bluetooth/common/sensor_imu/sl_sensor_imu.c"/>
+            <file name="sl_sensor_imu.h" uri="studio:/sdk/app/bluetooth/common/sensor_imu/sl_sensor_imu.h"/>
+          </folder>
+          <folder name="sensor_light">
+            <file name="sl_sensor_light.c" uri="studio:/sdk/app/bluetooth/common/sensor_light/sl_sensor_light.c"/>
+            <file name="sl_sensor_light.h" uri="studio:/sdk/app/bluetooth/common/sensor_light/sl_sensor_light.h"/>
+          </folder>
+          <folder name="sensor_rht">
+            <file name="sl_sensor_rht.c" uri="studio:/sdk/app/bluetooth/common/sensor_rht/sl_sensor_rht.c"/>
+            <file name="sl_sensor_rht.h" uri="studio:/sdk/app/bluetooth/common/sensor_rht/sl_sensor_rht.h"/>
+          </folder>
+          <folder name="sensor_select">
+            <file name="sl_sensor_select.c" uri="studio:/sdk/app/bluetooth/common/sensor_select/sl_sensor_select.c"/>
+            <file name="sl_sensor_select.h" uri="studio:/sdk/app/bluetooth/common/sensor_select/sl_sensor_select.h"/>
+          </folder>
+          <folder name="sensor_sound">
+            <file name="sl_sensor_sound.c" uri="studio:/sdk/app/bluetooth/common/sensor_sound/sl_sensor_sound.c"/>
+            <file name="sl_sensor_sound.h" uri="studio:/sdk/app/bluetooth/common/sensor_sound/sl_sensor_sound.h"/>
+          </folder>
         </folder>
       </folder>
     </folder>
@@ -665,6 +696,33 @@
             <file name="sl_cos.h" uri="studio:/sdk/hardware/driver/configuration_over_swo/inc/sl_cos.h"/>
           </folder>
         </folder>
+        <folder name="icm20648">
+          <folder name="src">
+            <file name="sl_icm20648.c" uri="studio:/sdk/hardware/driver/icm20648/src/sl_icm20648.c"/>
+          </folder>
+          <folder name="inc">
+            <file name="sl_icm20648.h" uri="studio:/sdk/hardware/driver/icm20648/inc/sl_icm20648.h"/>
+          </folder>
+        </folder>
+        <folder name="imu">
+          <folder name="src">
+            <file name="sl_imu_dcm.c" uri="studio:/sdk/hardware/driver/imu/src/sl_imu_dcm.c"/>
+            <file name="sl_imu_fuse.c" uri="studio:/sdk/hardware/driver/imu/src/sl_imu_fuse.c"/>
+            <file name="sl_imu_math.c" uri="studio:/sdk/hardware/driver/imu/src/sl_imu_math.c"/>
+            <file name="sl_imu_icm20648.c" uri="studio:/sdk/hardware/driver/imu/src/sl_imu_icm20648.c"/>
+          </folder>
+          <folder name="inc">
+            <file name="sl_imu.h" uri="studio:/sdk/hardware/driver/imu/inc/sl_imu.h"/>
+          </folder>
+        </folder>
+        <folder name="mic">
+          <folder name="src">
+            <file name="sl_mic_pdm.c" uri="studio:/sdk/hardware/driver/mic/src/sl_mic_pdm.c"/>
+          </folder>
+          <folder name="inc">
+            <file name="sl_mic.h" uri="studio:/sdk/hardware/driver/mic/inc/sl_mic.h"/>
+          </folder>
+        </folder>
         <folder name="mx25_flash_shutdown">
           <folder name="src">
             <folder name="sl_mx25_flash_shutdown_usart">
@@ -675,6 +733,31 @@
             <folder name="sl_mx25_flash_shutdown_usart">
               <file name="sl_mx25_flash_shutdown.h" uri="studio:/sdk/hardware/driver/mx25_flash_shutdown/inc/sl_mx25_flash_shutdown_usart/sl_mx25_flash_shutdown.h"/>
             </folder>
+          </folder>
+        </folder>
+        <folder name="si1133">
+          <folder name="src">
+            <file name="sl_si1133.c" uri="studio:/sdk/hardware/driver/si1133/src/sl_si1133.c"/>
+          </folder>
+          <folder name="inc">
+            <file name="sl_si1133.h" uri="studio:/sdk/hardware/driver/si1133/inc/sl_si1133.h"/>
+          </folder>
+        </folder>
+        <folder name="si70xx">
+          <folder name="src">
+            <file name="sl_si70xx.c" uri="studio:/sdk/hardware/driver/si70xx/src/sl_si70xx.c"/>
+          </folder>
+          <folder name="inc">
+            <file name="sl_si70xx.h" uri="studio:/sdk/hardware/driver/si70xx/inc/sl_si70xx.h"/>
+          </folder>
+        </folder>
+        <folder name="si7210">
+          <folder name="src">
+            <file name="sl_si7210.c" uri="studio:/sdk/hardware/driver/si7210/src/sl_si7210.c"/>
+          </folder>
+          <folder name="inc">
+            <file name="sl_si7210.h" uri="studio:/sdk/hardware/driver/si7210/inc/sl_si7210.h"/>
+            <file name="sl_si7210_regs.h" uri="studio:/sdk/hardware/driver/si7210/inc/sl_si7210_regs.h"/>
           </folder>
         </folder>
       </folder>
@@ -898,8 +981,7 @@
   <includePath uri="studio:/sdk/hardware/board/inc"/>
   <includePath uri="studio:/sdk/platform/bootloader"/>
   <includePath uri="studio:/sdk/platform/bootloader/api"/>
-  <includePath uri="studio:/sdk/platform/service/cli/inc"/>
-  <includePath uri="studio:/sdk/platform/service/cli/src"/>
+  <includePath uri="studio:/sdk/platform/driver/button/inc"/>
   <includePath uri="studio:/sdk/platform/CMSIS/Core/Include"/>
   <includePath uri="studio:/sdk/hardware/driver/configuration_over_swo/inc"/>
   <includePath uri="studio:/sdk/platform/security/sl_component/sl_cryptoacc_library/include"/>
@@ -910,6 +992,10 @@
   <includePath uri="studio:/sdk/platform/emdrv/common/inc"/>
   <includePath uri="studio:/sdk/platform/emlib/inc"/>
   <includePath uri="studio:/sdk/app/bluetooth/common/gatt_service_device_information"/>
+  <includePath uri="studio:/sdk/platform/emdrv/gpiointerrupt/inc"/>
+  <includePath uri="studio:/sdk/platform/driver/i2cspm/inc"/>
+  <includePath uri="studio:/sdk/hardware/driver/icm20648/inc"/>
+  <includePath uri="studio:/sdk/hardware/driver/imu/inc"/>
   <includePath uri="studio:/sdk/app/bluetooth/common/in_place_ota_dfu"/>
   <includePath uri="studio:/sdk/platform/service/iostream/inc"/>
   <includePath uri="studio:/sdk/platform/driver/leddrv/inc"/>
@@ -918,6 +1004,7 @@
   <includePath uri="studio:/sdk/platform/security/sl_component/sl_mbedtls_support/inc"/>
   <includePath uri="studio:/sdk/util/third_party/mbedtls/include"/>
   <includePath uri="studio:/sdk/util/third_party/mbedtls/library"/>
+  <includePath uri="studio:/sdk/hardware/driver/mic/inc"/>
   <includePath uri="studio:/sdk/platform/service/mpu/inc"/>
   <includePath uri="studio:/sdk/hardware/driver/mx25_flash_shutdown/inc/sl_mx25_flash_shutdown_usart"/>
   <includePath uri="studio:/sdk/platform/emdrv/nvm3/inc"/>
@@ -938,6 +1025,15 @@
   <includePath uri="studio:/sdk/platform/radio/rail_lib/plugin/rail_util_pti"/>
   <includePath uri="studio:/sdk/platform/security/sl_component/se_manager/inc"/>
   <includePath uri="studio:/sdk/platform/security/sl_component/se_manager/src"/>
+  <includePath uri="studio:/sdk/app/bluetooth/common/sensor_hall"/>
+  <includePath uri="studio:/sdk/app/bluetooth/common/sensor_imu"/>
+  <includePath uri="studio:/sdk/app/bluetooth/common/sensor_light"/>
+  <includePath uri="studio:/sdk/app/bluetooth/common/sensor_rht"/>
+  <includePath uri="studio:/sdk/app/bluetooth/common/sensor_select"/>
+  <includePath uri="studio:/sdk/app/bluetooth/common/sensor_sound"/>
+  <includePath uri="studio:/sdk/hardware/driver/si1133/inc"/>
+  <includePath uri="studio:/sdk/hardware/driver/si70xx/inc"/>
+  <includePath uri="studio:/sdk/hardware/driver/si7210/inc"/>
   <includePath uri="studio:/sdk/util/silicon_labs/silabs_core/memory_manager"/>
   <includePath uri="studio:/sdk/platform/common/toolchain/inc"/>
   <includePath uri="studio:/sdk/platform/service/system/inc"/>
@@ -952,13 +1048,15 @@
   <macroDefinition name="HARDWARE_BOARD_SUPPORTS_RF_BAND_2400"/>
   <macroDefinition name="HFXO_FREQ" value="38400000"/>
   <macroDefinition name="SL_BOARD_NAME" value="&quot;BRD4184A&quot;"/>
-  <macroDefinition name="SL_BOARD_REV" value="&quot;A02&quot;"/>
+  <macroDefinition name="SL_BOARD_REV" value="&quot;A01&quot;"/>
   <macroDefinition name="SL_COMPONENT_CATALOG_PRESENT"/>
   <macroDefinition name="MBEDTLS_CONFIG_FILE" value="&lt;sl_mbedtls_config.h>"/>
   <macroDefinition name="MBEDTLS_PSA_CRYPTO_CONFIG_FILE" value="&lt;psa_crypto_config.h>"/>
   <macroDefinition name="SL_RAIL_LIB_MULTIPROTOCOL_SUPPORT" value="0"/>
   <macroDefinition name="SL_RAIL_UTIL_PA_CONFIG_HEADER" value="&lt;sl_rail_util_pa_config.h>"/>
   <macroDefinition name="SLI_RADIOAES_REQUIRES_MASKING"/>
+  <macroDefinition name="SL_KIT_NAME" value="&quot;SLTB010A&quot;"/>
+  <macroDefinition name="SL_KIT_REV" value="&quot;A04&quot;"/>
   <libraryFile uri="studio:/sdk/protocol/bluetooth/bgcommon/lib/libbgcommon_efr32xg22_gcc_release.a"/>
   <libraryFile uri="studio:/sdk/protocol/bluetooth/bgstack/ll/lib/libbluetooth_controller_efr32xg22_gcc_release.a"/>
   <libraryFile uri="studio:/sdk/protocol/bluetooth/lib/libbluetooth_host_efr32xg22_gcc_release.a"/>

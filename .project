@@ -21,7 +21,6 @@
 		<nature>org.eclipse.cdt.core.cnature</nature>
 		<nature>com.silabs.ss.framework.ide.project.sls.core.SLSProjectNature</nature>
 		<nature>org.eclipse.cdt.managedbuilder.core.managedBuildNature</nature>
-		<nature>org.eclipse.cdt.core.ccnature</nature>
 	</natures>
 	<linkedResources>
 		<link>
@@ -255,6 +254,11 @@
 			<locationURI>STUDIO_SDK_LOC/platform/emlib/inc/em_msc_compat.h</locationURI>
 		</link>
 		<link>
+			<name>gecko_sdk_4.4.0/platform/emlib/inc/em_pdm.h</name>
+			<type>1</type>
+			<locationURI>STUDIO_SDK_LOC/platform/emlib/inc/em_pdm.h</locationURI>
+		</link>
+		<link>
 			<name>gecko_sdk_4.4.0/platform/emlib/inc/em_prs.h</name>
 			<type>1</type>
 			<locationURI>STUDIO_SDK_LOC/platform/emlib/inc/em_prs.h</locationURI>
@@ -388,6 +392,11 @@
 			<name>gecko_sdk_4.4.0/platform/emlib/src/em_msc.c</name>
 			<type>1</type>
 			<locationURI>STUDIO_SDK_LOC/platform/emlib/src/em_msc.c</locationURI>
+		</link>
+		<link>
+			<name>gecko_sdk_4.4.0/platform/emlib/src/em_pdm.c</name>
+			<type>1</type>
+			<locationURI>STUDIO_SDK_LOC/platform/emlib/src/em_pdm.c</locationURI>
 		</link>
 		<link>
 			<name>gecko_sdk_4.4.0/platform/emlib/src/em_prs.c</name>
@@ -620,6 +629,66 @@
 			<locationURI>STUDIO_SDK_LOC/app/bluetooth/common/in_place_ota_dfu/sl_bt_in_place_ota_dfu.h</locationURI>
 		</link>
 		<link>
+			<name>gecko_sdk_4.4.0/app/bluetooth/common/sensor_hall/sl_sensor_hall.c</name>
+			<type>1</type>
+			<locationURI>STUDIO_SDK_LOC/app/bluetooth/common/sensor_hall/sl_sensor_hall.c</locationURI>
+		</link>
+		<link>
+			<name>gecko_sdk_4.4.0/app/bluetooth/common/sensor_hall/sl_sensor_hall.h</name>
+			<type>1</type>
+			<locationURI>STUDIO_SDK_LOC/app/bluetooth/common/sensor_hall/sl_sensor_hall.h</locationURI>
+		</link>
+		<link>
+			<name>gecko_sdk_4.4.0/app/bluetooth/common/sensor_imu/sl_sensor_imu.c</name>
+			<type>1</type>
+			<locationURI>STUDIO_SDK_LOC/app/bluetooth/common/sensor_imu/sl_sensor_imu.c</locationURI>
+		</link>
+		<link>
+			<name>gecko_sdk_4.4.0/app/bluetooth/common/sensor_imu/sl_sensor_imu.h</name>
+			<type>1</type>
+			<locationURI>STUDIO_SDK_LOC/app/bluetooth/common/sensor_imu/sl_sensor_imu.h</locationURI>
+		</link>
+		<link>
+			<name>gecko_sdk_4.4.0/app/bluetooth/common/sensor_light/sl_sensor_light.c</name>
+			<type>1</type>
+			<locationURI>STUDIO_SDK_LOC/app/bluetooth/common/sensor_light/sl_sensor_light.c</locationURI>
+		</link>
+		<link>
+			<name>gecko_sdk_4.4.0/app/bluetooth/common/sensor_light/sl_sensor_light.h</name>
+			<type>1</type>
+			<locationURI>STUDIO_SDK_LOC/app/bluetooth/common/sensor_light/sl_sensor_light.h</locationURI>
+		</link>
+		<link>
+			<name>gecko_sdk_4.4.0/app/bluetooth/common/sensor_rht/sl_sensor_rht.c</name>
+			<type>1</type>
+			<locationURI>STUDIO_SDK_LOC/app/bluetooth/common/sensor_rht/sl_sensor_rht.c</locationURI>
+		</link>
+		<link>
+			<name>gecko_sdk_4.4.0/app/bluetooth/common/sensor_rht/sl_sensor_rht.h</name>
+			<type>1</type>
+			<locationURI>STUDIO_SDK_LOC/app/bluetooth/common/sensor_rht/sl_sensor_rht.h</locationURI>
+		</link>
+		<link>
+			<name>gecko_sdk_4.4.0/app/bluetooth/common/sensor_select/sl_sensor_select.c</name>
+			<type>1</type>
+			<locationURI>STUDIO_SDK_LOC/app/bluetooth/common/sensor_select/sl_sensor_select.c</locationURI>
+		</link>
+		<link>
+			<name>gecko_sdk_4.4.0/app/bluetooth/common/sensor_select/sl_sensor_select.h</name>
+			<type>1</type>
+			<locationURI>STUDIO_SDK_LOC/app/bluetooth/common/sensor_select/sl_sensor_select.h</locationURI>
+		</link>
+		<link>
+			<name>gecko_sdk_4.4.0/app/bluetooth/common/sensor_sound/sl_sensor_sound.c</name>
+			<type>1</type>
+			<locationURI>STUDIO_SDK_LOC/app/bluetooth/common/sensor_sound/sl_sensor_sound.c</locationURI>
+		</link>
+		<link>
+			<name>gecko_sdk_4.4.0/app/bluetooth/common/sensor_sound/sl_sensor_sound.h</name>
+			<type>1</type>
+			<locationURI>STUDIO_SDK_LOC/app/bluetooth/common/sensor_sound/sl_sensor_sound.h</locationURI>
+		</link>
+		<link>
 			<name>gecko_sdk_4.4.0/app/common/util/app_assert/app_assert.h</name>
 			<type>1</type>
 			<locationURI>STUDIO_SDK_LOC/app/common/util/app_assert/app_assert.h</locationURI>
@@ -653,6 +722,86 @@
 			<name>gecko_sdk_4.4.0/hardware/driver/configuration_over_swo/src/sl_cos.c</name>
 			<type>1</type>
 			<locationURI>STUDIO_SDK_LOC/hardware/driver/configuration_over_swo/src/sl_cos.c</locationURI>
+		</link>
+		<link>
+			<name>gecko_sdk_4.4.0/hardware/driver/icm20648/inc/sl_icm20648.h</name>
+			<type>1</type>
+			<locationURI>STUDIO_SDK_LOC/hardware/driver/icm20648/inc/sl_icm20648.h</locationURI>
+		</link>
+		<link>
+			<name>gecko_sdk_4.4.0/hardware/driver/icm20648/src/sl_icm20648.c</name>
+			<type>1</type>
+			<locationURI>STUDIO_SDK_LOC/hardware/driver/icm20648/src/sl_icm20648.c</locationURI>
+		</link>
+		<link>
+			<name>gecko_sdk_4.4.0/hardware/driver/imu/inc/sl_imu.h</name>
+			<type>1</type>
+			<locationURI>STUDIO_SDK_LOC/hardware/driver/imu/inc/sl_imu.h</locationURI>
+		</link>
+		<link>
+			<name>gecko_sdk_4.4.0/hardware/driver/imu/src/sl_imu_dcm.c</name>
+			<type>1</type>
+			<locationURI>STUDIO_SDK_LOC/hardware/driver/imu/src/sl_imu_dcm.c</locationURI>
+		</link>
+		<link>
+			<name>gecko_sdk_4.4.0/hardware/driver/imu/src/sl_imu_fuse.c</name>
+			<type>1</type>
+			<locationURI>STUDIO_SDK_LOC/hardware/driver/imu/src/sl_imu_fuse.c</locationURI>
+		</link>
+		<link>
+			<name>gecko_sdk_4.4.0/hardware/driver/imu/src/sl_imu_icm20648.c</name>
+			<type>1</type>
+			<locationURI>STUDIO_SDK_LOC/hardware/driver/imu/src/sl_imu_icm20648.c</locationURI>
+		</link>
+		<link>
+			<name>gecko_sdk_4.4.0/hardware/driver/imu/src/sl_imu_math.c</name>
+			<type>1</type>
+			<locationURI>STUDIO_SDK_LOC/hardware/driver/imu/src/sl_imu_math.c</locationURI>
+		</link>
+		<link>
+			<name>gecko_sdk_4.4.0/hardware/driver/mic/inc/sl_mic.h</name>
+			<type>1</type>
+			<locationURI>STUDIO_SDK_LOC/hardware/driver/mic/inc/sl_mic.h</locationURI>
+		</link>
+		<link>
+			<name>gecko_sdk_4.4.0/hardware/driver/mic/src/sl_mic_pdm.c</name>
+			<type>1</type>
+			<locationURI>STUDIO_SDK_LOC/hardware/driver/mic/src/sl_mic_pdm.c</locationURI>
+		</link>
+		<link>
+			<name>gecko_sdk_4.4.0/hardware/driver/si1133/inc/sl_si1133.h</name>
+			<type>1</type>
+			<locationURI>STUDIO_SDK_LOC/hardware/driver/si1133/inc/sl_si1133.h</locationURI>
+		</link>
+		<link>
+			<name>gecko_sdk_4.4.0/hardware/driver/si1133/src/sl_si1133.c</name>
+			<type>1</type>
+			<locationURI>STUDIO_SDK_LOC/hardware/driver/si1133/src/sl_si1133.c</locationURI>
+		</link>
+		<link>
+			<name>gecko_sdk_4.4.0/hardware/driver/si70xx/inc/sl_si70xx.h</name>
+			<type>1</type>
+			<locationURI>STUDIO_SDK_LOC/hardware/driver/si70xx/inc/sl_si70xx.h</locationURI>
+		</link>
+		<link>
+			<name>gecko_sdk_4.4.0/hardware/driver/si70xx/src/sl_si70xx.c</name>
+			<type>1</type>
+			<locationURI>STUDIO_SDK_LOC/hardware/driver/si70xx/src/sl_si70xx.c</locationURI>
+		</link>
+		<link>
+			<name>gecko_sdk_4.4.0/hardware/driver/si7210/inc/sl_si7210.h</name>
+			<type>1</type>
+			<locationURI>STUDIO_SDK_LOC/hardware/driver/si7210/inc/sl_si7210.h</locationURI>
+		</link>
+		<link>
+			<name>gecko_sdk_4.4.0/hardware/driver/si7210/inc/sl_si7210_regs.h</name>
+			<type>1</type>
+			<locationURI>STUDIO_SDK_LOC/hardware/driver/si7210/inc/sl_si7210_regs.h</locationURI>
+		</link>
+		<link>
+			<name>gecko_sdk_4.4.0/hardware/driver/si7210/src/sl_si7210.c</name>
+			<type>1</type>
+			<locationURI>STUDIO_SDK_LOC/hardware/driver/si7210/src/sl_si7210.c</locationURI>
 		</link>
 		<link>
 			<name>gecko_sdk_4.4.0/platform/CMSIS/Core/Include/cmsis_compiler.h</name>
@@ -705,6 +854,26 @@
 			<locationURI>STUDIO_SDK_LOC/platform/common/toolchain/src/sl_memory.c</locationURI>
 		</link>
 		<link>
+			<name>gecko_sdk_4.4.0/platform/driver/button/inc/sl_button.h</name>
+			<type>1</type>
+			<locationURI>STUDIO_SDK_LOC/platform/driver/button/inc/sl_button.h</locationURI>
+		</link>
+		<link>
+			<name>gecko_sdk_4.4.0/platform/driver/button/inc/sl_simple_button.h</name>
+			<type>1</type>
+			<locationURI>STUDIO_SDK_LOC/platform/driver/button/inc/sl_simple_button.h</locationURI>
+		</link>
+		<link>
+			<name>gecko_sdk_4.4.0/platform/driver/button/src/sl_button.c</name>
+			<type>1</type>
+			<locationURI>STUDIO_SDK_LOC/platform/driver/button/src/sl_button.c</locationURI>
+		</link>
+		<link>
+			<name>gecko_sdk_4.4.0/platform/driver/button/src/sl_simple_button.c</name>
+			<type>1</type>
+			<locationURI>STUDIO_SDK_LOC/platform/driver/button/src/sl_simple_button.c</locationURI>
+		</link>
+		<link>
 			<name>gecko_sdk_4.4.0/platform/driver/debug/inc/sl_debug_swo.h</name>
 			<type>1</type>
 			<locationURI>STUDIO_SDK_LOC/platform/driver/debug/inc/sl_debug_swo.h</locationURI>
@@ -713,6 +882,16 @@
 			<name>gecko_sdk_4.4.0/platform/driver/debug/src/sl_debug_swo.c</name>
 			<type>1</type>
 			<locationURI>STUDIO_SDK_LOC/platform/driver/debug/src/sl_debug_swo.c</locationURI>
+		</link>
+		<link>
+			<name>gecko_sdk_4.4.0/platform/driver/i2cspm/inc/sl_i2cspm.h</name>
+			<type>1</type>
+			<locationURI>STUDIO_SDK_LOC/platform/driver/i2cspm/inc/sl_i2cspm.h</locationURI>
+		</link>
+		<link>
+			<name>gecko_sdk_4.4.0/platform/driver/i2cspm/src/sl_i2cspm.c</name>
+			<type>1</type>
+			<locationURI>STUDIO_SDK_LOC/platform/driver/i2cspm/src/sl_i2cspm.c</locationURI>
 		</link>
 		<link>
 			<name>gecko_sdk_4.4.0/platform/driver/leddrv/inc/sl_led.h</name>
@@ -748,6 +927,16 @@
 			<name>gecko_sdk_4.4.0/platform/emdrv/dmadrv/src/dmadrv.c</name>
 			<type>1</type>
 			<locationURI>STUDIO_SDK_LOC/platform/emdrv/dmadrv/src/dmadrv.c</locationURI>
+		</link>
+		<link>
+			<name>gecko_sdk_4.4.0/platform/emdrv/gpiointerrupt/inc/gpiointerrupt.h</name>
+			<type>1</type>
+			<locationURI>STUDIO_SDK_LOC/platform/emdrv/gpiointerrupt/inc/gpiointerrupt.h</locationURI>
+		</link>
+		<link>
+			<name>gecko_sdk_4.4.0/platform/emdrv/gpiointerrupt/src/gpiointerrupt.c</name>
+			<type>1</type>
+			<locationURI>STUDIO_SDK_LOC/platform/emdrv/gpiointerrupt/src/gpiointerrupt.c</locationURI>
 		</link>
 		<link>
 			<name>gecko_sdk_4.4.0/platform/emdrv/nvm3/inc/nvm3.h</name>
@@ -823,81 +1012,6 @@
 			<name>gecko_sdk_4.4.0/platform/radio/rail_lib/common/rail_types.h</name>
 			<type>1</type>
 			<locationURI>STUDIO_SDK_LOC/platform/radio/rail_lib/common/rail_types.h</locationURI>
-		</link>
-		<link>
-			<name>gecko_sdk_4.4.0/platform/service/cli/inc/sl_cli.h</name>
-			<type>1</type>
-			<locationURI>STUDIO_SDK_LOC/platform/service/cli/inc/sl_cli.h</locationURI>
-		</link>
-		<link>
-			<name>gecko_sdk_4.4.0/platform/service/cli/inc/sl_cli_arguments.h</name>
-			<type>1</type>
-			<locationURI>STUDIO_SDK_LOC/platform/service/cli/inc/sl_cli_arguments.h</locationURI>
-		</link>
-		<link>
-			<name>gecko_sdk_4.4.0/platform/service/cli/inc/sl_cli_command.h</name>
-			<type>1</type>
-			<locationURI>STUDIO_SDK_LOC/platform/service/cli/inc/sl_cli_command.h</locationURI>
-		</link>
-		<link>
-			<name>gecko_sdk_4.4.0/platform/service/cli/inc/sl_cli_input.h</name>
-			<type>1</type>
-			<locationURI>STUDIO_SDK_LOC/platform/service/cli/inc/sl_cli_input.h</locationURI>
-		</link>
-		<link>
-			<name>gecko_sdk_4.4.0/platform/service/cli/inc/sl_cli_tokenize.h</name>
-			<type>1</type>
-			<locationURI>STUDIO_SDK_LOC/platform/service/cli/inc/sl_cli_tokenize.h</locationURI>
-		</link>
-		<link>
-			<name>gecko_sdk_4.4.0/platform/service/cli/inc/sl_cli_types.h</name>
-			<type>1</type>
-			<locationURI>STUDIO_SDK_LOC/platform/service/cli/inc/sl_cli_types.h</locationURI>
-		</link>
-		<link>
-			<name>gecko_sdk_4.4.0/platform/service/cli/src/sl_cli.c</name>
-			<type>1</type>
-			<locationURI>STUDIO_SDK_LOC/platform/service/cli/src/sl_cli.c</locationURI>
-		</link>
-		<link>
-			<name>gecko_sdk_4.4.0/platform/service/cli/src/sl_cli_arguments.c</name>
-			<type>1</type>
-			<locationURI>STUDIO_SDK_LOC/platform/service/cli/src/sl_cli_arguments.c</locationURI>
-		</link>
-		<link>
-			<name>gecko_sdk_4.4.0/platform/service/cli/src/sl_cli_command.c</name>
-			<type>1</type>
-			<locationURI>STUDIO_SDK_LOC/platform/service/cli/src/sl_cli_command.c</locationURI>
-		</link>
-		<link>
-			<name>gecko_sdk_4.4.0/platform/service/cli/src/sl_cli_input.c</name>
-			<type>1</type>
-			<locationURI>STUDIO_SDK_LOC/platform/service/cli/src/sl_cli_input.c</locationURI>
-		</link>
-		<link>
-			<name>gecko_sdk_4.4.0/platform/service/cli/src/sl_cli_io.c</name>
-			<type>1</type>
-			<locationURI>STUDIO_SDK_LOC/platform/service/cli/src/sl_cli_io.c</locationURI>
-		</link>
-		<link>
-			<name>gecko_sdk_4.4.0/platform/service/cli/src/sl_cli_tokenize.c</name>
-			<type>1</type>
-			<locationURI>STUDIO_SDK_LOC/platform/service/cli/src/sl_cli_tokenize.c</locationURI>
-		</link>
-		<link>
-			<name>gecko_sdk_4.4.0/platform/service/cli/src/sli_cli_arguments.h</name>
-			<type>1</type>
-			<locationURI>STUDIO_SDK_LOC/platform/service/cli/src/sli_cli_arguments.h</locationURI>
-		</link>
-		<link>
-			<name>gecko_sdk_4.4.0/platform/service/cli/src/sli_cli_input.h</name>
-			<type>1</type>
-			<locationURI>STUDIO_SDK_LOC/platform/service/cli/src/sli_cli_input.h</locationURI>
-		</link>
-		<link>
-			<name>gecko_sdk_4.4.0/platform/service/cli/src/sli_cli_io.h</name>
-			<type>1</type>
-			<locationURI>STUDIO_SDK_LOC/platform/service/cli/src/sli_cli_io.h</locationURI>
 		</link>
 		<link>
 			<name>gecko_sdk_4.4.0/platform/service/device_init/inc/sl_device_init_clocks.h</name>

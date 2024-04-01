@@ -27,33 +27,38 @@ sdk: {id: gecko_sdk, version: 4.4.0}
 toolchain_settings: []
 component:
 - {id: iostream_retarget_stdio}
-- instance: [inst]
-  id: cli
+- instance: [btn0]
+  id: simple_button
 - {id: bluetooth_feature_gatt_server}
 - {id: in_place_ota_dfu}
 - {id: bluetooth_feature_sm}
+- {id: brd4184a_a01}
 - {id: bluetooth_feature_legacy_advertiser}
 - {id: mpu}
-- {id: iostream_usart_core}
-- {id: brd4184a_a02}
 - {id: gatt_configuration}
+- {id: sltb010a}
 - {id: gatt_service_device_information}
 - instance: [led0]
   id: simple_led
 - {id: bluetooth_stack}
+- {id: sensor_sound}
 - {id: rail_util_pti}
 - {id: bluetooth_feature_gatt}
 - {id: bluetooth_feature_legacy_scanner}
+- {id: sensor_hall}
 - {id: bt_post_build}
 - {id: bluetooth_feature_connection}
 - instance: [vcom]
   id: iostream_usart
 - {id: bluetooth_feature_system}
+- {id: sensor_imu}
 - {id: printf}
 - {id: component_catalog}
 - {id: iostream_stdlib_config}
 - {id: bootloader_interface}
 - {id: app_assert}
+- {id: sensor_light}
+- {id: sensor_rht}
 - {id: EFR32BG22C224F512IM40}
 other_file:
 - {path: image/readme_img0.png}
@@ -71,6 +76,4 @@ ui_hints:
   highlight:
   - {path: readme.md, focus: true}
   - {path: config/btconf/gatt_configuration.btconf}
-sdk_extension:
-- {id: wiseconnect3_sdk, version: 3.1.1}
 

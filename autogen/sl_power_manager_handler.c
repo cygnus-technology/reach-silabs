@@ -4,7 +4,6 @@
 #include "sl_sleeptimer.h"
 #include "app_timer.h"
 #include "sl_bluetooth.h"
-#include "sl_cli_instances.h"
 #include "sl_iostream_init_usart_instances.h"
 
 /***************************************************************************//**
@@ -60,9 +59,6 @@ bool sl_power_manager_is_ok_to_sleep(void)
     ok_to_sleep = false;
   }
   if (sli_bt_is_ok_to_sleep() == false) {
-    ok_to_sleep = false;
-  }
-  if (sl_cli_instances_is_ok_to_sleep() == false) {
     ok_to_sleep = false;
   }
   // Application hook

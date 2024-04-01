@@ -8,9 +8,10 @@
 
     <!--Device Name-->
     <characteristic const="false" id="device_name" name="Device Name" sourceId="org.bluetooth.characteristic.gap.device_name" uuid="2A00">
-      <value length="20" type="utf-8" variable_length="false">Reach-12345678901234</value>
+      <value length="26" type="utf-8" variable_length="false">Reach Thunderboard</value>
       <properties>
         <read authenticated="false" bonded="false" encrypted="false"/>
+        <write authenticated="false" bonded="false" encrypted="false"/>
       </properties>
     </characteristic>
 
@@ -77,9 +78,8 @@
   <!--Reach-->
   <service advertise="true" name="Reach" requirement="mandatory" sourceId="" type="primary" uuid="edd59269-79b3-4ec2-a6a2-89bfb640f930">
 
-    <!--Custom Characteristic-->
-    <characteristic const="false" id="REACH" name="Custom Characteristic" sourceId="" uuid="d42d1039-1d11-4f10-bae6-5f3b44cf6439">
-      <description>Reach Characteristic</description>
+    <!--Reach-->
+    <characteristic const="false" id="reach" name="Reach" sourceId="" uuid="d42d1039-1d11-4f10-bae6-5f3b44cf6439">
       <value length="255" type="hex" variable_length="true">00</value>
       <properties>
         <read authenticated="false" bonded="false" encrypted="false"/>

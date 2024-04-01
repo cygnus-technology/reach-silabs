@@ -1,113 +1,78 @@
-/*
- * reach-server.h
+/********************************************************************************************
+ *    _ ____  ___             _         _     ___              _                        _
+ *   (_)__ / | _ \_ _ ___  __| |_  _ __| |_  |   \ _____ _____| |___ _ __ _ __  ___ _ _| |_
+ *   | ||_ \ |  _/ '_/ _ \/ _` | || / _|  _| | |) / -_) V / -_) / _ \ '_ \ '  \/ -_) ' \  _|
+ *   |_|___/ |_| |_| \___/\__,_|\_,_\__|\__| |___/\___|\_/\___|_\___/ .__/_|_|_\___|_||_\__|
+ *                                                                  |_|
+ *                           -----------------------------------
+ *                          Copyright i3 Product Development 2023
  *
- *  This file specifies aspects of the Reach server that are controlled by the app.
+ * MIT License
  *
- */
-
-/**
- * @file      reach-server.c
- * @brief     This file specifies aspects of the Reach server that are 
- *            controlled by the app.
- * @copyright (c) Copyright 2023 i3 Product Development. All Rights Reserved.
- */
-
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
+ *
+ * \brief This file specifies aspects of the Reach server that are controlled by the app.
+ *
+ * Original Author: Chuck.Peplinski
+ *
+ ********************************************************************************************/
 
 #ifndef _REACH_SERVER_H_
 #define _REACH_SERVER_H_
 
+#include "definitions.h"
 
-/// If this is defined, the Reach characteristic must be set up to use 
-/// encryption in the GATT table as well
-// #define REACH_USE_ENCRYPTION
+// A range of parameters are driven by the 244 byte packet size imposed by BLE.
 
-#ifdef REACH_USE_ENCRYPTION
 
-/// These 4 defines can be used to configure different levels of 
-/// encryption/authentication being used for BLE communications
-
-/// Defining this will allow for pairing/authentication information 
-/// to be stored. Bonding must also be set up for 
-/// reading/writing/notifying the Reach characteristic in the 
-/// GATT table NOTE: Not enabling bonding seems to result in 
-/// weird behavior with re-connecting to devices 
-#define REACH_USE_BONDING
-
-/// If using authentication, the Reach characteristic must be set 
-/// up in the GATT table to require authentication for 
-/// reading/writing/notifying as well 
-#define REACH_USE_AUTHENTICATION
-
-#ifdef REACH_USE_AUTHENTICATION
-/// Defining only the app or device-side authentication will require 
-/// entering a passcode on the side selected.
-#define REACH_USE_APP_SIDE_AUTHENTICATION
-#define REACH_USE_DEVICE_SIDE_AUTHENTICATION
-
-/// Defining this will only allow secure connections (security level 4), 
-/// not legacy pairing
-#define REACH_REQUIRE_AUTHENTICATED_SECURE_CONNECTIONS
-
-#if (!defined(REACH_USE_APP_SIDE_AUTHENTICATION) && !defined(REACH_USE_DEVICE_SIDE_AUTHENTICATION))
-#error "If using BLE authentication, at least one means of authentication must be supported!"
-#endif
-
-#endif // REACH_USE_AUTHENTICATION
-#endif // REACH_USE_ENCRYPTION
-
-/// A range of parameters are driven by the 244 byte packet size 
-/// imposed by BLE.  See reach_ble_proto_sizes.h 
-
-/// As the app is using BLE, the largest encoded buffer cannot be larger than 
-/// 244 bytes.  The Reach stack will statically allocate two buffers of this size, 
-/// for encoding and decoding
+// As the app is using BLE, the largest encoded buffer cannot be larger than
+// 244 bytes.  The Reach stack will statically allocate two buffers of this size,
+// for encoding and decoding
 #define CR_CODED_BUFFER_SIZE    244
 
-/// The raw data that encodes to BLE might be slightly larger.
-/// The Reach stack will allocate one buffer of this size, for decoding the prompt.
-/// The app is to provide the raw memory to be encoded.
-#define CR_DECODED_BUFFER_SIZE   256 
+// The raw data that encodes to BLE might be slightly larger.
+// The Reach stack will allocate one buffer of this size, for decoding the prompt.
+// The app is to provide the raw memory to be encoded.
+#define CR_DECODED_BUFFER_SIZE   256
 
-/// Number of ticks per second passed to cr_process()
-#define SYS_TICK_RATE   1000
+#define APP_ADVERTISED_NAME_LENGTH 27
 
-/// #define NO_REACH_LOGGING to completely exclude logging to save space.
-/// #define NO_REACH_LOGGING 
-
-/// What logging should be enabled by default.  See i3_log.h
-#define DEFAULT_LOG_MASK    0xCF7
-
-/// Determines the storage space for the advertised name.  See 
-/// cr_set_advertised_name().  Allows an app to adjust this depending on its 
-/// needs. 
-#define APP_ADVERTISED_NAME_LENGTH  16
-
-
-#define INCLUDE_PARAMETER_SERVICE
-/// Define this to be a 32 bit number that must be provided to access the device.
-/// #define APP_REQUIRED_CHALLENGE_KEY  0x1020304
-
-/// Setting this to zero removes support for unpolled parameter change notification
-/// Defines the size of the array holding param notification specifications.
-#define NUM_SUPPORTED_PARAM_NOTIFY  8
-
-/// Define this to include support for the file service.
-#define INCLUDE_FILE_SERVICE
-
-/// Define this to support the remote CLI service.
-#define INCLUDE_CLI_SERVICE
-#ifdef INCLUDE_CLI_SERVICE
-  /// If false use a command to enable it.
-  #define REMOTE_CLI_ECHO_ON_DEFAULT    false
+// Define this to enable remote CLI via a buffer.
+#define ENABLE_REMOTE_CLI
+#ifdef ENABLE_REMOTE_CLI
+  // If false use a command to enable it.
+  #define REMOTE_CLI_ECHO_ON_DEFAULT    true
 #endif
 
-#define INCLUDE_COMMAND_SERVICE
+// Use this to set the default logging level.  0x0 will only report high-priority text and warnings/errors
+#define DEFAULT_LOG_MASK 0x0
 
-#define INCLUDE_TIME_SERVICE
+// Define this to be a 32 bit number that must be provided to access the device.
+// #define APP_REQUIRED_CHALLENGE_KEY  0x1020304
 
-// #define INCLUDE_WIFI_SERVICE
+// Define this to be a 32 bit number that must be provided to access a longer
+// list of parameters.
+// #define APP_REQUIRED_PARAMETER_KEY  0x9080706
 
-// #define INCLUDE_STREAM_SERVICE
+// Setting this to zero removes support for unpolled parameter change notification
+// Defines the size of the array holding param notification specifications.
+#define NUM_SUPPORTED_PARAM_NOTIFY  NUM_PARAMS
 
 // Configuration of error reporting by cr_report_error()
 #define ERROR_FORMAT_LOG_ONLY   0  // only log to console
@@ -117,23 +82,12 @@
 
 #include "reach.pb.h"
 
-/// Ideally all of the buffer sizes flow from here.
+// Ideally all of the buffer sizes flow from here.
 #include "reach_ble_proto_sizes.h"
 
-/// This is the number of buffers allocated.
-/// It's coded here to be the same as the number allowed in a transfer.
-/// With code changes it could be less.
+// This is the number of buffers allocated.
+// It's coded here to be the same as the number allowed in a transfer.
+// With code changes it could be less.
 #define REACH_PARAM_BUFFER_COUNT REACH_COUNT_PARAM_IDS
 
-// To test the case in which there are no extended parameter descriptions:
-// #define SKIP_ENUMS  // test
-
-/// Define this to test compatibility with the Ahsoka header.
-/// You must also change reach.proto.
-// #define AHSOKA_HEADER
-
-// prints out buffer sizes for tuning.
-// #define VERBOSE_SIZES
-
 #endif  // ndef _REACH_SERVER_H_
-
