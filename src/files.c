@@ -109,17 +109,19 @@
     // The ack rate might be low if the application expects transmission errors.
     // A higher ack rate makes for faster transmission.
     // A lower ack rate allows for faster error recovery.
-    // The client specifies its preferred ack rate as "messages_per_ack" 
+    // The client specifies its preferred ack rate as "requested_ack_rate" 
     // in the FileTransferRequest message.
-    // Could override the requested ack rate using this.
-    // 0 does not override.
-    int crcb_file_get_preferred_ack_rate(bool is_write)
+    // A "real" application would probably return a high number here in order 
+    // to guarantee a high transfer rate.  Here we return the requested rate 
+    // so that you can use the client to experiment with ack rates.
+    int crcb_file_get_preferred_ack_rate(uint32_t fid, uint32_t requested_rate, bool is_write)
     {
         if (0 != i3_log_get_mask()) {
             i3_log(LOG_MASK_WARN, "Logging can interfere with file write.");
         }
         (void)is_write;
-        return 0;
+        (void)fid;
+        return requested_rate;
     }
 
     int crcb_file_get_file_count()
