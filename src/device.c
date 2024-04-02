@@ -83,18 +83,32 @@ const cr_DeviceInfoResponse test1_di =
 /// crcb_challenge_key_is_valid(). More fine grained access 
 /// control is handled at the level of these crcb callbacks. 
 
-static bool sDev_challenge_key_required = false;
-#ifdef LONG_KEYS
-   // The keys must be null terminated, at most 32 chars including the null.
-  static const char sDev_basic_access_key[REACH_LONG_STRING_LEN] = "0123456789012345678901234567890";
-  static const char sDev_full_access_key[REACH_LONG_STRING_LEN] = "9876543210987654321098765432109";
-#else
-  static const char sDev_basic_access_key[REACH_LONG_STRING_LEN] = "basic";
-  static const char sDev_full_access_key[REACH_LONG_STRING_LEN] = "full";
-#endif
+#ifdef DEMO_ACCESS_CONTROL
+  /// set this to expose only a limited set of parameters by 
+  /// default. 
+  static bool sDev_challenge_key_required = true;
 
-static bool sDev_basic_access_OK = false;
-static bool sDev_full_access_OK = false;
+  #ifdef LONG_KEYS
+     // The keys must be null terminated, at most 32 chars including the null.
+    static const char sDev_basic_access_key[REACH_LONG_STRING_LEN] = "0123456789012345678901234567890";
+    static const char sDev_full_access_key[REACH_LONG_STRING_LEN] = "9876543210987654321098765432109";
+  #else
+    static const char sDev_basic_access_key[REACH_LONG_STRING_LEN] = "basic";
+    static const char sDev_full_access_key[REACH_LONG_STRING_LEN] = "full";
+  #endif
+
+  // In this demo, basic access is always available.
+  static bool sDev_basic_access_OK = true;
+  // full access is granted via the challenge key.
+  static bool sDev_full_access_OK = false;
+#else
+  // all access all the time
+  static bool sDev_challenge_key_required = false;
+  // static const char sDev_basic_access_key[REACH_LONG_STRING_LEN] = "basic";
+  // static const char sDev_full_access_key[REACH_LONG_STRING_LEN] = "full";
+  static bool sDev_basic_access_OK = true;
+  static bool sDev_full_access_OK = true;
+#endif  // def DEMO_ACCESS_CONTROL
 
 bool device_get_basic_access_OK() {
     return sDev_basic_access_OK;
@@ -103,22 +117,33 @@ bool device_get_full_access_OK() {
     return sDev_full_access_OK;
 }
 
-// The stack will call this function.
-// The const copy of the basis in flash is copied to RAM so that the device
-// can overwrite varying data like SN and hash.
-int crcb_device_get_info(const cr_DeviceInfoRequest *request, cr_DeviceInfoResponse *pDi)
+static void sConfigure_access_control(const cr_DeviceInfoRequest *request, cr_DeviceInfoResponse *pDi)
 {
-    // The app owns the memory here.
-    // The address is returned so that the data can come from flash.
-    // use memcpy as the structure copy imposes an unnecessary address alignment requirement.
-    memcpy(pDi, &test1_di, sizeof(cr_DeviceInfoResponse));
+  #ifdef DEMO_ACCESS_CONTROL
+    /// If you are interested in access control, feel very free to
+    /// change what happens here.  This demo has pieces to support
+    /// three levels of access (none, basic, full) and it's most
+    /// recently been configured to provide either basic (no key) or
+    /// full with a key.  The design intends you to configure this
+    /// as you need it.   All of the access controls are in the
+    /// application files, and not in the Reach stack files.
+    /// The most recent demo work uses the AccessLevel member in the
+    /// parameter description structure to indicate whether a
+    /// parameter is visible in a given level.
+    sDev_challenge_key_required = true;
+
+    // In this demo, basic access is always available.
+    sDev_basic_access_OK = true;
+    // full access is granted via the challenge key.
+    sDev_full_access_OK = false;
+
 
     // Check access control:
     if (sDev_challenge_key_required)
     {
         if (!request->has_challenge_key)
         {
-            sDev_basic_access_OK = false;
+            // sDev_basic_access_OK = false;
             sDev_full_access_OK = false; 
             i3_log(LOG_MASK_ALWAYS, "%s: %s, No key, no access.\n", __FUNCTION__, test1_di.device_name);
         }
@@ -136,7 +161,7 @@ int crcb_device_get_info(const cr_DeviceInfoRequest *request, cr_DeviceInfoRespo
         }
         else
         {
-            sDev_basic_access_OK = false;
+            // sDev_basic_access_OK = false;
             sDev_full_access_OK = false; 
             i3_log(LOG_MASK_ALWAYS, "%s: %s, Wrong key, no access.\n", __FUNCTION__, test1_di.device_name);
         }
@@ -148,13 +173,16 @@ int crcb_device_get_info(const cr_DeviceInfoRequest *request, cr_DeviceInfoRespo
         i3_log(LOG_MASK_ALWAYS, "%s: %s, full access granted without key.\n", __FUNCTION__, test1_di.device_name);
     }
 
-    if (!sDev_basic_access_OK)
+    if (sDev_basic_access_OK)
     {
         pDi->services = 0;
+      #ifdef INCLUDE_PARAMETER_SERVICE
+        pDi->services |= cr_ServiceIds_PARAMETER_REPO;
+      #endif
     }
     else 
     {
-
+        pDi->services = 0;
       #ifdef INCLUDE_PARAMETER_SERVICE
         pDi->services |= cr_ServiceIds_PARAMETER_REPO;
       #endif
@@ -183,6 +211,53 @@ int crcb_device_get_info(const cr_DeviceInfoRequest *request, cr_DeviceInfoRespo
         pDi->services |= cr_ServiceIds_CLI;
       #endif
     }
+
+  #else
+    (void)request;
+
+    sDev_challenge_key_required = false;
+    sDev_basic_access_OK = true;
+    sDev_full_access_OK = true;
+
+    pDi->services = 0;
+  #ifdef INCLUDE_PARAMETER_SERVICE
+    pDi->services |= cr_ServiceIds_PARAMETER_REPO;
+  #endif
+  #ifdef INCLUDE_FILE_SERVICE
+    pDi->services |= cr_ServiceIds_FILES;
+  #endif
+  #ifdef INCLUDE_STREAM_SERVICE
+    pDi->services |= cr_ServiceIds_STREAMS;
+  #endif
+  #ifdef INCLUDE_COMMAND_SERVICE
+    pDi->services |= cr_ServiceIds_COMMANDS;
+  #endif
+  #ifdef INCLUDE_CLI_SERVICE
+    pDi->services |= cr_ServiceIds_CLI;
+  #endif
+  #ifdef INCLUDE_TIME_SERVICE
+    pDi->services |= cr_ServiceIds_TIME;
+  #endif
+  #ifdef INCLUDE_WIFI_SERVICE
+    pDi->services |= cr_ServiceIds_TIME;
+  #endif
+
+
+  #endif  // def DEMO_ACCESS_CONTROL
+
+}
+
+// The stack will call this function.
+// The const copy of the basis in flash is copied to RAM so that the device
+// can overwrite varying data like SN and hash.
+int crcb_device_get_info(const cr_DeviceInfoRequest *request, cr_DeviceInfoResponse *pDi)
+{
+    // The app owns the memory here.
+    // The address is returned so that the data can come from flash.
+    // use memcpy as the structure copy imposes an unnecessary address alignment requirement.
+    memcpy(pDi, &test1_di, sizeof(cr_DeviceInfoResponse));
+
+    sConfigure_access_control(request, pDi);
 
     sprintf(pDi->firmware_version, "%s", get_app_version() );
     snprintf(pDi->device_name, REACH_DEVICE_NAME_LEN, "%s", rsl_get_advertised_name());
@@ -218,7 +293,7 @@ void crcb_invalidate_challenge_key(void)
 {
     if (sDev_challenge_key_required)
     {
-        sDev_basic_access_OK = false;
+        // sDev_basic_access_OK = false;
         sDev_full_access_OK  = false;
     }
 }

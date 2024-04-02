@@ -282,8 +282,8 @@ void cli_sn(sl_cli_command_arg_t *args) {
         }
     }
 
-#ifdef INCLUDE_CLI_SERVICE
-else {
+  #ifdef INCLUDE_CLI_SERVICE
+    else {
         argStr = crcb_get_command_line();
         if (!strncmp(argStr, "sn clear", 8)) action = 1;
         else {
@@ -296,7 +296,7 @@ else {
             } else action = 2;
         }
     }
-#endif  // def INCLUDE_CLI_SERVICE
+  #endif  // def INCLUDE_CLI_SERVICE
 
     switch (action) {
     default:
@@ -398,6 +398,15 @@ void cli_auth(sl_cli_command_arg_t *args) {
 }
 #endif
 
+#ifdef TEST_HEADER
+extern void pvtCr_test_ahsoka_header();
+void cli_test(sl_cli_command_arg_t *args) {
+    (void)args;
+    i3_log(LOG_MASK_ALWAYS, "Test ahsoka header:");
+    pvtCr_test_ahsoka_header();
+}
+#endif
+
 
 /******************************************************************************
  *********************** CLI command info definitions *************************
@@ -472,6 +481,16 @@ static const sl_cli_command_info_t cmd__auth =
     { SL_CLI_ARG_STRING, SL_CLI_ARG_STRING, SL_CLI_ARG_END });
 #endif
 
+#ifdef TEST_HEADER
+static const sl_cli_command_info_t cmd__test =
+    SL_CLI_COMMAND(cli_test,
+                   "Runs a test",
+                   "None",
+                   { SL_CLI_ARG_END, });
+#endif // def TEST_HEADER
+
+
+
 /******************************************************************************
  ***************************** CLI command table ******************************
  ******************************************************************************/
@@ -490,6 +509,10 @@ static const sl_cli_command_entry_t command_table[] = {
     { "pk",           &cmd__pk,                     false },
     { "auth",         &cmd__auth,                   false },
 #endif // REACH_USE_AUTHENTICATION
+#ifdef TEST_HEADER
+    { "test",         &cmd__test,                   false },
+
+#endif  // def TEST_HEADER
     { NULL,           NULL,                         false }, };
 
 // Create the command group at the top level

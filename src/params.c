@@ -86,6 +86,8 @@
 #define PROTO_VERSION_PARAM_ID  25
 #define PROTO_VERSION_INDEX     12
 
+#define ACCESS_LEVEL_FULL       0x10
+
 // const data describing the parameters, defined below, to be stored in flash.
 extern const cr_ParameterInfo  param_desc[NUM_PARAMS];
 
@@ -100,16 +102,34 @@ static int write_param_to_nvm(const uint32_t pid, const cr_ParameterValue *param
 // See device.c.  You can customize access control.
 extern bool device_get_full_access_OK();
 
-#define NUM_FULL_ACCESS_PARAMS  15
+int  get_param_index_by_pid(uint32_t pid)
+{
+    for (int i=0; i<NUM_PARAMS; i++)
+    {
+        if (param_desc[i].id == pid)
+            return i; 
+    }
+    return -1;
+}
+
+extern bool device_get_basic_access_OK();
 static bool param_access_granted(const uint32_t pid)
 {
-    if (!device_get_full_access_OK())
+    // access permissions can be made arbitrarily simple or complicated.
+    // What is demonstrated here is a the requirement of a "full" challenge
+    // key to access more parameters.
+    if (device_get_full_access_OK())
+        return true;  // you've got everything.
+
+    int idx = get_param_index_by_pid(pid);
+    if (idx < 0)  // parm does not exist.
+        return false;
+
+    if (device_get_basic_access_OK())
     {
-        if ((pid >30) && (pid<60))
-        {
-            // the 15 parameters between 30 and 60 require full access
+        // if it's marked for full you can't get it.
+        if (param_desc[idx].access & ACCESS_LEVEL_FULL)
             return false;
-        }
     }
     return true;
 }
@@ -425,6 +445,8 @@ static int parameter_get_description(const uint32_t pid, cr_ParameterInfo *pPara
     for (int i=0; i<NUM_PARAMS; i++) {
         if (param_desc[i].id == pid) {
             memcpy(pParam, &param_desc[i], sizeof(cr_ParameterInfo));
+            // and off any app specific access
+            pParam->access &= cr_AccessLevel_READ_WRITE;
             return 0;
         }
     }
@@ -485,9 +507,14 @@ int crcb_parameter_get_count()
         return NUM_PARAMS;
     }
 
-    // I know that 10 parameters are exclude
-    i3_log(LOG_MASK_PARAMS, "%s: return %d.", __FUNCTION__, NUM_PARAMS-NUM_FULL_ACCESS_PARAMS);
-    return NUM_PARAMS-NUM_FULL_ACCESS_PARAMS;
+    // this is a very simple 2 layer access control
+    int i, numPermitted = 0;
+    for (i=0; i<NUM_PARAMS; i++)
+    {
+        if (!(param_desc[i].access & ACCESS_LEVEL_FULL))
+            numPermitted++;
+    }
+    return numPermitted;
 }
 
 // Resets the application's pointer into the parameter table such that
@@ -927,7 +954,7 @@ const cr_ParameterInfo  param_desc[NUM_PARAMS] = {
         .data_type =        cr_ParameterDataType_UINT64,
         .size_in_bytes =     0,
         .name =             "write only",
-        .access =           cr_AccessLevel_WRITE,
+        .access =           ACCESS_LEVEL_FULL | cr_AccessLevel_WRITE,
         .description =      "This parameter is 13th",
         .units =            "37 bits",
         .has_description =  true,
@@ -944,7 +971,7 @@ const cr_ParameterInfo  param_desc[NUM_PARAMS] = {
         .data_type =        cr_ParameterDataType_INT64,
         .size_in_bytes =     0,
         .name =             "param #29",
-        .access =           cr_AccessLevel_READ_WRITE,
+        .access =           ACCESS_LEVEL_FULL | cr_AccessLevel_READ_WRITE,
         .description =      "38 bits signed",
         .units =            "38 bits signed",
         .has_description =  true,
@@ -961,7 +988,7 @@ const cr_ParameterInfo  param_desc[NUM_PARAMS] = {
         .data_type =        cr_ParameterDataType_INT32,
         .size_in_bytes =     0,
         .name =             "param #31",
-        .access =           cr_AccessLevel_READ,
+        .access =           ACCESS_LEVEL_FULL | cr_AccessLevel_READ,
         .description =      "Read only,RAM-EX",
         .units =            "signed int",
         .has_description =  true,
@@ -979,7 +1006,7 @@ const cr_ParameterInfo  param_desc[NUM_PARAMS] = {
         .data_type =        cr_ParameterDataType_INT32,
         .size_in_bytes =     0,
         .name =             "33 no min",
-        .access =           cr_AccessLevel_READ_WRITE,
+        .access =           ACCESS_LEVEL_FULL | cr_AccessLevel_READ_WRITE,
         .description =      "no min",
         .units =            "signed int",
         .has_description =  true,
@@ -997,7 +1024,7 @@ const cr_ParameterInfo  param_desc[NUM_PARAMS] = {
         .data_type =        cr_ParameterDataType_INT32,
         .size_in_bytes =     0,
         .name =             "35 no max",
-        .access =           cr_AccessLevel_READ_WRITE,
+        .access =           ACCESS_LEVEL_FULL | cr_AccessLevel_READ_WRITE,
         .description =      "No max",
         .units =            "signed int",
         .has_description =  true,
@@ -1014,7 +1041,7 @@ const cr_ParameterInfo  param_desc[NUM_PARAMS] = {
         .data_type =        cr_ParameterDataType_INT32,
         .size_in_bytes =     0,
         .name =             "p37",
-        .access =           cr_AccessLevel_READ_WRITE,
+        .access =           cr_AccessLevel_READ_WRITE,  // isolated basic among fulls
         .description =      "+/- 1024",
         .units =            "signed int",
         .has_description =  true,
@@ -1031,7 +1058,7 @@ const cr_ParameterInfo  param_desc[NUM_PARAMS] = {
         .data_type =        cr_ParameterDataType_INT32,
         .size_in_bytes =     0,
         .name =             "p39 no desc",
-        .access =           cr_AccessLevel_READ,
+        .access =           ACCESS_LEVEL_FULL | cr_AccessLevel_READ,
         .description =      "Read only,RAM",
         .units =            "signed int",
         .has_description =  false,
@@ -1048,7 +1075,7 @@ const cr_ParameterInfo  param_desc[NUM_PARAMS] = {
         .data_type =        cr_ParameterDataType_INT32,
         .size_in_bytes =     0,
         .name =             "p41",
-        .access =           cr_AccessLevel_READ,
+        .access =           ACCESS_LEVEL_FULL | cr_AccessLevel_READ,
         .description =      "Read only,RAM",
         .units =            "signed int",
         .has_description =  true,
@@ -1065,7 +1092,7 @@ const cr_ParameterInfo  param_desc[NUM_PARAMS] = {
         .data_type =        cr_ParameterDataType_INT32,
         .size_in_bytes =     0,
         .name =             "p43",
-        .access =           cr_AccessLevel_READ,
+        .access =           ACCESS_LEVEL_FULL | cr_AccessLevel_READ,
         .description =      "Read only,RAM",
         .units =            "signed int",
         .has_description =  true,
