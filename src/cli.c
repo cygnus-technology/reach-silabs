@@ -53,6 +53,7 @@ void cli_poll(void)
       case '\r':
         sl_iostream_putchar(handle, '\r');
         sl_iostream_putchar(handle, '\n');
+        sl_iostream_putchar(handle, '>');
         if (input_length == 0)
           break; // No data, no need to call anything
         input[input_length] = 0; // Null-terminate the string
@@ -82,14 +83,44 @@ void cli_poll(void)
   }
 }
 
+char sAppVersion[CR_STACK_VERSION_LEN];
+const char *get_app_version()
+{
+  #ifdef DEV_BUILD
+    snprintf(sAppVersion, CR_STACK_VERSION_LEN, "%u.%u.%u-dev", 
+             APP_MAJOR_VERSION, APP_MINOR_VERSION, APP_PATCH_VERSION);
+  #else
+    snprintf(sAppVersion, CR_STACK_VERSION_LEN, "%u.%u.%u", 
+             APP_MAJOR_VERSION, APP_MINOR_VERSION, APP_PATCH_VERSION);
+  #endif
+    return sAppVersion;
+}
+
+
 void print_versions(void)
 {
-  i3_log(LOG_MASK_ALWAYS, TEXT_CLI "Reach Thunderboard demo, built %s, %s", param_repo_get_cli_text_color(), __DATE__, __TIME__);
-  i3_log(LOG_MASK_ALWAYS, TEXT_CLI "Silicon Labs Gecko SDK version %s", param_repo_get_cli_text_color(), SL_GSDK_VERSION_STR);
-  i3_log(LOG_MASK_ALWAYS, TEXT_CLI "Reach stack version %s", param_repo_get_cli_text_color(), cr_get_reach_version());
-  i3_log(LOG_MASK_ALWAYS, TEXT_CLI "Reach protobuf version %s", param_repo_get_cli_text_color(), cr_get_proto_version());
-  i3_log(LOG_MASK_ALWAYS, TEXT_CLI "App version %u.%u.%u", param_repo_get_cli_text_color(), APP_MAJOR_VERSION, APP_MINOR_VERSION, APP_PATCH_VERSION);
+    i3_log(LOG_MASK_ALWAYS, TEXT_CLI "!!! Reach Thunderboard demo, built %s, %s", 
+         param_repo_get_cli_text_color(), __DATE__, __TIME__);
+    i3_log(LOG_MASK_ALWAYS, TEXT_CLI "!!!   Silicon Labs Gecko SDK version %s", 
+         param_repo_get_cli_text_color(), SL_GSDK_VERSION_STR);
+    i3_log(LOG_MASK_ALWAYS, TEXT_CLI "!!!   Reach stack version %s", 
+         param_repo_get_cli_text_color(), cr_get_reach_version());
+    i3_log(LOG_MASK_ALWAYS, TEXT_CLI "!!!   Reach protobuf version %s", 
+         param_repo_get_cli_text_color(), cr_get_proto_version());
+    i3_log(LOG_MASK_ALWAYS, TEXT_CLI "!!!   App version %s", 
+         param_repo_get_cli_text_color(), get_app_version());
+
+  #ifdef INCLUDE_CLI_SERVICE
+    if (i3_log_get_remote_cli_enable())
+        i3_log(LOG_MASK_ALWAYS, TEXT_GREEN "!!! Remote CLI support enabled.");
+    else
+        i3_log(LOG_MASK_ALWAYS, TEXT_YELLOW "!!! Remote CLI support built but not enabled.");
+  #else
+    i3_log(LOG_MASK_ALWAYS, TEXT_YELLOW "!!! Remote CLI NOT support built in.");
+  #endif
 }
+
+
 
 int crcb_cli_enter(const char *ins)
 {
@@ -101,7 +132,7 @@ int crcb_cli_enter(const char *ins)
   if ((*ins == '?') || (!strncmp("help", ins, 4)))
   {
     i3_log(LOG_MASK_ALWAYS, TEXT_GREEN "!!! Reach Thunderboard demo, built %s, %s", __DATE__, __TIME__);
-    i3_log(LOG_MASK_ALWAYS, TEXT_GREEN "!!! App Version %d.%d.%d", APP_MAJOR_VERSION, APP_MINOR_VERSION, APP_PATCH_VERSION);
+    i3_log(LOG_MASK_ALWAYS, TEXT_GREEN "!!! App Version %s", get_app_version());
     i3_log(LOG_MASK_ALWAYS, TEXT_CLI "Commands:", param_repo_get_cli_text_color());
     i3_log(LOG_MASK_ALWAYS, TEXT_CLI "  ver : Print versions", param_repo_get_cli_text_color());
     i3_log(LOG_MASK_ALWAYS, TEXT_CLI "  /   : Display status", param_repo_get_cli_text_color());

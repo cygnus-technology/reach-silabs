@@ -66,39 +66,6 @@ cr_ParameterInfo param_desc[NUM_PARAMS] = {
         .description       = "Up to 26 characters",
     },
     {
-        .id                = PARAM_TIMEZONE_ENABLED,
-        .name              = "Timezone Enabled",
-        .data_type         = cr_ParameterDataType_BOOL,
-        .access            = cr_AccessLevel_READ_WRITE,
-        .storage_location  = cr_StorageLocation_NONVOLATILE,
-        .has_default_value = true,
-        .default_value     = 1,
-    },
-    {
-        .id                = PARAM_TIMEZONE_OFFSET,
-        .name              = "Timezone Offset",
-        .data_type         = cr_ParameterDataType_INT32,
-        .access            = cr_AccessLevel_READ_WRITE,
-        .storage_location  = cr_StorageLocation_NONVOLATILE,
-        .has_description   = true,
-        .description       = "The offset from UTC",
-        .units             = "seconds",
-        .has_range_min     = true,
-        .range_min         = -43200,
-        .has_default_value = true,
-        .default_value     = 0,
-        .has_range_max     = true,
-        .range_max         = 43200,
-    },
-    {
-        .id                = PARAM_BT_DEVICE_ADDRESS,
-        .name              = "BT Device Address",
-        .data_type         = cr_ParameterDataType_BYTE_ARRAY,
-        .size_in_bytes     = 6,
-        .access            = cr_AccessLevel_READ,
-        .storage_location  = cr_StorageLocation_RAM,
-    },
-    {
         .id                = PARAM_UPTIME,
         .name              = "Uptime",
         .data_type         = cr_ParameterDataType_INT64,
@@ -112,6 +79,8 @@ cr_ParameterInfo param_desc[NUM_PARAMS] = {
         .data_type         = cr_ParameterDataType_BOOL,
         .access            = cr_AccessLevel_READ,
         .storage_location  = cr_StorageLocation_RAM,
+        .has_description   = true,
+        .description       = "Read from Thunderboard",
     },
     {
         .id                = PARAM_LED_ON,
@@ -119,6 +88,8 @@ cr_ParameterInfo param_desc[NUM_PARAMS] = {
         .data_type         = cr_ParameterDataType_BOOL,
         .access            = cr_AccessLevel_READ,
         .storage_location  = cr_StorageLocation_RAM,
+        .has_description   = true,
+        .description       = "Read from Thunderboard",
     },
     {
         .id                = PARAM_IDENTIFY,
@@ -151,6 +122,8 @@ cr_ParameterInfo param_desc[NUM_PARAMS] = {
         .data_type         = cr_ParameterDataType_BIT_FIELD,
         .access            = cr_AccessLevel_READ_WRITE,
         .storage_location  = cr_StorageLocation_RAM,
+        .has_description   = true,
+        .description       = "Controls command line color",
         .has_default_value = true,
         .default_value     = 0,
         .has_range_max     = true,
@@ -162,6 +135,8 @@ cr_ParameterInfo param_desc[NUM_PARAMS] = {
         .data_type         = cr_ParameterDataType_ENUMERATION,
         .access            = cr_AccessLevel_READ_WRITE,
         .storage_location  = cr_StorageLocation_RAM,
+        .has_description   = true,
+        .description       = "Controls command line color",
         .has_default_value = true,
         .default_value     = 0,
         .has_range_max     = true,
@@ -173,6 +148,8 @@ cr_ParameterInfo param_desc[NUM_PARAMS] = {
         .data_type         = cr_ParameterDataType_FLOAT32,
         .access            = cr_AccessLevel_READ,
         .storage_location  = cr_StorageLocation_RAM,
+        .has_description   = true,
+        .description       = "Read from Thunderboard Sensor",
         .units             = "%",
     },
     {
@@ -181,6 +158,8 @@ cr_ParameterInfo param_desc[NUM_PARAMS] = {
         .data_type         = cr_ParameterDataType_FLOAT32,
         .access            = cr_AccessLevel_READ,
         .storage_location  = cr_StorageLocation_RAM,
+        .has_description   = true,
+        .description       = "Read from Thunderboard Sensor",
         .units             = "\xC2\xB0 C",
     },
     {
@@ -189,6 +168,8 @@ cr_ParameterInfo param_desc[NUM_PARAMS] = {
         .data_type         = cr_ParameterDataType_FLOAT32,
         .access            = cr_AccessLevel_READ,
         .storage_location  = cr_StorageLocation_RAM,
+        .has_description   = true,
+        .description       = "Read from Thunderboard Sensor",
         .units             = "lux",
     },
     {
@@ -197,6 +178,8 @@ cr_ParameterInfo param_desc[NUM_PARAMS] = {
         .data_type         = cr_ParameterDataType_FLOAT32,
         .access            = cr_AccessLevel_READ,
         .storage_location  = cr_StorageLocation_RAM,
+        .has_description   = true,
+        .description       = "Read from Thunderboard Sensor",
     },
     {
         .id                = PARAM_MAGNETIC_FIELD_READING,
@@ -204,6 +187,8 @@ cr_ParameterInfo param_desc[NUM_PARAMS] = {
         .data_type         = cr_ParameterDataType_FLOAT32,
         .access            = cr_AccessLevel_READ,
         .storage_location  = cr_StorageLocation_RAM,
+        .has_description   = true,
+        .description       = "Read from Thunderboard Sensor",
         .units             = "millitesla",
     },
     {
@@ -212,6 +197,8 @@ cr_ParameterInfo param_desc[NUM_PARAMS] = {
         .data_type         = cr_ParameterDataType_FLOAT32,
         .access            = cr_AccessLevel_READ,
         .storage_location  = cr_StorageLocation_RAM,
+        .has_description   = true,
+        .description       = "Read from Thunderboard Sensor",
         .units             = "\xE3\x8E\xA8",
     },
     {
@@ -220,6 +207,8 @@ cr_ParameterInfo param_desc[NUM_PARAMS] = {
         .data_type         = cr_ParameterDataType_FLOAT32,
         .access            = cr_AccessLevel_READ,
         .storage_location  = cr_StorageLocation_RAM,
+        .has_description   = true,
+        .description       = "Read from Thunderboard Sensor",
         .units             = "\xE3\x8E\xA8",
     },
     {
@@ -228,7 +217,44 @@ cr_ParameterInfo param_desc[NUM_PARAMS] = {
         .data_type         = cr_ParameterDataType_FLOAT32,
         .access            = cr_AccessLevel_READ,
         .storage_location  = cr_StorageLocation_RAM,
+        .has_description   = true,
+        .description       = "Read from Thunderboard Sensor",
         .units             = "\xE3\x8E\xA8",
+    },
+    {
+        .id                = PARAM_TIMEZONE_ENABLED,
+        .name              = "Timezone Enabled",
+        .data_type         = cr_ParameterDataType_BOOL,
+        .access            = cr_AccessLevel_READ_WRITE,
+        .storage_location  = cr_StorageLocation_NONVOLATILE,
+        .has_description   = true,
+        .description       = "(Time service)",
+        .has_default_value = true,
+        .default_value     = 1,
+    },
+    {
+        .id                = PARAM_TIMEZONE_OFFSET,
+        .name              = "Timezone Offset",
+        .data_type         = cr_ParameterDataType_INT32,
+        .access            = cr_AccessLevel_READ_WRITE,
+        .storage_location  = cr_StorageLocation_NONVOLATILE,
+        .has_description   = true,
+        .description       = "(Time service) Offset from UTC",
+        .units             = "seconds",
+        .has_range_min     = true,
+        .range_min         = -43200,
+        .has_default_value = true,
+        .default_value     = 0,
+        .has_range_max     = true,
+        .range_max         = 43200,
+    },
+    {
+        .id                = PARAM_BT_DEVICE_ADDRESS,
+        .name              = "BT Device Address",
+        .data_type         = cr_ParameterDataType_BYTE_ARRAY,
+        .size_in_bytes     = 6,
+        .access            = cr_AccessLevel_READ,
+        .storage_location  = cr_StorageLocation_RAM,
     }
 };
 
@@ -503,7 +529,7 @@ uint32_t crcb_compute_parameter_hash(void)
     for (size_t i= 1; i<sz; i++)
         hash ^= ptr[i];
 
-#if (defined(NUM_EX_PARAMS) && NUM_EX_PARAMS > 0)
+#ifdef NUM_EX_PARAMS
     ptr = (uint32_t*)param_ex_desc;
     size_t sz1 = sizeof(param_ex_desc)/(sizeof(uint32_t));
 
@@ -515,7 +541,7 @@ uint32_t crcb_compute_parameter_hash(void)
 #else
     I3_LOG(LOG_MASK_PARAMS, "%s: hash 0x%x over %d words.\n",
            __FUNCTION__, hash, sz);
-#endif // (defined(NUM_EX_PARAMS) && NUM_EX_PARAMS > 0)
+#endif // NUM_EX_PARAMS
 
     return hash;
 }
@@ -607,7 +633,7 @@ int crcb_parameter_ex_discover_next(cr_ParamExInfoResponse *pDesc)
 {
     affirm(pDesc);
     pDesc->enumerations_count = 0;
-#if (defined(NUM_EX_PARAMS) && NUM_EX_PARAMS > 0)
+#ifdef NUM_EX_PARAMS
     if (sCurrentExParam>=NUM_EX_PARAMS)
     {
         I3_LOG(LOG_MASK_PARAMS, "%s: No more ex params.", __FUNCTION__);
@@ -635,7 +661,7 @@ int crcb_parameter_ex_discover_next(cr_ParamExInfoResponse *pDesc)
     }
     // should not get here.
     I3_LOG(LOG_MASK_PARAMS, "%s: No more ex params 2.", __FUNCTION__);
-#endif // (defined(NUM_EX_PARAMS) && NUM_EX_PARAMS > 0)
+#endif // NUM_EX_PARAMS
     return cr_ErrorCodes_INVALID_PARAMETER;
 }
 

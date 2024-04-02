@@ -27,7 +27,10 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  *
- * \brief This file specifies aspects of the Reach server that are controlled by the app.
+ * @file      reach-server.h
+ * @brief     This file specifies aspects of the Reach server that are 
+ *            controlled by the app.
+ * @copyright (c) Copyright 2023-2024 i3 Product Development. All Rights Reserved.
  *
  * Original Author: Chuck.Peplinski
  *
@@ -36,39 +39,43 @@
 #ifndef _REACH_SERVER_H_
 #define _REACH_SERVER_H_
 
+/// definitions.h is generated from "Thunderboard Demo.xlsx".  
+/// This excel file defines the device, parameter, file and command services.
 #include "definitions.h"
 
-// A range of parameters are driven by the 244 byte packet size imposed by BLE.
-
-
-// As the app is using BLE, the largest encoded buffer cannot be larger than
-// 244 bytes.  The Reach stack will statically allocate two buffers of this size,
-// for encoding and decoding
+/// As the app is using BLE, the largest encoded buffer cannot be larger than
+/// 244 bytes.  The Reach stack will statically allocate buffers of this size,
+/// for encoding and decoding
 #define CR_CODED_BUFFER_SIZE    244
 
-// The raw data that encodes to BLE might be slightly larger.
-// The Reach stack will allocate one buffer of this size, for decoding the prompt.
-// The app is to provide the raw memory to be encoded.
+/// The raw data that encodes to BLE might be slightly larger.
+/// The Reach stack will allocate one buffer of this size, for decoding the prompt.
+/// The app is to provide the raw memory to be encoded.
 #define CR_DECODED_BUFFER_SIZE   256
 
 #define APP_ADVERTISED_NAME_LENGTH 27
 
-// Define this to enable remote CLI via a buffer.
+/// Define this to enable remote CLI via a buffer.
 #define ENABLE_REMOTE_CLI
 #ifdef ENABLE_REMOTE_CLI
   // If false use a command to enable it.
   #define REMOTE_CLI_ECHO_ON_DEFAULT    true
 #endif
 
+// Now defined in definitions.h
+// #define INCLUDE_COMMAND_SERVICE
+
+// Now defined in definitions.h
+// #define INCLUDE_TIME_SERVICE
+
+// Now defined in definitions.h
+// #define INCLUDE_WIFI_SERVICE
+
+// Now defined in definitions.h
+// #define INCLUDE_STREAM_SERVICE
+
 // Use this to set the default logging level.  0x0 will only report high-priority text and warnings/errors
 #define DEFAULT_LOG_MASK 0x0
-
-// Define this to be a 32 bit number that must be provided to access the device.
-// #define APP_REQUIRED_CHALLENGE_KEY  0x1020304
-
-// Define this to be a 32 bit number that must be provided to access a longer
-// list of parameters.
-// #define APP_REQUIRED_PARAMETER_KEY  0x9080706
 
 // Setting this to zero removes support for unpolled parameter change notification
 // Defines the size of the array holding param notification specifications.
@@ -82,12 +89,21 @@
 
 #include "reach.pb.h"
 
-// Ideally all of the buffer sizes flow from here.
+/// Ideally all of the buffer sizes flow from here.
 #include "reach_ble_proto_sizes.h"
 
-// This is the number of buffers allocated.
-// It's coded here to be the same as the number allowed in a transfer.
-// With code changes it could be less.
+/// This is the number of buffers allocated.
+/// It's coded here to be the same as the number allowed in a transfer.
+/// With code changes it could be less.
 #define REACH_PARAM_BUFFER_COUNT REACH_COUNT_PARAM_IDS
 
+/// Define this to test compatibility with the Ahsoka header.
+/// You must also change reach.proto.
+#define AHSOKA_HEADER
+// #define TEST_HEADER
+
+// prints out buffer sizes for tuning.
+// #define VERBOSE_SIZES
+
 #endif  // ndef _REACH_SERVER_H_
+

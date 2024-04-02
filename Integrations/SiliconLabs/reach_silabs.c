@@ -100,7 +100,11 @@ void rsl_init(void)
   cr_init();
 
   // Set the default name in Reach to the default advertised BLE name
-  cr_set_advertised_name((char *) DEVICE_NAME_CHARACTERISTIC_ATTRIBUTE.data, DEVICE_NAME_CHARACTERISTIC_ATTRIBUTE.len);
+  cr_set_advertised_name((char *) DEVICE_NAME_CHARACTERISTIC_ATTRIBUTE.data, 
+                         DEVICE_NAME_CHARACTERISTIC_ATTRIBUTE.len);
+  I3_LOG(LOG_MASK_ALWAYS, "\r\n-------------------------------------------------------------------");
+  print_versions();
+  I3_LOG(LOG_MASK_ALWAYS, "\r\n>");
 }
 
 void rsl_process_action(void)
@@ -222,6 +226,9 @@ void rsl_bt_on_event(sl_bt_msg_t *evt)
       break;
   }
 }
+
+// strnlen is technically a Linux function and is often not found by the compiler.
+size_t strnlen( const char * s,size_t maxlen );
 
 int rsl_set_advertised_name(char *name)
 {
