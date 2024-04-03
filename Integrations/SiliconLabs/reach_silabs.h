@@ -1,5 +1,11 @@
-/*
- * Copyright (c) 2023-2024 i3 Product Development
+/********************************************************************************************
+ *    _ ____  ___             _         _     ___              _                        _
+ *   (_)__ / | _ \_ _ ___  __| |_  _ __| |_  |   \ _____ _____| |___ _ __ _ __  ___ _ _| |_
+ *   | ||_ \ |  _/ '_/ _ \/ _` | || / _|  _| | |) / -_) V / -_) / _ \ '_ \ '  \/ -_) ' \  _|
+ *   |_|___/ |_| |_| \___/\__,_|\_,_\__|\__| |___/\___|\_/\___|_\___/ .__/_|_|_\___|_||_\__|
+ *                                                                  |_|
+ *                           -----------------------------------
+ *                          Copyright i3 Product Development 2024
  *
  * MIT License
  *
@@ -20,31 +26,15 @@
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
- */
-
-/********************************************************************************************
- *    _ ____  ___             _         _     ___              _                        _
- *   (_)__ / | _ \_ _ ___  __| |_  _ __| |_  |   \ _____ _____| |___ _ __ _ __  ___ _ _| |_
- *   | ||_ \ |  _/ '_/ _ \/ _` | || / _|  _| | |) / -_) V / -_) / _ \ '_ \ '  \/ -_) ' \  _|
- *   |_|___/ |_| |_| \___/\__,_|\_,_\__|\__| |___/\___|\_/\___|_\___/ .__/_|_|_\___|_||_\__|
- *                                                                  |_|
- *                           -----------------------------------
- *                        (c) Copyright 2023, i3 Product Development
  *
- * \brief reach_silabs.h/.c provides a SiLabs specific implementation of the required
- *      Reach functionality.
+ * @file      reach_silabs.h
+ * @brief     Integration of Silicon Labs BLE features for Cygnus Reach
+ * @copyright (c) Copyright 2023-2024 i3 Product Development. All Rights Reserved.
  *
- * Original Author: Chuck.Peplinski
+ * Original Author: Chuck Peplinski
+ * (Refactored by Joseph Peplinski)
  *
  ********************************************************************************************/
-
-/**
- * @file      reach_silabs.h
- * @brief     Integration of SiLabs BLE features for Cygnus Reach demo
- *
- * @copyright (c) Copyright 2023 i3 Product Development. All Rights Reserved.
- */
-
 
 #ifndef _REACH_H_
 #define _REACH_H_

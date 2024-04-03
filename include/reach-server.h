@@ -5,7 +5,7 @@
  *   |_|___/ |_| |_| \___/\__,_|\_,_\__|\__| |___/\___|\_/\___|_\___/ .__/_|_|_\___|_||_\__|
  *                                                                  |_|
  *                           -----------------------------------
- *                          Copyright i3 Product Development 2023
+ *                          Copyright i3 Product Development 2024
  *
  * MIT License
  *
@@ -39,9 +39,13 @@
 #ifndef _REACH_SERVER_H_
 #define _REACH_SERVER_H_
 
-/// definitions.h is generated from "Thunderboard Demo.xlsx".  
-/// This excel file defines the device, parameter, file and command services.
+/// definitions.h is generated from the reach-utils/c-gen scripts and the "Thunderboard Demo.xlsx" definition file.
+/// A number of defines are in definitions.h, these could be here if the services were being implemented manually
 #include "definitions.h"
+
+// Services not yet supported by the reach-util/c-gen code generator
+// #define INCLUDE_WIFI_SERVICE
+// #define INCLUDE_STREAM_SERVICE
 
 /// As the app is using BLE, the largest encoded buffer cannot be larger than
 /// 244 bytes.  The Reach stack will statically allocate buffers of this size,
@@ -61,18 +65,6 @@
   // If false use a command to enable it.
   #define REMOTE_CLI_ECHO_ON_DEFAULT    true
 #endif
-
-// Now defined in definitions.h
-// #define INCLUDE_COMMAND_SERVICE
-
-// Now defined in definitions.h
-// #define INCLUDE_TIME_SERVICE
-
-// Now defined in definitions.h
-// #define INCLUDE_WIFI_SERVICE
-
-// Now defined in definitions.h
-// #define INCLUDE_STREAM_SERVICE
 
 // Use this to set the default logging level.  0x0 will only report high-priority text and warnings/errors
 #define DEFAULT_LOG_MASK 0x0
@@ -100,7 +92,6 @@
 /// Define this to test compatibility with the Ahsoka header.
 /// You must also change reach.proto.
 #define AHSOKA_HEADER
-// #define TEST_HEADER
 
 // prints out buffer sizes for tuning.
 // #define VERBOSE_SIZES

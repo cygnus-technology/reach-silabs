@@ -27,7 +27,9 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  *
- * \brief Integration of Silicon Labs BLE features for Cygnus Reach
+ * @file      reach_silabs.c
+ * @brief     Integration of Silicon Labs BLE features for Cygnus Reach
+ * @copyright (c) Copyright 2023-2024 i3 Product Development. All Rights Reserved.
  *
  * Original Author: Chuck Peplinski
  * (Refactored by Joseph Peplinski)
@@ -95,16 +97,16 @@ extern sli_bt_gattdb_attribute_chrvalue_t DEVICE_NAME_CHARACTERISTIC_ATTRIBUTE;
 
 void rsl_init(void)
 {
+#ifdef VERBOSE_SIZES
+  // Useful for testing changes to reach-protobuf, but otherwise not needed
   cr_test_sizes();
+#endif
 
   cr_init();
 
   // Set the default name in Reach to the default advertised BLE name
   cr_set_advertised_name((char *) DEVICE_NAME_CHARACTERISTIC_ATTRIBUTE.data, 
                          DEVICE_NAME_CHARACTERISTIC_ATTRIBUTE.len);
-  I3_LOG(LOG_MASK_ALWAYS, "\r\n-------------------------------------------------------------------");
-  print_versions();
-  I3_LOG(LOG_MASK_ALWAYS, "\r\n>");
 }
 
 void rsl_process_action(void)
