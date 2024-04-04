@@ -292,12 +292,14 @@ int crcb_send_coded_response(const uint8_t *respBuf, size_t respSize)
 
 void __attribute__((weak)) rsl_app_handle_ble_connection(void)
 {
+  pvtCrParam_init_notifications();
   I3_LOG(LOG_MASK_ALWAYS, "BLE connected");
   return;
 }
 
 void __attribute__((weak)) rsl_app_handle_ble_disconnection(void)
 {
+  pvtCrParam_clear_notifications();
   I3_LOG(LOG_MASK_ALWAYS, "BLE disconnected");
   return;
 }

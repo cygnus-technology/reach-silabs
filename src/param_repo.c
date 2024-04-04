@@ -483,3 +483,83 @@ static uint32_t calculate_nvm_hash(void)
   return hash;
 }
 #endif // PARAM_REPO_USE_NVM_STORAGE
+
+#define NUM_INIT_NOTIFICATIONS  8
+static const cr_ParameterNotifyConfig sParamNotifyInit[NUM_INIT_NOTIFICATIONS] =
+{
+    {
+        .parameter_id                = 10,
+        .enabled                     = true,
+        .minimum_notification_period = 100,
+        .maximum_notification_period = 60000,
+        .minimum_delta               = 0.1,
+    },
+    {
+        .parameter_id                = 11,
+        .enabled                     = true,
+        .minimum_notification_period = 100,
+        .maximum_notification_period = 60000,
+        .minimum_delta               = 0.1,
+    },
+    {
+        .parameter_id                = 12,
+        .enabled                     = true,
+        .minimum_notification_period = 100,
+        .maximum_notification_period = 60000,
+        .minimum_delta               = 0.1,
+    },
+    {
+        .parameter_id                = 13,
+        .enabled                     = true,
+        .minimum_notification_period = 100,
+        .maximum_notification_period = 60000,
+        .minimum_delta               = 0.1,
+    },
+    {
+        .parameter_id                = 14,
+        .enabled                     = true,
+        .minimum_notification_period = 100,
+        .maximum_notification_period = 60000,
+        .minimum_delta               = 0.1,
+    },
+    {
+        .parameter_id                = 15,
+        .enabled                     = true,
+        .minimum_notification_period = 100,
+        .maximum_notification_period = 0,
+        .minimum_delta               = 0.1,
+    },
+    {
+        .parameter_id                = 16,
+        .enabled                     = true,
+        .minimum_notification_period = 100,
+        .maximum_notification_period = 0,
+        .minimum_delta               = 0.1,
+    },
+    {
+        .parameter_id                = 17,
+        .enabled                     = true,
+        .minimum_notification_period = 100,
+        .maximum_notification_period = 0,
+        .minimum_delta               = 0.1,
+    },
+};
+
+int crcb_parameter_notification_init(const cr_ParameterNotifyConfig **pNoteArray, size_t *pNum)
+{
+    *pNum = NUM_INIT_NOTIFICATIONS;
+    *pNoteArray = sParamNotifyInit;
+    return 0;
+}
+
+
+int  crcb_param_get_index_by_pid(uint32_t pid)
+{
+    for (int i=0; i<NUM_PARAMS; i++)
+    {
+        if (param_desc[i].id == pid)
+            return i; 
+    }
+    return -1;
+}
+
