@@ -47,7 +47,7 @@
 #define NUM_PARAMS                19
 #define NUM_EX_PARAMS             2
 #define INCLUDE_FILE_SERVICE
-#define NUM_FILES                 2
+#define NUM_FILES                 3
 #define INCLUDE_COMMAND_SERVICE
 #define NUM_COMMANDS              8
 #define INCLUDE_CLI_SERVICE
@@ -95,6 +95,7 @@ typedef enum {
 typedef enum {
     FILE_IO_TXT,
     FILE_CYGNUS_REACH_LOGO_PNG,
+    FILE_DEV_NULL,
 } file_t;
 
 typedef enum {

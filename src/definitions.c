@@ -304,6 +304,14 @@ cr_FileInfo file_descriptions[NUM_FILES] = {
         .access             = cr_AccessLevel_READ,
         .storage_location   = cr_StorageLocation_NONVOLATILE,
         .require_checksum   = false,
+    },
+    {
+        .file_id            = FILE_DEV_NULL,
+        .file_name          = "dev_null",
+        .current_size_bytes = 1000000,
+        .access             = cr_AccessLevel_READ_WRITE,
+        .storage_location   = cr_StorageLocation_RAM,
+        .require_checksum   = false,
     }
 };
 

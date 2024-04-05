@@ -287,6 +287,25 @@ int crcb_send_coded_response(const uint8_t *respBuf, size_t respSize)
       LOG_ERROR("Invalid Handle. Return %d", cr_ErrorCodes_INVALID_PARAMETER);
       rval = cr_ErrorCodes_INVALID_PARAMETER;
       break;
+    case SL_STATUS_NO_MORE_RESOURCE:
+    {
+      int retries = 1;
+      // retry a few times
+      for (retries = 1; retries < 24; retries++)
+      { 
+        // This happens when we are doing the fastest possible file read with no logging.
+        // This logging is enough to let the resource bottleneck clear.
+        I3_LOG(LOG_MASK_WARN, "%s: retry %d rsl_notify_client() with %d bytes", __FUNCTION__, retries, respSize);
+        rval = sl_bt_gatt_server_send_notification(device_connection, REACH_CHARACTERISTIC, respSize, respBuf);
+        if (rval == SL_STATUS_OK)
+        {
+          I3_LOG(LOG_MASK_BLE, "Sent notification %d bytes after %d retries, OK.", retries, respSize);
+          return SL_STATUS_OK;
+        }
+      } 
+      LOG_ERROR("No more resource %d times Return %d", retries, cr_ErrorCodes_NO_RESOURCE);
+      break;
+    }
     default:
       LOG_ERROR("Response of %d bytes failed, error 0x%x.", respSize, rval);
       rval = cr_ErrorCodes_INVALID_PARAMETER;
