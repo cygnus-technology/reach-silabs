@@ -484,64 +484,80 @@ static uint32_t calculate_nvm_hash(void)
 }
 #endif // PARAM_REPO_USE_NVM_STORAGE
 
-#define NUM_INIT_NOTIFICATIONS  8
+// Notice that turning on all of these notifications causes us to constantly read all of 
+// the sensors which does slow things down.
+#define NUM_INIT_NOTIFICATIONS  10
 static const cr_ParameterNotifyConfig sParamNotifyInit[NUM_INIT_NOTIFICATIONS] =
 {
     {
-        .parameter_id                = 10,
+        .parameter_id                = 2,   // button pressed
         .enabled                     = true,
-        .minimum_notification_period = 100,
-        .maximum_notification_period = 60000,
-        .minimum_delta               = 0.1,
-    },
-    {
-        .parameter_id                = 11,
-        .enabled                     = true,
-        .minimum_notification_period = 100,
-        .maximum_notification_period = 60000,
-        .minimum_delta               = 0.1,
-    },
-    {
-        .parameter_id                = 12,
-        .enabled                     = true,
-        .minimum_notification_period = 100,
-        .maximum_notification_period = 60000,
-        .minimum_delta               = 0.1,
-    },
-    {
-        .parameter_id                = 13,
-        .enabled                     = true,
-        .minimum_notification_period = 100,
-        .maximum_notification_period = 60000,
-        .minimum_delta               = 0.1,
-    },
-    {
-        .parameter_id                = 14,
-        .enabled                     = true,
-        .minimum_notification_period = 100,
-        .maximum_notification_period = 60000,
-        .minimum_delta               = 0.1,
-    },
-    {
-        .parameter_id                = 15,
-        .enabled                     = true,
-        .minimum_notification_period = 100,
+        .minimum_notification_period = 200,
         .maximum_notification_period = 0,
+        .minimum_delta               = 1,
+    },
+    {
+        .parameter_id                = 3,   // LED on
+        .enabled                     = true,
+        .minimum_notification_period = 300,
+        .maximum_notification_period = 0,
+        .minimum_delta               = 1,
+    },
+    {
+        .parameter_id                = 8,   // relative Humidity
+        .enabled                     = true,
+        .minimum_notification_period = 1000,
+        .maximum_notification_period = 60000,
+        .minimum_delta               = 0.5,
+    },
+    {
+        .parameter_id                = 9,   // Temperature
+        .enabled                     = true,
+        .minimum_notification_period = 1000,
+        .maximum_notification_period = 60000,
         .minimum_delta               = 0.1,
     },
     {
-        .parameter_id                = 16,
+        .parameter_id                = 10,  // Light level
         .enabled                     = true,
-        .minimum_notification_period = 100,
-        .maximum_notification_period = 0,
+        .minimum_notification_period = 1000,
+        .maximum_notification_period = 60000,
+        .minimum_delta               = 20.0,
+    },
+    {
+        .parameter_id                = 11,  // UV Index
+        .enabled                     = true,
+        .minimum_notification_period = 1000,
+        .maximum_notification_period = 60000,
+        .minimum_delta               = 1.0,
+    },
+    {
+        .parameter_id                = 12,  // Magnetic Flux
+        .enabled                     = true,
+        .minimum_notification_period = 1000,
+        .maximum_notification_period = 60000,
         .minimum_delta               = 0.1,
     },
     {
-        .parameter_id                = 17,
+        .parameter_id                = 13,  // Accel X
         .enabled                     = true,
-        .minimum_notification_period = 100,
+        .minimum_notification_period = 1000,
         .maximum_notification_period = 0,
-        .minimum_delta               = 0.1,
+        .minimum_delta               = 0.2,
+    },
+    {
+        .parameter_id                = 14,  // Accel Y
+        .enabled                     = true,
+        .minimum_notification_period = 1000,
+        .maximum_notification_period = 0,
+        .minimum_delta               = 0.2,
+    },
+    {
+        .parameter_id                = 15,  // Accel Z
+        .enabled                     = true,
+        .minimum_notification_period = 1000,
+        .maximum_notification_period = 0,
+        .minimum_delta               = 0.2,
     },
 };
 

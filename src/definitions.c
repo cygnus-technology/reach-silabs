@@ -82,7 +82,7 @@ cr_ParameterInfo param_desc[NUM_PARAMS] = {
         .access            = cr_AccessLevel_READ,
         .storage_location  = cr_StorageLocation_RAM,
         .has_description   = true,
-        .description       = "Read from Thunderboard",
+        .description       = "Toggles Identify",
     },
     {
         .id                = PARAM_LED_ON,
@@ -315,6 +315,30 @@ cr_CommandInfo command_desc[NUM_COMMANDS] = {
     {
         .id   = COMMAND_CLICK_FOR_WISDOM,
         .name = "Click for Wisdom",
+    },
+    {
+        .id   = COMMAND_NO_LOGGING,
+        .name = "No Logging",
+    },
+    {
+        .id   = COMMAND_MUCH_LOGGING,
+        .name = "Much Logging",
+    },
+    {
+        .id   = COMMAND_NOTIFICATIONS_ON,
+        .name = "Notifications On",
+    },
+    {
+        .id   = COMMAND_NOTIFICATIONS_OFF,
+        .name = "Notifications Off",
+    },
+    {
+        .id   = COMMAND_REMOTE_CLI_ON,
+        .name = "remote CLI On",
+    },
+    {
+        .id   = COMMAND_REMOTE_CLI_OFF,
+        .name = "remote CLI Off",
     }
 };
 

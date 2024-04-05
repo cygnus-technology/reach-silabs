@@ -47,6 +47,7 @@
 
 #include "reach-server.h"
 #include "cr_stack.h"
+#include "cr_private.h"
 #include "i3_log.h"
 #include "app_version.h"
 #include "reach_version.h"
@@ -137,8 +138,12 @@ void rsl_bt_on_event(sl_bt_msg_t *evt)
     // Connection/disconnection
     case sl_bt_evt_connection_opened_id:
       device_connection = evt->data.evt_connection_opened.connection;
-      rsl_app_handle_ble_connection();
+      // cr function does Reach specific things.
+      // It clears all notifications.
       cr_set_comm_link_connected(true);
+      // rsl function does app specific things like changning LED's
+      // and possibly enabling notifications.
+      rsl_app_handle_ble_connection();
       break;
     case sl_bt_evt_connection_closed_id:
       cr_set_comm_link_connected(false);
@@ -292,14 +297,15 @@ int crcb_send_coded_response(const uint8_t *respBuf, size_t respSize)
 
 void __attribute__((weak)) rsl_app_handle_ble_connection(void)
 {
-  pvtCrParam_init_notifications();
+  // An overriding implementation might call
+  // cr_init_param_notifications();  
   I3_LOG(LOG_MASK_ALWAYS, "BLE connected");
   return;
 }
 
 void __attribute__((weak)) rsl_app_handle_ble_disconnection(void)
 {
-  pvtCrParam_clear_notifications();
+  cr_clear_param_notifications();
   I3_LOG(LOG_MASK_ALWAYS, "BLE disconnected");
   return;
 }
