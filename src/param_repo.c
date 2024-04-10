@@ -561,6 +561,8 @@ static const cr_ParameterNotifyConfig sParamNotifyInit[NUM_INIT_NOTIFICATIONS] =
     },
 };
 
+#if NUM_SUPPORTED_PARAM_NOTIFY != 0
+
 int crcb_parameter_notification_init(const cr_ParameterNotifyConfig **pNoteArray, size_t *pNum)
 {
     *pNum = NUM_INIT_NOTIFICATIONS;
@@ -568,14 +570,5 @@ int crcb_parameter_notification_init(const cr_ParameterNotifyConfig **pNoteArray
     return 0;
 }
 
-
-int  crcb_param_get_index_by_pid(uint32_t pid)
-{
-    for (int i=0; i<NUM_PARAMS; i++)
-    {
-        if (param_desc[i].id == pid)
-            return i; 
-    }
-    return -1;
-}
+#endif // NUM_SUPPORTED_PARAM_NOTIFY != 0
 

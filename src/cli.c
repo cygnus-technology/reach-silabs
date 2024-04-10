@@ -182,6 +182,24 @@ int crcb_cli_enter(const char *ins)
     slash();
   else if (!strncmp("lm", ins, 2))
     lm(ins);
+  else if (!strncmp("test", ins, 4))
+  {
+      extern int pvtCrParam_discover_notifications(const cr_ParameterNotifySetupRequest *,
+                                                   cr_ParameterNotifySetupResponse *);
+      cr_ParameterNotifySetupRequest request;
+      cr_ParameterNotifySetupResponse response;
+      memset(&request, 0, sizeof(cr_ParameterNotifySetupRequest));
+    #if 0
+      for (int i=0; i<12; i++)
+          request.parameter_ids[i] =  i+7;
+      request.parameter_ids_count = 12;
+      i3_log(LOG_MASK_ALWAYS, "Test Discover Notifications with 4 requested.");
+    #else
+      i3_log(LOG_MASK_ALWAYS, "Test Discover Notifications with ALL requested.");
+    #endif
+      int rval = pvtCrParam_discover_notifications(&request, &response);
+      i3_log(LOG_MASK_ALWAYS, "Discover Notifications Test Complete, rval %d.", rval);
+  }
   else
     i3_log(LOG_MASK_WARN, "CLI command '%s' not recognized.", ins, *ins);
   return 0;
