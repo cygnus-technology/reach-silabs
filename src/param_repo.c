@@ -304,6 +304,19 @@ int app_handle_param_repo_post_init(void)
 int app_handle_param_repo_read(cr_ParameterValue *data)
 {
   int rval = 0;
+
+  affirm(data);
+  // we don't return permission denied because we don't want 
+  // to reveal features that are not permitted.
+  if (!crcb_access_granted(cr_ServiceIds_PARAMETER_REPO, data->parameter_id))
+      return cr_ErrorCodes_INVALID_PARAMETER;
+
+  if (0 == (param_desc[data->parameter_id].access & cr_AccessLevel_READ))
+  {
+      I3_LOG(LOG_MASK_ERROR, "parameter read from %d not allowed, write only.", data->parameter_id);
+      return cr_ErrorCodes_PERMISSION_DENIED;
+  }
+
   switch (data->parameter_id)
   {
     // Parameters which may change without the param repo's knowledge
@@ -386,6 +399,17 @@ int app_handle_param_repo_write(cr_ParameterValue *data)
   //   default:
   //     break;
   // }
+
+  // we don't return permission denied because we don't want 
+  // to reveal features that are not permitted.
+  if (!crcb_access_granted(cr_ServiceIds_PARAMETER_REPO, data->parameter_id))
+      return cr_ErrorCodes_INVALID_PARAMETER;
+
+  if (0 == (param_desc[data->parameter_id].access & cr_AccessLevel_WRITE))
+  {
+      I3_LOG(LOG_MASK_ERROR, "parameter write to %d not allowed, read only.", data->parameter_id);
+      return cr_ErrorCodes_PERMISSION_DENIED;
+  }
 
 #ifdef PARAM_REPO_USE_NVM_STORAGE
   if (!nvm_failed)
@@ -492,70 +516,70 @@ static const cr_ParameterNotifyConfig sParamNotifyInit[NUM_INIT_NOTIFICATIONS] =
     {
         .parameter_id                = 2,   // button pressed
         .enabled                     = true,
-        .minimum_notification_period = 200,
+        .minimum_notification_period = 501,
         .maximum_notification_period = 0,
         .minimum_delta               = 1,
     },
     {
         .parameter_id                = 3,   // LED on
         .enabled                     = true,
-        .minimum_notification_period = 300,
+        .minimum_notification_period = 302,
         .maximum_notification_period = 0,
         .minimum_delta               = 1,
     },
     {
         .parameter_id                = 8,   // relative Humidity
         .enabled                     = true,
-        .minimum_notification_period = 1000,
+        .minimum_notification_period = 2010,
         .maximum_notification_period = 60000,
-        .minimum_delta               = 0.5,
+        .minimum_delta               = 1.0,
     },
     {
         .parameter_id                = 9,   // Temperature
         .enabled                     = true,
-        .minimum_notification_period = 1000,
+        .minimum_notification_period = 2020,
         .maximum_notification_period = 60000,
-        .minimum_delta               = 0.1,
+        .minimum_delta               = 0.2,
     },
     {
         .parameter_id                = 10,  // Light level
         .enabled                     = true,
-        .minimum_notification_period = 1000,
+        .minimum_notification_period = 1020,
         .maximum_notification_period = 60000,
         .minimum_delta               = 20.0,
     },
     {
         .parameter_id                = 11,  // UV Index
         .enabled                     = true,
-        .minimum_notification_period = 1000,
+        .minimum_notification_period = 2031,
         .maximum_notification_period = 60000,
         .minimum_delta               = 1.0,
     },
     {
         .parameter_id                = 12,  // Magnetic Flux
         .enabled                     = true,
-        .minimum_notification_period = 1000,
+        .minimum_notification_period = 1019,
         .maximum_notification_period = 60000,
-        .minimum_delta               = 0.1,
+        .minimum_delta               = 0.2,
     },
     {
         .parameter_id                = 13,  // Accel X
         .enabled                     = true,
-        .minimum_notification_period = 1000,
+        .minimum_notification_period = 1037,
         .maximum_notification_period = 0,
         .minimum_delta               = 0.2,
     },
     {
         .parameter_id                = 14,  // Accel Y
         .enabled                     = true,
-        .minimum_notification_period = 1000,
+        .minimum_notification_period = 1047,
         .maximum_notification_period = 0,
         .minimum_delta               = 0.2,
     },
     {
         .parameter_id                = 15,  // Accel Z
         .enabled                     = true,
-        .minimum_notification_period = 1000,
+        .minimum_notification_period = 1057,
         .maximum_notification_period = 0,
         .minimum_delta               = 0.2,
     },

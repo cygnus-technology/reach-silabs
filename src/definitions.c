@@ -557,13 +557,19 @@ uint32_t crcb_compute_parameter_hash(void)
     // Note that the layout of the structure param_desc differs by compiler.
     // The hash computed on windows won't match that computed on SiLabs.
     uint32_t *ptr = (uint32_t*)param_desc;
-    // char *cptr = (char*)param_desc;
     size_t sz = sizeof(param_desc)/(sizeof(uint32_t));
     // LOG_DUMP_MASK(LOG_MASK_PARAMS, "Raw Params", cptr, sizeof(param_desc));
 
-    uint32_t hash = ptr[0];
-    for (size_t i= 1; i<sz; i++)
-        hash ^= ptr[i];
+    // The hash should be different based on access permission
+    uint32_t hash = 0;
+    for (size_t jj = 0; jj < NUM_PARAMS; jj++)
+    {
+        if (crcb_access_granted(cr_ServiceIds_PARAMETER_REPO, jj))
+        {
+            for (size_t i= 0; i<sizeof(cr_ParameterInfo); i++)
+                hash ^= ptr[i];
+        }
+    }
 
 #ifdef NUM_EX_PARAMS
     ptr = (uint32_t*)param_ex_desc;
@@ -596,6 +602,18 @@ int crcb_parameter_discover_next(cr_ParameterInfo *ppDesc)
                __FUNCTION__, sCurrentParameter, NUM_PARAMS);
         return cr_ErrorCodes_NO_DATA;
     }
+    while (!crcb_access_granted(cr_ServiceIds_PARAMETER_REPO, param_desc[sCurrentParameter].id))
+    {
+        I3_LOG(LOG_MASK_PARAMS, "%s: sCurrentParameter (%d) skip, access not granted",
+                   __FUNCTION__, sCurrentParameter);
+        sCurrentParameter++;
+        if (sCurrentParameter >= NUM_PARAMS)
+        {
+            I3_LOG(LOG_MASK_PARAMS, "%s: skipped to sCurrentParameter (%d) >= NUM_PARAMS (%d)",
+                   __FUNCTION__, sCurrentParameter, NUM_PARAMS);
+            return cr_ErrorCodes_NO_DATA;
+        }
+    }
     *ppDesc = param_desc[sCurrentParameter];
     sCurrentParameter++;
     return 0;
@@ -604,7 +622,14 @@ int crcb_parameter_discover_next(cr_ParameterInfo *ppDesc)
 
 int crcb_parameter_get_count()
 {
-    return NUM_PARAMS;
+    int i;
+    int numAvailable = 0;
+    for (i=0; i<NUM_PARAMS; i++)
+    {
+        if (crcb_access_granted(cr_ServiceIds_PARAMETER_REPO, param_desc[i].id))
+            numAvailable++;
+    }
+    return numAvailable;
 }
 // Resets the application's pointer into the parameter table such that
 // the next call to crcb_parameter_discover_next() will return the
