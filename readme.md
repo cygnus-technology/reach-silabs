@@ -60,7 +60,7 @@ The layout of the demo is intended to be fairly basic.  `app.c` contains the ini
 
 Code in `reach-c-stack` should not be modified unless absolutely necessary, as this is shared among all Reach device projects written in C.  See [reach-c-stack](https://github.com/cygnus-technology/reach-c-stack) for information about contributing to this repository.  Code in `Integrations/SiliconLabs` is intended to be shared among multiple Silicon Labs-based projects, though it is not part of a shared repository.
 
-To learn how to regenerate the `definitions.c` and `definitions.h` files, see `reach-util/c-gen/README.md`.
+The `definitions.c` and `definitions.h` files are auto-generated using the python scripts in `reach-util/c-gen`.  The `update_definitions.bat` script will automatically regenerate `definitions.c` and `definitions.h` based on `Thunderboard Demo.xlsx`.  See `reach-util/c-gen/README.md` for information on how to use this script and modify `Thunderboard Demo.xlsx`.
 
 ## Contributing
 To contribute, create an issue in the repository, and the team at i3 Product Development will respond as quickly as possible.

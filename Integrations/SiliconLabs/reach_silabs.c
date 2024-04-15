@@ -79,6 +79,9 @@
  *********************   LOCAL FUNCTION PROTOTYPES   ***************************
  ******************************************************************************/
 
+// strnlen is technically a Linux function and is often not found by the compiler.
+size_t strnlen( const char * s,size_t maxlen );
+
 /*******************************************************************************
  ***************************  LOCAL VARIABLES   ********************************
  ******************************************************************************/
@@ -229,9 +232,6 @@ void rsl_bt_on_event(sl_bt_msg_t *evt)
   }
 }
 
-// strnlen is technically a Linux function and is often not found by the compiler.
-size_t strnlen( const char * s,size_t maxlen );
-
 int rsl_set_advertised_name(char *name)
 {
   // Check "Advertise" in the generic access service and increase the "Device Name" parameter's maximum length to enable the long name.
@@ -254,6 +254,26 @@ int64_t rsl_get_system_uptime(void)
   if (rval != 0)
     return -1;
   return (int64_t) uptime_ms;
+}
+
+void rsl_delay(uint32_t ms)
+{
+  int64_t current_time = rsl_get_system_uptime();
+  if (current_time == -1)
+  {
+    I3_LOG(LOG_MASK_ERROR, "Delay failed");
+    return;
+  }
+  int64_t end_time = current_time + (int64_t) ms;
+  while (current_time < end_time)
+  {
+    current_time = rsl_get_system_uptime();
+    if (current_time == -1)
+    {
+      I3_LOG(LOG_MASK_ERROR, "Delay failed");
+      return;
+    }
+  }
 }
 
 int crcb_send_coded_response(const uint8_t *respBuf, size_t respSize)

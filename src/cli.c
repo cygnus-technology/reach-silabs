@@ -86,13 +86,16 @@ void cli_poll(void)
       case '\r':
         sl_iostream_putchar(handle, '\r');
         sl_iostream_putchar(handle, '\n');
-        sl_iostream_putchar(handle, '>');
         if (input_length == 0)
+        {
+          sl_iostream_putchar(handle, '>');
           break; // No data, no need to call anything
+        }
         input[input_length] = 0; // Null-terminate the string
         crcb_cli_enter((const char*) input);
         input_length = 0;
         memset(input, 0, sizeof(input));
+        sl_iostream_putchar(handle, '>');
         break;
       case '\n':
         break; // Ignore, only expect '\r' for command execution

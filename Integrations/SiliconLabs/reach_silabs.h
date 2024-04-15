@@ -98,6 +98,12 @@ int rsl_set_advertised_name(char *name);
 int64_t rsl_get_system_uptime(void);
 
 /**
+* @brief Busy-waits for the specified period of time
+* @param ms How long to wait, in milliseconds
+*/
+void rsl_delay(uint32_t ms);
+
+/**
 * @brief Gets the handle for the current connection, for accessing BLE information outside of reach_silabs.c
 * @return The current handle, or 0 if not connected
 */
