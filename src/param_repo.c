@@ -301,6 +301,14 @@ int app_handle_param_repo_post_init(void)
   return 0;
 }
 
+// so that the status command can report how many reads have happened.
+static uint32_t sNumParameterReads = 0;
+void app_get_num_reads(uint32_t *numReads)
+{
+    *numReads = sNumParameterReads;
+    sNumParameterReads = 0;
+}
+
 int app_handle_param_repo_read(cr_ParameterValue *data)
 {
   int rval = 0;
@@ -316,6 +324,8 @@ int app_handle_param_repo_read(cr_ParameterValue *data)
       I3_LOG(LOG_MASK_ERROR, "parameter read from %d not allowed, write only.", data->parameter_id);
       return cr_ErrorCodes_PERMISSION_DENIED;
   }
+
+  sNumParameterReads++;
 
   switch (data->parameter_id)
   {
@@ -551,35 +561,35 @@ static const cr_ParameterNotifyConfig sParamNotifyInit[NUM_INIT_NOTIFICATIONS] =
     {
         .parameter_id                = 11,  // UV Index
         .enabled                     = true,
-        .minimum_notification_period = 2031,
+        .minimum_notification_period = 3031,
         .maximum_notification_period = 60000,
         .minimum_delta               = 1.0,
     },
     {
         .parameter_id                = 12,  // Magnetic Flux
         .enabled                     = true,
-        .minimum_notification_period = 1019,
+        .minimum_notification_period = 3019,
         .maximum_notification_period = 60000,
         .minimum_delta               = 0.2,
     },
     {
         .parameter_id                = 13,  // Accel X
         .enabled                     = true,
-        .minimum_notification_period = 1037,
+        .minimum_notification_period = 2037,
         .maximum_notification_period = 0,
         .minimum_delta               = 0.2,
     },
     {
         .parameter_id                = 14,  // Accel Y
         .enabled                     = true,
-        .minimum_notification_period = 1047,
+        .minimum_notification_period = 2047,
         .maximum_notification_period = 0,
         .minimum_delta               = 0.2,
     },
     {
         .parameter_id                = 15,  // Accel Z
         .enabled                     = true,
-        .minimum_notification_period = 1057,
+        .minimum_notification_period = 2057,
         .maximum_notification_period = 0,
         .minimum_delta               = 0.2,
     },
