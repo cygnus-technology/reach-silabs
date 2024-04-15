@@ -184,11 +184,11 @@ int crcb_cli_enter(const char *ins)
     lm(ins);
   else if (!strncmp("test", ins, 4))
   {
-      extern int pvtCrParam_discover_notifications(const cr_ParameterNotifySetupRequest *,
-                                                   cr_ParameterNotifySetupResponse *);
-      cr_ParameterNotifySetupRequest request;
-      cr_ParameterNotifySetupResponse response;
-      memset(&request, 0, sizeof(cr_ParameterNotifySetupRequest));
+      extern int pvtCrParam_discover_notifications(const cr_DiscoverParameterNotifySetup *,
+                                                   cr_DiscoverParameterNotifySetupResponse *);
+      cr_DiscoverParameterNotifySetup request;
+      cr_DiscoverParameterNotifySetupResponse response;
+      memset(&request, 0, sizeof(cr_DiscoverParameterNotifySetup));
     #if 0
       for (int i=0; i<12; i++)
           request.parameter_ids[i] =  i+7;
