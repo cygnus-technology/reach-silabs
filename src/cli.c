@@ -185,24 +185,6 @@ int crcb_cli_enter(const char *ins)
     slash();
   else if (!strncmp("lm", ins, 2))
     lm(ins);
-  else if (!strncmp("test", ins, 4))
-  {
-      extern int pvtCrParam_discover_notifications(const cr_DiscoverParameterNotifications *,
-                                                   cr_DiscoverParameterNotificationsResponse *);
-      cr_DiscoverParameterNotifications request;
-      cr_DiscoverParameterNotificationsResponse response;
-      memset(&request, 0, sizeof(cr_DiscoverParameterNotifications));
-    #if 0
-      for (int i=0; i<12; i++)
-          request.parameter_ids[i] =  i+7;
-      request.parameter_ids_count = 12;
-      i3_log(LOG_MASK_ALWAYS, "Test Discover Notifications with 4 requested.");
-    #else
-      i3_log(LOG_MASK_ALWAYS, "Test Discover Notifications with ALL requested.");
-    #endif
-      int rval = pvtCrParam_discover_notifications(&request, &response);
-      i3_log(LOG_MASK_ALWAYS, "Discover Notifications Test Complete, rval %d.", rval);
-  }
   else
     i3_log(LOG_MASK_WARN, "CLI command '%s' not recognized.", ins, *ins);
   return 0;
@@ -212,50 +194,56 @@ extern void app_get_num_reads(uint32_t *numReads);
 
 static void slash(void)
 {
-    i3_log(LOG_MASK_ALWAYS, TEXT_GREEN "Thunderboard Status:");
+  i3_log(LOG_MASK_ALWAYS, TEXT_GREEN "Thunderboard Status:");
 
-    // Reach information
-    uint32_t numActive, numSent;
-    uint32_t numReads;
-    app_get_num_reads(&numReads);
-    cr_get_notification_statistics(&numActive, &numSent);
-    if (numActive == 0) {
-        i3_log(LOG_MASK_ALWAYS, TEXT_CLI "  No notifications are active. %u reads since last check.",
-               param_repo_get_cli_text_color(), numReads);
-    }
-    else {
-        i3_log(LOG_MASK_ALWAYS, TEXT_CLI "  %u notifications are active.", numActive);
-        i3_log(LOG_MASK_ALWAYS, TEXT_CLI "  %u notifications were sent with %u reads since last check.",
-               param_repo_get_cli_text_color(), numSent, numReads);
-    }
-    i3_log(LOG_MASK_ALWAYS, TEXT_CLI "  Current log mask: 0x%x", param_repo_get_cli_text_color(), i3_log_get_mask());
-  #ifdef ENABLE_REMOTE_CLI
-    if (i3_log_get_remote_cli_enable())
-        i3_log(LOG_MASK_ALWAYS, TEXT_CLI "  Remote CLI support enabled.", param_repo_get_cli_text_color());
-    else
-        i3_log(LOG_MASK_ALWAYS, TEXT_CLI "  Remote CLI support built but not enabled.", param_repo_get_cli_text_color());
-  #else
+  // Reach information
+  uint32_t numActive, numSent;
+  uint32_t numReads;
+  app_get_num_reads(&numReads);
+  cr_get_notification_statistics(&numActive, &numSent);
+  if (numActive == 0)
+  {
+    i3_log(LOG_MASK_ALWAYS, TEXT_CLI "  No notifications are active. %u read%s since last check.", param_repo_get_cli_text_color(), numReads,
+        numReads == 1 ? "" : "s");
+  }
+  else
+  {
+    i3_log(LOG_MASK_ALWAYS, TEXT_CLI "  %u %s active.", param_repo_get_cli_text_color(), numActive, numActive > 1 ? "notifications are" : "notification is");
+    i3_log(LOG_MASK_ALWAYS, TEXT_CLI "  %u %s sent with %u read%s since last check.", param_repo_get_cli_text_color(), numSent,
+        numSent != 1 ? "notifications were" : "notification was", numReads, numReads == 1 ? "" : "s");
+  }
+  i3_log(LOG_MASK_ALWAYS, TEXT_CLI "  Current log mask: 0x%x", param_repo_get_cli_text_color(), i3_log_get_mask());
+#ifdef ENABLE_REMOTE_CLI
+  if (i3_log_get_remote_cli_enable())
+    i3_log(LOG_MASK_ALWAYS, TEXT_CLI "  Remote CLI support enabled.", param_repo_get_cli_text_color());
+  else
+    i3_log(LOG_MASK_ALWAYS, TEXT_CLI "  Remote CLI support built but not enabled.", param_repo_get_cli_text_color());
+#else
     i3_log(LOG_MASK_ALWAYS, TEXT_CLI "  !!! Remote CLI NOT support built in.", param_repo_get_cli_text_color());
   #endif
 
-      // System information
+  // System information
   bd_addr address;
   uint8_t address_type;
   sl_bt_system_get_identity_address(&address, &address_type);
-  i3_log(LOG_MASK_ALWAYS, TEXT_CLI "  BLE Device Address: %02X:%02X:%02X:%02X:%02X:%02X", param_repo_get_cli_text_color(), address.addr[5], address.addr[4], address.addr[3], address.addr[2],
-      address.addr[1], address.addr[0]);
+  i3_log(LOG_MASK_ALWAYS, TEXT_CLI "  BLE Device Address: %02X:%02X:%02X:%02X:%02X:%02X", param_repo_get_cli_text_color(), address.addr[5], address.addr[4],
+      address.addr[3], address.addr[2], address.addr[1], address.addr[0]);
   i3_log(LOG_MASK_ALWAYS, TEXT_CLI "  Uptime: %.3f seconds", param_repo_get_cli_text_color(), ((float) rsl_get_system_uptime()) / 1000);
 
-
-    // NVM statistics
-    i3_log(LOG_MASK_ALWAYS, TEXT_CLI "  NVM3 Storage: %u/%u bytes remaining", param_repo_get_cli_text_color(), nvm3_defaultHandle->unusedNvmSize, nvm3_defaultHandle->nvmSize);
-    i3_log(LOG_MASK_ALWAYS, TEXT_CLI "                %u objects present, %u deleted objects remaining in flash", param_repo_get_cli_text_color(), nvm3_countObjects(nvm3_defaultHandle), nvm3_countDeletedObjects(nvm3_defaultHandle));
-    uint32_t erase_count = 0;
-    int rval = (int) nvm3_getEraseCount(nvm3_defaultHandle, &erase_count);
-    if (!rval)
-      i3_log(LOG_MASK_ALWAYS, TEXT_CLI "              The most-used page of flash has been erased %u times", param_repo_get_cli_text_color(), erase_count);
-    else
-      i3_log(LOG_MASK_ERROR, "              Failed to get flash erase count, error 0x%x", rval);
+  // NVM statistics
+  i3_log(LOG_MASK_ALWAYS, TEXT_CLI "  NVM3 Storage: %u/%u bytes remaining", param_repo_get_cli_text_color(), nvm3_defaultHandle->unusedNvmSize,
+      nvm3_defaultHandle->nvmSize);
+  size_t object_count = nvm3_countObjects(nvm3_defaultHandle);
+  size_t deleted_object_count = nvm3_countDeletedObjects(nvm3_defaultHandle);
+  i3_log(LOG_MASK_ALWAYS, TEXT_CLI "                %u object%s present, %u deleted object%s remaining in flash", param_repo_get_cli_text_color(), object_count,
+      object_count == 1 ? "" : "s", deleted_object_count, deleted_object_count == 1 ? "" : "s");
+  uint32_t erase_count = 0;
+  int rval = (int) nvm3_getEraseCount(nvm3_defaultHandle, &erase_count);
+  if (!rval)
+    i3_log(LOG_MASK_ALWAYS, TEXT_CLI "                The most-used page of flash has been erased %u time%s", param_repo_get_cli_text_color(), erase_count,
+        erase_count == 1 ? "" : "s");
+  else
+    i3_log(LOG_MASK_ERROR, "                Failed to get flash erase count, error 0x%x", rval);
 }
 
 static void lm(const char *input)
