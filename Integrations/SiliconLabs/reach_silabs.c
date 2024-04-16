@@ -47,6 +47,7 @@
 
 #include "reach-server.h"
 #include "cr_stack.h"
+#include "cr_private.h"
 #include "i3_log.h"
 #include "app_version.h"
 #include "reach_version.h"
@@ -140,8 +141,12 @@ void rsl_bt_on_event(sl_bt_msg_t *evt)
     // Connection/disconnection
     case sl_bt_evt_connection_opened_id:
       device_connection = evt->data.evt_connection_opened.connection;
-      rsl_app_handle_ble_connection();
+      // cr function does Reach specific things.
+      // It clears all notifications.
       cr_set_comm_link_connected(true);
+      // rsl function does app specific things like changning LED's
+      // and possibly enabling notifications.
+      rsl_app_handle_ble_connection();
       break;
     case sl_bt_evt_connection_closed_id:
       cr_set_comm_link_connected(false);
@@ -302,6 +307,25 @@ int crcb_send_coded_response(const uint8_t *respBuf, size_t respSize)
       LOG_ERROR("Invalid Handle. Return %d", cr_ErrorCodes_INVALID_PARAMETER);
       rval = cr_ErrorCodes_INVALID_PARAMETER;
       break;
+    case SL_STATUS_NO_MORE_RESOURCE:
+    {
+      int retries = 1;
+      // retry a few times
+      for (retries = 1; retries < 24; retries++)
+      { 
+        // This happens when we are doing the fastest possible file read with no logging.
+        // This logging is enough to let the resource bottleneck clear.
+        I3_LOG(LOG_MASK_WARN, "%s: retry %d rsl_notify_client() with %d bytes", __FUNCTION__, retries, respSize);
+        rval = sl_bt_gatt_server_send_notification(device_connection, REACH_CHARACTERISTIC, respSize, respBuf);
+        if (rval == SL_STATUS_OK)
+        {
+          I3_LOG(LOG_MASK_BLE, "Sent notification %d bytes after %d retries, OK.", retries, respSize);
+          return SL_STATUS_OK;
+        }
+      } 
+      LOG_ERROR("No more resource %d times Return %d", retries, cr_ErrorCodes_NO_RESOURCE);
+      break;
+    }
     default:
       LOG_ERROR("Response of %d bytes failed, error 0x%x.", respSize, rval);
       rval = cr_ErrorCodes_INVALID_PARAMETER;
@@ -312,12 +336,15 @@ int crcb_send_coded_response(const uint8_t *respBuf, size_t respSize)
 
 void __attribute__((weak)) rsl_app_handle_ble_connection(void)
 {
+  // An overriding implementation might call
+  // cr_init_param_notifications();  
   I3_LOG(LOG_MASK_ALWAYS, "BLE connected");
   return;
 }
 
 void __attribute__((weak)) rsl_app_handle_ble_disconnection(void)
 {
+  cr_clear_param_notifications();
   I3_LOG(LOG_MASK_ALWAYS, "BLE disconnected");
   return;
 }

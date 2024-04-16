@@ -301,9 +301,32 @@ int app_handle_param_repo_post_init(void)
   return 0;
 }
 
+// so that the status command can report how many reads have happened.
+static uint32_t sNumParameterReads = 0;
+void app_get_num_reads(uint32_t *numReads)
+{
+    *numReads = sNumParameterReads;
+    sNumParameterReads = 0;
+}
+
 int app_handle_param_repo_read(cr_ParameterValue *data)
 {
   int rval = 0;
+
+  affirm(data);
+  // we don't return permission denied because we don't want 
+  // to reveal features that are not permitted.
+  if (!crcb_access_granted(cr_ServiceIds_PARAMETER_REPO, data->parameter_id))
+      return cr_ErrorCodes_INVALID_PARAMETER;
+
+  if (0 == (param_desc[data->parameter_id].access & cr_AccessLevel_READ))
+  {
+      I3_LOG(LOG_MASK_ERROR, "parameter read from %d not allowed, write only.", data->parameter_id);
+      return cr_ErrorCodes_PERMISSION_DENIED;
+  }
+
+  sNumParameterReads++;
+
   switch (data->parameter_id)
   {
     // Parameters which may change without the param repo's knowledge
@@ -386,6 +409,17 @@ int app_handle_param_repo_write(cr_ParameterValue *data)
   //   default:
   //     break;
   // }
+
+  // we don't return permission denied because we don't want 
+  // to reveal features that are not permitted.
+  if (!crcb_access_granted(cr_ServiceIds_PARAMETER_REPO, data->parameter_id))
+      return cr_ErrorCodes_INVALID_PARAMETER;
+
+  if (0 == (param_desc[data->parameter_id].access & cr_AccessLevel_WRITE))
+  {
+      I3_LOG(LOG_MASK_ERROR, "parameter write to %d not allowed, read only.", data->parameter_id);
+      return cr_ErrorCodes_PERMISSION_DENIED;
+  }
 
 #ifdef PARAM_REPO_USE_NVM_STORAGE
   if (!nvm_failed)
@@ -483,3 +517,92 @@ static uint32_t calculate_nvm_hash(void)
   return hash;
 }
 #endif // PARAM_REPO_USE_NVM_STORAGE
+
+// Notice that turning on all of these notifications causes us to constantly read all of 
+// the sensors which does slow things down.
+#define NUM_INIT_NOTIFICATIONS  10
+static const cr_ParameterNotifyConfig sParamNotifyInit[NUM_INIT_NOTIFICATIONS] =
+{
+    {
+        .parameter_id                = 2,   // button pressed
+        .enabled                     = true,
+        .minimum_notification_period = 501,
+        .maximum_notification_period = 0,
+        .minimum_delta               = 1,
+    },
+    {
+        .parameter_id                = 3,   // LED on
+        .enabled                     = true,
+        .minimum_notification_period = 302,
+        .maximum_notification_period = 0,
+        .minimum_delta               = 1,
+    },
+    {
+        .parameter_id                = 8,   // relative Humidity
+        .enabled                     = true,
+        .minimum_notification_period = 2010,
+        .maximum_notification_period = 60000,
+        .minimum_delta               = 1.0,
+    },
+    {
+        .parameter_id                = 9,   // Temperature
+        .enabled                     = true,
+        .minimum_notification_period = 2020,
+        .maximum_notification_period = 60000,
+        .minimum_delta               = 0.2,
+    },
+    {
+        .parameter_id                = 10,  // Light level
+        .enabled                     = true,
+        .minimum_notification_period = 1020,
+        .maximum_notification_period = 60000,
+        .minimum_delta               = 20.0,
+    },
+    {
+        .parameter_id                = 11,  // UV Index
+        .enabled                     = true,
+        .minimum_notification_period = 3031,
+        .maximum_notification_period = 60000,
+        .minimum_delta               = 1.0,
+    },
+    {
+        .parameter_id                = 12,  // Magnetic Flux
+        .enabled                     = true,
+        .minimum_notification_period = 3019,
+        .maximum_notification_period = 60000,
+        .minimum_delta               = 0.2,
+    },
+    {
+        .parameter_id                = 13,  // Accel X
+        .enabled                     = true,
+        .minimum_notification_period = 2037,
+        .maximum_notification_period = 0,
+        .minimum_delta               = 0.2,
+    },
+    {
+        .parameter_id                = 14,  // Accel Y
+        .enabled                     = true,
+        .minimum_notification_period = 2047,
+        .maximum_notification_period = 0,
+        .minimum_delta               = 0.2,
+    },
+    {
+        .parameter_id                = 15,  // Accel Z
+        .enabled                     = true,
+        .minimum_notification_period = 2057,
+        .maximum_notification_period = 0,
+        .minimum_delta               = 0.2,
+    },
+};
+
+#if NUM_SUPPORTED_PARAM_NOTIFY != 0
+
+int crcb_parameter_notification_init(const cr_ParameterNotifyConfig **pNoteArray, size_t *pNum)
+{
+    *pNum = NUM_INIT_NOTIFICATIONS;
+    *pNoteArray = sParamNotifyInit;
+    return 0;
+}
+
+#endif // NUM_SUPPORTED_PARAM_NOTIFY != 0
+

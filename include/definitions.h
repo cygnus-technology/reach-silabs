@@ -47,9 +47,9 @@
 #define NUM_PARAMS                19
 #define NUM_EX_PARAMS             2
 #define INCLUDE_FILE_SERVICE
-#define NUM_FILES                 2
+#define NUM_FILES                 3
 #define INCLUDE_COMMAND_SERVICE
-#define NUM_COMMANDS              2
+#define NUM_COMMANDS              8
 #define INCLUDE_CLI_SERVICE
 #define INCLUDE_TIME_SERVICE
 
@@ -95,11 +95,18 @@ typedef enum {
 typedef enum {
     FILE_IO_TXT,
     FILE_CYGNUS_REACH_LOGO_PNG,
+    FILE_DEV_NULL,
 } file_t;
 
 typedef enum {
     COMMAND_RESET_DEFAULTS,
     COMMAND_CLICK_FOR_WISDOM,
+    COMMAND_NO_LOGGING,
+    COMMAND_MUCH_LOGGING,
+    COMMAND_NOTIFICATIONS_ON,
+    COMMAND_NOTIFICATIONS_OFF,
+    COMMAND_REMOTE_CLI_ON,
+    COMMAND_REMOTE_CLI_OFF,
 } command_t;
 
 extern cr_ParameterValue sCr_param_val[NUM_PARAMS];

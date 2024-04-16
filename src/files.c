@@ -110,11 +110,11 @@ void files_reset(void)
 #endif
 }
 
-int crcb_read_file(const uint32_t fid,          // which file
-                 const int offset,              // offset, negative value specifies current location.
-                 const size_t bytes_requested,  // how many bytes to read
-                 uint8_t *pData,                // where the data goes
-                 int *bytes_read)               // bytes actually read, negative for errors.
+int crcb_read_file(const uint32_t fid,           // which file
+                   const int offset,             // offset, negative value specifies current location.
+                   const size_t bytes_requested, // how many bytes to read
+                   uint8_t *pData,               // where the data goes
+                   int *bytes_read)              // bytes actually read, negative for errors.
 {
   if (bytes_requested > REACH_BYTES_IN_A_FILE_PACKET)
   {
@@ -125,7 +125,10 @@ int crcb_read_file(const uint32_t fid,          // which file
   {
     case FILE_IO_TXT:
       if (offset < 0 || offset >= (int) io_txt_size)
-        return cr_ErrorCodes_NO_DATA;
+      {
+        I3_LOG(LOG_MASK_ERROR, "io.txt read: Offset of %d is outside of the file size %d", offset, io_txt_size);
+        return cr_ErrorCodes_READ_FAILED;
+      }
 #ifdef FILES_USE_NVM_STORAGE
       if (offset == 0)
       {
@@ -135,19 +138,36 @@ int crcb_read_file(const uint32_t fid,          // which file
           I3_LOG(LOG_MASK_ERROR, "io.txt read failed, error %d", rval);
       }
 #endif
+      I3_LOG(LOG_MASK_FILES, "Read fid %u, offset %d, requested %d, size %d", 
+             fid, offset, bytes_requested, io_txt_size);
+      if (offset > (int)io_txt_size)
+      {
+        I3_LOG(LOG_MASK_ERROR, "io.txt read: Offset of %d is greater than size of %d", offset, io_txt_size);
+        return cr_ErrorCodes_READ_FAILED;
+      }
       *bytes_read = ((offset + bytes_requested) > io_txt_size) ? (io_txt_size - offset) : bytes_requested;
       memcpy(pData, &io_txt[offset], (size_t) *bytes_read);
       break;
+
     case FILE_CYGNUS_REACH_LOGO_PNG:
+      I3_LOG(LOG_MASK_FILES, "Read fid %u, offset %d, requested %d", fid, offset, bytes_requested);
       if (offset < 0 || offset >= (int) sizeof(cygnus_reach_logo))
-        return cr_ErrorCodes_NO_DATA;
+      {
+        I3_LOG(LOG_MASK_ERROR, "cygnus logo read: Offset of %d is outside of the file size %d", offset, sizeof(cygnus_reach_logo));
+        return cr_ErrorCodes_READ_FAILED;
+      }
       *bytes_read = ((offset + bytes_requested) > sizeof(cygnus_reach_logo)) ? (sizeof(cygnus_reach_logo) - offset) : bytes_requested;
       memcpy(pData, &cygnus_reach_logo[offset], (size_t) *bytes_read);
+      break;
+    case FILE_DEV_NULL:
+      I3_LOG(LOG_MASK_FILES, "Read fid %u (dev/null), offset %d, requested %d", fid, offset, bytes_requested);
+      *bytes_read = bytes_requested;
       break;
     default:
       i3_log(LOG_MASK_ERROR, "Invalid file read (ID %u)", fid);
       return cr_ErrorCodes_BAD_FILE;
   }
+
   return 0;
 }
 
@@ -164,6 +184,10 @@ int crcb_file_prepare_to_write(const uint32_t fid, const size_t offset, const si
       memset(&io_txt[offset], 0, bytes);
       io_txt_size = bytes + offset;
       break;
+
+    case FILE_DEV_NULL:
+      break;
+
     default:
       return cr_ErrorCodes_BAD_FILE;
   }
@@ -179,9 +203,16 @@ int crcb_write_file(const uint32_t fid, // which file
   {
     case FILE_IO_TXT:
       if (offset < 0 || offset + bytes > io_txt_size)
-        return cr_ErrorCodes_INVALID_PARAMETER;
+      {
+        I3_LOG(LOG_MASK_ERROR, "io.txt write failed outside of limited size, error %d", cr_ErrorCodes_WRITE_FAILED);
+        return cr_ErrorCodes_WRITE_FAILED;
+      }
       memcpy(&io_txt[offset], pData, bytes);
       break;
+    case FILE_DEV_NULL:
+      I3_LOG(LOG_MASK_FILES, "Write fid %u (dev/null), offset %d, bytes %d", fid, offset, bytes);
+      break;
+
     default:
       return cr_ErrorCodes_BAD_FILE;
   }
@@ -200,6 +231,10 @@ int crcb_file_transfer_complete(const uint32_t fid)
 #endif
       file_descriptions[FILE_IO_TXT].current_size_bytes = (int32_t) io_txt_size;
       break;
+
+    case FILE_DEV_NULL:
+      break;
+
     default:
       return cr_ErrorCodes_BAD_FILE;
   }

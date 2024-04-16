@@ -69,6 +69,31 @@ int crcb_command_execute(const uint8_t cid)
         files_reset();
       }
       break;
+
+    case COMMAND_NO_LOGGING:
+      i3_log_set_mask(0);
+      break;
+    case COMMAND_MUCH_LOGGING:
+      i3_log_set_mask(0x1C7);
+      break;
+    case COMMAND_NOTIFICATIONS_OFF:
+      cr_clear_param_notifications();
+      I3_LOG(LOG_MASK_ALWAYS, "Notifications are disabled.");
+      break;
+    case COMMAND_NOTIFICATIONS_ON:
+      cr_init_param_notifications();
+      I3_LOG(LOG_MASK_ALWAYS, "Notifications are installed.");
+      break;
+
+    case COMMAND_REMOTE_CLI_ON:
+      i3_log_set_remote_cli_enable(true);
+      break;
+    case COMMAND_REMOTE_CLI_OFF:
+      i3_log_set_remote_cli_enable(false);
+      break;
+
+
+
     case COMMAND_CLICK_FOR_WISDOM:
     {
       I3_LOG(LOG_MASK_ALWAYS, TEXT_BOLDMAGENTA "Dispensing wisdom*...");

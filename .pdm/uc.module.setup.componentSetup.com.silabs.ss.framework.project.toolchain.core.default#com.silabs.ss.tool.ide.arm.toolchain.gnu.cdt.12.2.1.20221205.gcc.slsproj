@@ -7,7 +7,7 @@
     <file name="readme_img3.png" linked="false" uri="studio:/project/image/readme_img3.png"/>
     <file name="readme_img4.png" linked="false" uri="studio:/project/image/readme_img4.png"/>
   </folder>
-  <folder name="gecko_sdk_4.4.0">
+  <folder name="gecko_sdk_4.4.2">
     <folder name="platform">
       <folder name="Device">
         <folder name="SiliconLabs">
@@ -243,6 +243,7 @@
               <file name="sli_psa_driver_common.c" uri="studio:/sdk/platform/security/sl_component/sl_psa_driver/src/sli_psa_driver_common.c"/>
               <file name="sli_se_version_dependencies.c" uri="studio:/sdk/platform/security/sl_component/sl_psa_driver/src/sli_se_version_dependencies.c"/>
               <file name="cryptoacc_management.c" uri="studio:/sdk/platform/security/sl_component/sl_psa_driver/src/cryptoacc_management.c"/>
+              <file name="sli_cryptoacc_driver_trng.c" uri="studio:/sdk/platform/security/sl_component/sl_psa_driver/src/sli_cryptoacc_driver_trng.c"/>
               <file name="sli_cryptoacc_transparent_driver_hash.c" uri="studio:/sdk/platform/security/sl_component/sl_psa_driver/src/sli_cryptoacc_transparent_driver_hash.c"/>
               <file name="sli_cryptoacc_transparent_driver_cipher.c" uri="studio:/sdk/platform/security/sl_component/sl_psa_driver/src/sli_cryptoacc_transparent_driver_cipher.c"/>
               <file name="sli_cryptoacc_transparent_driver_aead.c" uri="studio:/sdk/platform/security/sl_component/sl_psa_driver/src/sli_cryptoacc_transparent_driver_aead.c"/>
@@ -262,6 +263,7 @@
               <file name="sli_psa_driver_features.h" uri="studio:/sdk/platform/security/sl_component/sl_psa_driver/inc/sli_psa_driver_features.h"/>
               <file name="sli_se_version_dependencies.h" uri="studio:/sdk/platform/security/sl_component/sl_psa_driver/inc/sli_se_version_dependencies.h"/>
               <file name="cryptoacc_management.h" uri="studio:/sdk/platform/security/sl_component/sl_psa_driver/inc/cryptoacc_management.h"/>
+              <file name="sli_cryptoacc_driver_trng.h" uri="studio:/sdk/platform/security/sl_component/sl_psa_driver/inc/sli_cryptoacc_driver_trng.h"/>
               <file name="sli_cryptoacc_transparent_functions.h" uri="studio:/sdk/platform/security/sl_component/sl_psa_driver/inc/sli_cryptoacc_transparent_functions.h"/>
               <file name="sli_cryptoacc_transparent_types.h" uri="studio:/sdk/platform/security/sl_component/sl_psa_driver/inc/sli_cryptoacc_transparent_types.h"/>
             </folder>
