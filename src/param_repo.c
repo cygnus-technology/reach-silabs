@@ -525,70 +525,60 @@ static const cr_ParameterNotifyConfig sParamNotifyInit[NUM_INIT_NOTIFICATIONS] =
 {
     {
         .parameter_id                = 2,   // button pressed
-        .enabled                     = true,
         .minimum_notification_period = 501,
         .maximum_notification_period = 0,
         .minimum_delta               = 1,
     },
     {
         .parameter_id                = 3,   // LED on
-        .enabled                     = true,
         .minimum_notification_period = 302,
         .maximum_notification_period = 0,
         .minimum_delta               = 1,
     },
     {
         .parameter_id                = 8,   // relative Humidity
-        .enabled                     = true,
         .minimum_notification_period = 2010,
         .maximum_notification_period = 60000,
         .minimum_delta               = 1.0,
     },
     {
         .parameter_id                = 9,   // Temperature
-        .enabled                     = true,
         .minimum_notification_period = 2020,
         .maximum_notification_period = 60000,
         .minimum_delta               = 0.2,
     },
     {
         .parameter_id                = 10,  // Light level
-        .enabled                     = true,
         .minimum_notification_period = 1020,
         .maximum_notification_period = 60000,
         .minimum_delta               = 20.0,
     },
     {
         .parameter_id                = 11,  // UV Index
-        .enabled                     = true,
         .minimum_notification_period = 3031,
         .maximum_notification_period = 60000,
         .minimum_delta               = 1.0,
     },
     {
         .parameter_id                = 12,  // Magnetic Flux
-        .enabled                     = true,
         .minimum_notification_period = 3019,
         .maximum_notification_period = 60000,
         .minimum_delta               = 0.2,
     },
     {
         .parameter_id                = 13,  // Accel X
-        .enabled                     = true,
         .minimum_notification_period = 2037,
         .maximum_notification_period = 0,
         .minimum_delta               = 0.2,
     },
     {
         .parameter_id                = 14,  // Accel Y
-        .enabled                     = true,
         .minimum_notification_period = 2047,
         .maximum_notification_period = 0,
         .minimum_delta               = 0.2,
     },
     {
         .parameter_id                = 15,  // Accel Z
-        .enabled                     = true,
         .minimum_notification_period = 2057,
         .maximum_notification_period = 0,
         .minimum_delta               = 0.2,
