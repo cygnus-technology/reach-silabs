@@ -643,7 +643,6 @@ int crcb_parameter_discover_reset(const uint32_t pid)
         return cr_ErrorCodes_INVALID_PARAMETER;
     }
     sCurrentParameter = pid;
-    I3_LOG(LOG_MASK_PARAMS, "dp reset to %d", sCurrentParameter);
     int i;
     sCurrentParameter = 0;  // in case none match
     for (i = 0; i < NUM_PARAMS; i++)
@@ -736,7 +735,14 @@ int crcb_file_get_description(uint32_t fid, cr_FileInfo *file_desc)
 
 int crcb_file_get_file_count()
 {
-    return NUM_FILES;
+    int i;
+    int numAvailable = 0;
+    for (i=0; i<NUM_FILES; i++)
+    {
+        if (crcb_access_granted(cr_ServiceIds_FILES, file_descriptions[i].file_id))
+            numAvailable++;
+    }
+    return numAvailable;
 }
 
 static uint8_t sFid_index = 0;
@@ -748,17 +754,42 @@ int crcb_file_discover_reset(const uint8_t fid)
         sFid_index = 0;
         return cr_ErrorCodes_BAD_FILE;
     }
-    sFid_index = fid;
-    return 0;
+    sFid_index = 0;
+    for (sFid_index = 0; sFid_index < NUM_FILES; sFid_index++)
+    {
+        if (file_descriptions[sFid_index].file_id == fid)
+        {
+            if (!crcb_access_granted(cr_ServiceIds_FILES, file_descriptions[sFid_index].file_id))
+            {
+                sFid_index = 0;
+                break;
+            }
+            return 0;
+        }
+    }
+    return cr_ErrorCodes_INVALID_PARAMETER;
 }
 
 int crcb_file_discover_next(cr_FileInfo *file_desc)
 {
     if (sFid_index >= NUM_FILES)
     {
-        I3_LOG(LOG_MASK_WARN, "%s: sFid_index (%d) >= NUM_FILES (%d)",
-               __FUNCTION__, sFid_index, NUM_FILES);
+        // I3_LOG(LOG_MASK_WARN, "%s: sFid_index (%d) >= NUM_FILES (%d)",
+        //        __FUNCTION__, sFid_index, NUM_FILES);
         return cr_ErrorCodes_NO_DATA;
+    }
+
+    while (!crcb_access_granted(cr_ServiceIds_FILES, file_desc[sFid_index].file_id))
+    {
+        I3_LOG(LOG_MASK_FILES, "%s: sFid_index (%d) skip, access not granted",
+                   __FUNCTION__, sFid_index);
+        sFid_index++;
+        if (sCurrentParameter >= NUM_FILES)
+        {
+            I3_LOG(LOG_MASK_PARAMS, "%s: skipped to sFid_indexsFid_index (%d) >= NUM_PARAMS (%d)",
+                   __FUNCTION__, sFid_index, NUM_FILES);
+            return cr_ErrorCodes_NO_DATA;
+        }
     }
     *file_desc = file_descriptions[sFid_index];
     sFid_index++;
