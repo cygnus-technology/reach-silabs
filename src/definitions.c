@@ -293,6 +293,7 @@ cr_FileInfo file_descriptions[NUM_FILES] = {
         .file_id            = FILE_IO_TXT,
         .file_name          = "io.txt",
         .current_size_bytes = 512,
+        .maximum_size_bytes = 512,
         .access             = cr_AccessLevel_READ_WRITE,
         .storage_location   = cr_StorageLocation_NONVOLATILE,
         .require_checksum   = false,
@@ -301,6 +302,7 @@ cr_FileInfo file_descriptions[NUM_FILES] = {
         .file_id            = FILE_CYGNUS_REACH_LOGO_PNG,
         .file_name          = "cygnus-reach-logo.png",
         .current_size_bytes = 17900,
+        .maximum_size_bytes = 17900,
         .access             = cr_AccessLevel_READ,
         .storage_location   = cr_StorageLocation_NONVOLATILE,
         .require_checksum   = false,
@@ -308,7 +310,8 @@ cr_FileInfo file_descriptions[NUM_FILES] = {
     {
         .file_id            = FILE_DEV_NULL,
         .file_name          = "dev_null",
-        .current_size_bytes = 1000000,
+        .current_size_bytes = 100000,
+        .maximum_size_bytes = 100000,
         .access             = cr_AccessLevel_READ_WRITE,
         .storage_location   = cr_StorageLocation_RAM,
         .require_checksum   = false,
@@ -767,6 +770,8 @@ int crcb_file_discover_reset(const uint8_t fid)
             return 0;
         }
     }
+    sFid_index = crcb_file_get_file_count();
+    I3_LOG(LOG_MASK_PARAMS, "discover file reset (%d) reset defaults to %d", fid, sFid_index);
     return cr_ErrorCodes_INVALID_PARAMETER;
 }
 
@@ -786,13 +791,12 @@ int crcb_file_discover_next(cr_FileInfo *file_desc)
         sFid_index++;
         if (sCurrentParameter >= NUM_FILES)
         {
-            I3_LOG(LOG_MASK_PARAMS, "%s: skipped to sFid_indexsFid_index (%d) >= NUM_PARAMS (%d)",
+            I3_LOG(LOG_MASK_PARAMS, "%s: skipped to sFid_indexsFid_index (%d) >= NUM_FILES (%d)",
                    __FUNCTION__, sFid_index, NUM_FILES);
             return cr_ErrorCodes_NO_DATA;
         }
     }
-    *file_desc = file_descriptions[sFid_index];
-    sFid_index++;
+    *file_desc = file_descriptions[sFid_index++];
     return 0;
 }
 
@@ -801,7 +805,14 @@ uint8_t sCommandIndex = 0;
 
 int crcb_get_command_count()
 {
-    return NUM_COMMANDS;
+    int i;
+    int numAvailable = 0;
+    for (i=0; i<NUM_COMMANDS; i++)
+    {
+        if (crcb_access_granted(cr_ServiceIds_COMMANDS, command_desc[i].id))
+            numAvailable++;
+    }
+    return numAvailable;
 }
 
 int crcb_command_discover_next(cr_CommandInfo *cmd_desc)
@@ -811,6 +822,19 @@ int crcb_command_discover_next(cr_CommandInfo *cmd_desc)
         I3_LOG(LOG_MASK_REACH, "%s: Command index %d indicates discovery complete.",
                __FUNCTION__, sCommandIndex);
         return cr_ErrorCodes_NO_DATA;
+    }
+
+    while (!crcb_access_granted(cr_ServiceIds_COMMANDS, command_desc[sCommandIndex].id))
+    {
+        I3_LOG(LOG_MASK_FILES, "%s: sCommandIndex (%d) skip, access not granted",
+                   __FUNCTION__, sFid_index);
+        sFid_index++;
+        if (sCurrentParameter >= NUM_COMMANDS)
+        {
+            I3_LOG(LOG_MASK_PARAMS, "%s: skipped to sCommandIndex (%d) >= NUM_COMMANDS (%d)",
+                   __FUNCTION__, sFid_index, NUM_COMMANDS);
+            return cr_ErrorCodes_NO_DATA;
+        }
     }
     *cmd_desc = command_desc[sCommandIndex++];
     return 0;
@@ -824,8 +848,22 @@ int crcb_command_discover_reset(const uint32_t cid)
                __FUNCTION__, cid);
         return cr_ErrorCodes_INVALID_PARAMETER;
     }
-    sCommandIndex = cid;
-    return 0;
+
+    for (sCommandIndex = 0; sCommandIndex < NUM_COMMANDS; sCommandIndex++)
+    {
+        if (command_desc[sCommandIndex].id == cid) {
+            if (!crcb_access_granted(cr_ServiceIds_COMMANDS, command_desc[sCommandIndex].id))
+            {
+                sFid_index = 0;
+                break;
+            }
+            I3_LOG(LOG_MASK_PARAMS, "discover command reset (%d) reset to %d", cid, sCurrentParameter);
+            return 0;
+        }
+    }
+    sCommandIndex = crcb_get_command_count();
+    I3_LOG(LOG_MASK_PARAMS, "discover command reset (%d) reset defaults to %d", cid, sCurrentParameter);
+    return cr_ErrorCodes_INVALID_PARAMETER;
 }
 
 int __attribute__((weak)) app_handle_param_repo_pre_init(void)

@@ -134,8 +134,10 @@
         }
     }
 
-    bool crcb_access_granted(const cr_ServiceIds service, const uint32_t id)
+    bool crcb_access_granted(const cr_ServiceIds service, const int32_t id)
     {
+        // negative id checks whether this service is included.
+
         if (sDev_full_access_OK)
             return true;  // access everything
 
