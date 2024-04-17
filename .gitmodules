@@ -5,3 +5,6 @@
 [submodule "reach-util"]
 	path = reach-util
 	url = ../reach-util
+[submodule "reach-protobuf"]
+	path = reach-protobuf
+	url = git@github.com:cygnus-technology/reach-protobuf.git
