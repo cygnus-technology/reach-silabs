@@ -554,6 +554,19 @@ int crcb_parameter_write(const uint32_t pid, const cr_ParameterValue *data)
     return rval;
 }
 
+
+int crcb_parameter_get_count()
+{
+    int i;
+    int numAvailable = 0;
+    for (i=0; i<NUM_PARAMS; i++)
+    {
+        if (crcb_access_granted(cr_ServiceIds_PARAMETER_REPO, param_desc[i].id))
+            numAvailable++;
+    }
+    return numAvailable;
+}
+
 // return a number that changes if the parameter descriptions have changed.
 uint32_t crcb_compute_parameter_hash(void)
 {
@@ -593,6 +606,32 @@ uint32_t crcb_compute_parameter_hash(void)
 
 static int sCurrentParameter = 0;
 
+// Resets the application's pointer into the parameter table such that
+// the next call to crcb_parameter_discover_next() will return the
+// description of this parameter.
+int crcb_parameter_discover_reset(const uint32_t pid)
+{
+    if (pid >= NUM_PARAMS)
+    {
+        sCurrentParameter = 0;
+        I3_LOG(LOG_MASK_PARAMS, "dp reset(%d) reset defaults to %d", pid, sCurrentParameter);
+        return cr_ErrorCodes_INVALID_PARAMETER;
+    }
+    sCurrentParameter = pid;
+    int i;
+    sCurrentParameter = 0;  // in case none match
+    for (i = 0; i < NUM_PARAMS; i++)
+    {
+        if (param_desc[i].id == pid) {
+            sCurrentParameter = i;
+            I3_LOG(LOG_MASK_PARAMS, "dp reset(%d) reset to %d", pid, sCurrentParameter);
+            return 0;
+        }
+    }
+    I3_LOG(LOG_MASK_PARAMS, "dp reset(%d) reset defaults to %d", pid, sCurrentParameter);
+    return cr_ErrorCodes_INVALID_PARAMETER;
+}
+
 // Gets the parameter description for the next parameter.
 // Allows the stack to iterate through the parameter list.
 // The caller provides a cr_ParameterInfo containing string pointers that will be overwritten.
@@ -620,44 +659,6 @@ int crcb_parameter_discover_next(cr_ParameterInfo *ppDesc)
     *ppDesc = param_desc[sCurrentParameter];
     sCurrentParameter++;
     return 0;
-}
-
-
-int crcb_parameter_get_count()
-{
-    int i;
-    int numAvailable = 0;
-    for (i=0; i<NUM_PARAMS; i++)
-    {
-        if (crcb_access_granted(cr_ServiceIds_PARAMETER_REPO, param_desc[i].id))
-            numAvailable++;
-    }
-    return numAvailable;
-}
-// Resets the application's pointer into the parameter table such that
-// the next call to crcb_parameter_discover_next() will return the
-// description of this parameter.
-int crcb_parameter_discover_reset(const uint32_t pid)
-{
-    if (pid >= NUM_PARAMS)
-    {
-        sCurrentParameter = 0;
-        I3_LOG(LOG_MASK_PARAMS, "dp reset(%d) reset defaults to %d", pid, sCurrentParameter);
-        return cr_ErrorCodes_INVALID_PARAMETER;
-    }
-    sCurrentParameter = pid;
-    int i;
-    sCurrentParameter = 0;  // in case none match
-    for (i = 0; i < NUM_PARAMS; i++)
-    {
-        if (param_desc[i].id == pid) {
-            sCurrentParameter = i;
-            I3_LOG(LOG_MASK_PARAMS, "dp reset(%d) reset to %d", pid, sCurrentParameter);
-            return 0;
-        }
-    }
-    I3_LOG(LOG_MASK_PARAMS, "dp reset(%d) reset defaults to %d", pid, sCurrentParameter);
-    return cr_ErrorCodes_INVALID_PARAMETER;
 }
 
 // In parallel to the parameter discovery, use this to find out 
