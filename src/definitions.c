@@ -57,215 +57,294 @@ const cr_DeviceInfoResponse device_info =
 
 cr_ParameterValue sCr_param_val[NUM_PARAMS];
 
-cr_ParameterInfo param_desc[NUM_PARAMS] = {
+const cr_ParameterInfo param_desc[NUM_PARAMS] = {
     {
         .id                = PARAM_USER_DEVICE_NAME,
         .name              = "User Device Name",
-        .data_type         = cr_ParameterDataType_STRING,
+        .which_desc        = cr_ParameterDataType_STRING + cr_ParameterInfo_uint32_desc_tag,
+        .desc.string_desc.has_default_value = true,
+        .desc.string_desc.default_value = "Test",
+        .desc.string_desc.max_size = 29,
         .access            = cr_AccessLevel_READ_WRITE,
         .storage_location  = cr_StorageLocation_NONVOLATILE,
         .has_description   = true,
-        .description       = "Up to 26 characters",
+        .description       = "Advertised BLE name",
     },
     {
         .id                = PARAM_UPTIME,
         .name              = "Uptime",
-        .data_type         = cr_ParameterDataType_INT64,
+        .which_desc         = cr_ParameterDataType_INT64 + cr_ParameterInfo_uint32_desc_tag,
         .access            = cr_AccessLevel_READ,
         .storage_location  = cr_StorageLocation_RAM,
-        .units             = "milliseconds",
+        .desc.int64_desc.has_units = true,
+        .desc.int64_desc.units = "milliseconds",
     },
     {
         .id                = PARAM_BUTTON_PRESSED,
-        .name              = "Button Pressed",
-        .data_type         = cr_ParameterDataType_BOOL,
+        .name              = "Momentary Pushbutton",
+        .which_desc        = cr_ParameterDataType_BOOL + cr_ParameterInfo_uint32_desc_tag,
+        .desc.bool_desc.has_pei_id        = true,
+        .desc.bool_desc.pei_id            = 4,
         .access            = cr_AccessLevel_READ,
         .storage_location  = cr_StorageLocation_RAM,
-        .has_description   = true,
-        .description       = "Toggles Identify",
     },
     {
         .id                = PARAM_LED_ON,
         .name              = "LED On",
-        .data_type         = cr_ParameterDataType_BOOL,
+        .which_desc        = cr_ParameterDataType_BOOL + cr_ParameterInfo_uint32_desc_tag,
+        .desc.bool_desc.has_pei_id        = true,
+        .desc.bool_desc.pei_id            = 5,
         .access            = cr_AccessLevel_READ,
         .storage_location  = cr_StorageLocation_RAM,
-        .has_description   = true,
-        .description       = "Read from Thunderboard",
     },
     {
         .id                = PARAM_IDENTIFY,
         .name              = "Identify",
-        .data_type         = cr_ParameterDataType_BOOL,
+        .which_desc        = cr_ParameterDataType_BOOL + cr_ParameterInfo_uint32_desc_tag,
+        .desc.bool_desc.pei_id = 3,
         .access            = cr_AccessLevel_READ_WRITE,
         .storage_location  = cr_StorageLocation_RAM,
         .has_description   = true,
-        .description       = "Turn on to blink the green LED",
+        .description       = "Blinks the yellow LED",
     },
     {
         .id                = PARAM_IDENTIFY_INTERVAL,
         .name              = "Identify Interval",
-        .data_type         = cr_ParameterDataType_FLOAT32,
+        .which_desc         = cr_ParameterDataType_FLOAT32 + cr_ParameterInfo_uint32_desc_tag,
         .access            = cr_AccessLevel_READ_WRITE,
         .storage_location  = cr_StorageLocation_NONVOLATILE,
         .has_description   = true,
         .description       = "Time between Identify blinks",
-        .units             = "seconds",
-        .has_range_min     = true,
-        .range_min         = 0.01,
-        .has_default_value = true,
-        .default_value     = 1,
-        .has_range_max     = true,
-        .range_max         = 60,
+        .desc.float32_desc.has_units = true,
+        .desc.float32_desc.units             = "seconds",
+        .desc.float32_desc.has_range_min     = true,
+        .desc.float32_desc.range_min         = 0.01,
+        .desc.float32_desc.has_default_value = true,
+        .desc.float32_desc.default_value     = 1,
+        .desc.float32_desc.has_range_max     = true,
+        .desc.float32_desc.range_max         = 60,
+        .desc.float32_desc.has_precision = true,
+        .desc.float32_desc.precision = 2,
     },
     {
         .id                = PARAM_CLI_TEXT_RGB_STATE,
         .name              = "CLI Text RGB State",
-        .data_type         = cr_ParameterDataType_BIT_FIELD,
+        .which_desc        = cr_ParameterDataType_BIT_FIELD + cr_ParameterInfo_uint32_desc_tag,
+        .desc.bitfield_desc.bits_available = 3,
+        .desc.bitfield_desc.has_pei_id = true,
+        .desc.bitfield_desc.pei_id = 1,
         .access            = cr_AccessLevel_READ_WRITE,
         .storage_location  = cr_StorageLocation_RAM,
         .has_description   = true,
         .description       = "Controls command line color",
-        .has_default_value = true,
-        .default_value     = 0,
-        .has_range_max     = true,
-        .range_max         = 7,
     },
     {
         .id                = PARAM_CLI_TEXT_COLOR,
         .name              = "CLI Text Color",
-        .data_type         = cr_ParameterDataType_ENUMERATION,
+        .which_desc         = cr_ParameterDataType_ENUMERATION + cr_ParameterInfo_uint32_desc_tag,
+        .desc.enum_desc.has_pei_id = true,
+        .desc.enum_desc.pei_id = 0,
         .access            = cr_AccessLevel_READ_WRITE,
         .storage_location  = cr_StorageLocation_RAM,
         .has_description   = true,
         .description       = "Controls command line color",
-        .has_default_value = true,
-        .default_value     = 0,
-        .has_range_max     = true,
-        .range_max         = 7,
     },
     {
         .id                = PARAM_RELATIVE_HUMIDITY,
         .name              = "Relative Humidity",
-        .data_type         = cr_ParameterDataType_FLOAT32,
+        .which_desc        = cr_ParameterDataType_FLOAT32 + cr_ParameterInfo_uint32_desc_tag,
         .access            = cr_AccessLevel_READ,
         .storage_location  = cr_StorageLocation_RAM,
         .has_description   = true,
         .description       = "Read from Thunderboard Sensor",
-        .units             = "%",
+        .desc.float32_desc.has_units        = true,
+        .desc.float32_desc.units             = "%",
+        .desc.float32_desc.has_range_min     = true,
+        .desc.float32_desc.range_min         = 0.01,
+        .desc.float32_desc.has_default_value = false,
+        .desc.float32_desc.default_value     = 50,
+        .desc.float32_desc.has_range_max     = true,
+        .desc.float32_desc.range_max         = 100,
+        .desc.float32_desc.has_precision = true,
+        .desc.float32_desc.precision = 1,
     },
     {
         .id                = PARAM_TEMPERATURE,
         .name              = "Temperature",
-        .data_type         = cr_ParameterDataType_FLOAT32,
+        .which_desc        = cr_ParameterDataType_FLOAT32 + cr_ParameterInfo_uint32_desc_tag,
         .access            = cr_AccessLevel_READ,
         .storage_location  = cr_StorageLocation_RAM,
         .has_description   = true,
         .description       = "Read from Thunderboard Sensor",
-        .units             = "\xC2\xB0 C",
+        .desc.float32_desc.has_units         = true,
+        .desc.float32_desc.units             = "\xC2\xB0 C",
+        .desc.float32_desc.has_range_min     = true,
+        .desc.float32_desc.range_min         = -57,
+        .desc.float32_desc.has_default_value = false,
+        .desc.float32_desc.default_value     = 20,
+        .desc.float32_desc.has_range_max     = true,
+        .desc.float32_desc.range_max         = 60,
+        .desc.float32_desc.has_precision = true,
+        .desc.float32_desc.precision = 1,
     },
     {
         .id                = PARAM_LIGHT_LEVEL,
         .name              = "Light Level",
-        .data_type         = cr_ParameterDataType_FLOAT32,
+        .which_desc        = cr_ParameterDataType_FLOAT32 + cr_ParameterInfo_uint32_desc_tag,
         .access            = cr_AccessLevel_READ,
         .storage_location  = cr_StorageLocation_RAM,
         .has_description   = true,
         .description       = "Read from Thunderboard Sensor",
-        .units             = "lux",
+        .desc.float32_desc.has_units         = true,
+        .desc.float32_desc.units             = "lux",
+        .desc.float32_desc.has_range_min     = true,
+        .desc.float32_desc.range_min         = 0,
+        .desc.float32_desc.has_default_value = false,
+        .desc.float32_desc.default_value     = 300,
+        .desc.float32_desc.has_range_max     = true,
+        .desc.float32_desc.range_max         = 1000,
+        .desc.float32_desc.has_precision = true,
+        .desc.float32_desc.precision = 1,
     },
     {
         .id                = PARAM_UV_INDEX,
         .name              = "UV Index",
-        .data_type         = cr_ParameterDataType_FLOAT32,
+        .which_desc        = cr_ParameterDataType_FLOAT32 + cr_ParameterInfo_uint32_desc_tag,
         .access            = cr_AccessLevel_READ,
         .storage_location  = cr_StorageLocation_RAM,
         .has_description   = true,
         .description       = "Read from Thunderboard Sensor",
+        .desc.float32_desc.has_units         = true,
+        .desc.float32_desc.units             = "W/square meter",
+        .desc.float32_desc.has_range_min     = true,
+        .desc.float32_desc.range_min         = 0.0,
+        .desc.float32_desc.has_default_value = false,
+        .desc.float32_desc.default_value     = 0,
+        .desc.float32_desc.has_range_max     = true,
+        .desc.float32_desc.range_max         = 100,
+        .desc.float32_desc.has_precision = true,
+        .desc.float32_desc.precision = 1,
     },
     {
         .id                = PARAM_MAGNETIC_FIELD_READING,
         .name              = "Magnetic Field Reading",
-        .data_type         = cr_ParameterDataType_FLOAT32,
+        .which_desc        = cr_ParameterDataType_FLOAT32 + cr_ParameterInfo_uint32_desc_tag,
         .access            = cr_AccessLevel_READ,
         .storage_location  = cr_StorageLocation_RAM,
         .has_description   = true,
         .description       = "Read from Thunderboard Sensor",
-        .units             = "millitesla",
+        .desc.float32_desc.has_units         = true,
+        .desc.float32_desc.units             = "millitesla",
+        .desc.float32_desc.has_range_min     = true,
+        .desc.float32_desc.range_min         = -5000.0,
+        .desc.float32_desc.has_default_value = false,
+        .desc.float32_desc.default_value     = 0,
+        .desc.float32_desc.has_range_max     = true,
+        .desc.float32_desc.range_max         = 5000,
+        .desc.float32_desc.has_precision = true,
+        .desc.float32_desc.precision = 0,
     },
     {
         .id                = PARAM_ACCELERATION_X_AXIS,
         .name              = "Acceleration (X axis)",
-        .data_type         = cr_ParameterDataType_FLOAT32,
+        .which_desc        = cr_ParameterDataType_FLOAT32 + cr_ParameterInfo_uint32_desc_tag,
         .access            = cr_AccessLevel_READ,
         .storage_location  = cr_StorageLocation_RAM,
         .has_description   = true,
         .description       = "Read from Thunderboard Sensor",
-        .units             = "\xE3\x8E\xA8",
+        .desc.float32_desc.has_units         = true,
+        .desc.float32_desc.units             = "\xE3\x8E\xA8",
+        .desc.float32_desc.has_range_min     = true,
+        .desc.float32_desc.range_min         = -50.0,
+        .desc.float32_desc.has_default_value = false,
+        .desc.float32_desc.default_value     = 0,
+        .desc.float32_desc.has_range_max     = true,
+        .desc.float32_desc.range_max         = 50,
+        .desc.float32_desc.has_precision     = true,
+        .desc.float32_desc.precision         = 2,
     },
     {
         .id                = PARAM_ACCELERATION_Y_AXIS,
         .name              = "Acceleration (Y axis)",
-        .data_type         = cr_ParameterDataType_FLOAT32,
+        .which_desc        = cr_ParameterDataType_FLOAT32 + cr_ParameterInfo_uint32_desc_tag,
         .access            = cr_AccessLevel_READ,
         .storage_location  = cr_StorageLocation_RAM,
         .has_description   = true,
         .description       = "Read from Thunderboard Sensor",
-        .units             = "\xE3\x8E\xA8",
+        .desc.float32_desc.has_units         = true,
+        .desc.float32_desc.units             = "\xE3\x8E\xA8",
+        .desc.float32_desc.has_range_min     = true,
+        .desc.float32_desc.range_min         = -50.0,
+        .desc.float32_desc.has_default_value = false,
+        .desc.float32_desc.default_value     = 0,
+        .desc.float32_desc.has_range_max     = true,
+        .desc.float32_desc.range_max         = 50,
+        .desc.float32_desc.has_precision     = true,
+        .desc.float32_desc.precision         = 2,
     },
     {
         .id                = PARAM_ACCELERATION_Z_AXIS,
         .name              = "Acceleration (Z axis)",
-        .data_type         = cr_ParameterDataType_FLOAT32,
+        .which_desc        = cr_ParameterDataType_FLOAT32 + cr_ParameterInfo_uint32_desc_tag,
         .access            = cr_AccessLevel_READ,
         .storage_location  = cr_StorageLocation_RAM,
         .has_description   = true,
         .description       = "Read from Thunderboard Sensor",
-        .units             = "\xE3\x8E\xA8",
+        .desc.float32_desc.has_units         = true,
+        .desc.float32_desc.units             = "\xE3\x8E\xA8",
+        .desc.float32_desc.has_range_min     = true,
+        .desc.float32_desc.range_min         = -50.0,
+        .desc.float32_desc.has_default_value = false,
+        .desc.float32_desc.default_value     = 0,
+        .desc.float32_desc.has_range_max     = true,
+        .desc.float32_desc.range_max         = 50,
+        .desc.float32_desc.has_precision     = true,
+        .desc.float32_desc.precision         = 2,
     },
     {
         .id                = PARAM_TIMEZONE_ENABLED,
-        .name              = "Timezone Enabled",
-        .data_type         = cr_ParameterDataType_BOOL,
+        .name              = "Timezone Mode",
+        .which_desc        = cr_ParameterDataType_BOOL + cr_ParameterInfo_uint32_desc_tag,
         .access            = cr_AccessLevel_READ_WRITE,
         .storage_location  = cr_StorageLocation_NONVOLATILE,
-        .has_description   = true,
-        .description       = "(Time service)",
-        .has_default_value = true,
-        .default_value     = 1,
+        .desc.bool_desc.has_default_value = true,
+        .desc.bool_desc.default_value     = true,
+        .desc.bool_desc.has_pei_id        = true,
+        .desc.bool_desc.pei_id            = 2,
     },
     {
         .id                = PARAM_TIMEZONE_OFFSET,
         .name              = "Timezone Offset",
-        .data_type         = cr_ParameterDataType_INT32,
+        .which_desc         = cr_ParameterDataType_INT32 + cr_ParameterInfo_uint32_desc_tag,
         .access            = cr_AccessLevel_READ_WRITE,
         .storage_location  = cr_StorageLocation_NONVOLATILE,
         .has_description   = true,
-        .description       = "(Time service) Offset from UTC",
-        .units             = "seconds",
-        .has_range_min     = true,
-        .range_min         = -43200,
-        .has_default_value = true,
-        .default_value     = 0,
-        .has_range_max     = true,
-        .range_max         = 43200,
+        .description       = "The offset from UTC",
+        .desc.int32_desc.has_units = true,
+        .desc.int32_desc.units             = "seconds",
+        .desc.int32_desc.has_range_min     = true,
+        .desc.int32_desc.range_min         = -43200,
+        .desc.int32_desc.has_default_value = true,
+        .desc.int32_desc.default_value     = 0,
+        .desc.int32_desc.has_range_max     = true,
+        .desc.int32_desc.range_max         = 43200,
     },
     {
         .id                = PARAM_BT_DEVICE_ADDRESS,
         .name              = "BT Device Address",
-        .data_type         = cr_ParameterDataType_BYTE_ARRAY,
-        .size_in_bytes     = 6,
+        .which_desc         = cr_ParameterDataType_BYTE_ARRAY + cr_ParameterInfo_uint32_desc_tag,
+        .desc.bytearray_desc.max_size     = 6,
         .access            = cr_AccessLevel_READ,
         .storage_location  = cr_StorageLocation_RAM,
     }
 };
 
-cr_ParamExInfoResponse param_ex_desc[NUM_EX_PARAMS] = {
+const cr_ParamExInfoResponse param_ex_desc[NUM_EX_PARAMS] = {
     {
-        .associated_pid = PARAM_CLI_TEXT_COLOR,
+        .pei_id = 0,
         .data_type = cr_ParameterDataType_ENUMERATION,
-        .enumerations_count = 8,
-        .enumerations = {
+        .keys_count = 8,
+        .keys = {
             {CLI_TEXT_COLOR_DISABLED, "Disabled"},
             {CLI_TEXT_COLOR_RED,      "Red"},
             {CLI_TEXT_COLOR_GREEN,    "Green"},
@@ -277,15 +356,51 @@ cr_ParamExInfoResponse param_ex_desc[NUM_EX_PARAMS] = {
         }
     },
     {
-        .associated_pid = PARAM_CLI_TEXT_RGB_STATE,
-        .data_type = cr_ParameterDataType_BIT_FIELD,
-        .enumerations_count = 3,
-        .enumerations = {
+        .pei_id = 1,
+        .data_type = cr_ParameterDataType_ENUMERATION,
+        .keys_count = 3,
+        .keys = {
             {CLI_TEXT_RGB_STATE_BIT_RED,   "Red"},
             {CLI_TEXT_RGB_STATE_BIT_GREEN, "Green"},
             {CLI_TEXT_RGB_STATE_BIT_BLUE,  "Blue"}
         }
+    },
+    {
+        .pei_id = 2,
+        .data_type = cr_ParameterDataType_BOOL,
+        .keys_count = 2,
+        .keys = {
+            {0, "Non-timezoned"},
+            {1, "Timezoned"}
     }
+    },
+    {
+        .pei_id = 3,
+        .data_type = cr_ParameterDataType_BOOL,
+        .keys_count = 2,
+        .keys = {
+            {0, "Not Identifying"},
+            {1, "Identifying"}
+        }
+    },
+    {
+        .pei_id = 4,
+        .data_type = cr_ParameterDataType_BOOL,
+        .keys_count = 2,
+        .keys = {
+            {0, "Not Pressed"},
+            {1, "Pressed"}
+        }
+    },
+    {
+        .pei_id = 5,
+        .data_type = cr_ParameterDataType_BOOL,
+        .keys_count = 2,
+        .keys = {
+            {0, "Off"},
+            {1, "On"}
+        }
+    },
 };
 
 cr_FileInfo file_descriptions[NUM_FILES] = {
@@ -318,7 +433,7 @@ cr_FileInfo file_descriptions[NUM_FILES] = {
     }
 };
 
-cr_CommandInfo command_desc[NUM_COMMANDS] = {
+const cr_CommandInfo command_desc[NUM_COMMANDS] = {
     {
         .id   = COMMAND_RESET_DEFAULTS,
         .name = "Reset Defaults",
@@ -386,64 +501,70 @@ void init_param_repo()
         sCr_param_val[i].parameter_id = param_desc[i].id;
 
         // the PID directly maps to the parameter type, just to make it easy.
-        switch (param_desc[i].data_type)
+        switch ((param_desc[i].which_desc - cr_ParameterInfo_uint32_desc_tag))
         {
         case cr_ParameterDataType_UINT32:
-            sCr_param_val[i].which_value = cr_ParameterValue_uint32_value_tag;
-            if (param_desc[i].has_default_value)
-                sCr_param_val[i].value.uint32_value = (uint32_t)param_desc[i].default_value;
+            if (param_desc[i].desc.uint32_desc.has_default_value)
+                sCr_param_val[i].value.uint32_value = param_desc[i].desc.uint32_desc.default_value;
             break;
         case cr_ParameterDataType_INT32:
-            sCr_param_val[i].which_value = cr_ParameterValue_sint32_value_tag;
-            if (param_desc[i].has_default_value)
-                sCr_param_val[i].value.sint32_value = (int32_t)param_desc[i].default_value;
+            if (param_desc[i].desc.int32_desc.has_default_value)
+                sCr_param_val[i].value.sint32_value = param_desc[i].desc.int32_desc.default_value;
             break;
         case cr_ParameterDataType_FLOAT32:
-            sCr_param_val[i].which_value = cr_ParameterValue_float32_value_tag;
-            if (param_desc[i].has_default_value)
-                sCr_param_val[i].value.float32_value = (float)param_desc[i].default_value;
+            if (param_desc[i].desc.float32_desc.has_default_value)
+                sCr_param_val[i].value.float32_value = param_desc[i].desc.float32_desc.default_value;
             break;
         case cr_ParameterDataType_UINT64:
-            sCr_param_val[i].which_value = cr_ParameterValue_uint64_value_tag;
-            if (param_desc[i].has_default_value)
-                sCr_param_val[i].value.uint64_value = (uint64_t)param_desc[i].default_value;
+            if (param_desc[i].desc.uint64_desc.has_default_value)
+                sCr_param_val[i].value.uint64_value = param_desc[i].desc.uint64_desc.default_value;
             break;
         case cr_ParameterDataType_INT64:
-            sCr_param_val[i].which_value = cr_ParameterValue_sint64_value_tag;
-            if (param_desc[i].has_default_value)
-                sCr_param_val[i].value.sint64_value = (int64_t)param_desc[i].default_value;
+            if (param_desc[i].desc.int64_desc.has_default_value)
+                sCr_param_val[i].value.sint64_value = param_desc[i].desc.int64_desc.default_value;
             break;
         case cr_ParameterDataType_FLOAT64:
-            sCr_param_val[i].which_value = cr_ParameterValue_float64_value_tag;
-            if (param_desc[i].has_default_value)
-                sCr_param_val[i].value.float64_value = param_desc[i].default_value;
+            if (param_desc[i].desc.float64_desc.has_default_value)
+                sCr_param_val[i].value.float64_value = param_desc[i].desc.float64_desc.default_value;
             break;
         case cr_ParameterDataType_BOOL:
-            sCr_param_val[i].which_value = cr_ParameterValue_bool_value_tag;
-            if (param_desc[i].has_default_value)
-                sCr_param_val[i].value.bool_value = (bool)param_desc[i].default_value;
+            if (param_desc[i].desc.bool_desc.has_default_value)
+                sCr_param_val[i].value.bool_value = param_desc[i].desc.bool_desc.default_value;
             break;
         case cr_ParameterDataType_STRING:
-            sCr_param_val[i].which_value = cr_ParameterValue_string_value_tag;
+            if (param_desc[i].desc.string_desc.has_default_value)
+            {
+                memset(sCr_param_val[i].value.string_value, 0, sizeof(sCr_param_val[i].value.string_value));
+                memcpy(sCr_param_val[i].value.string_value, param_desc[i].desc.string_desc.default_value, sizeof(param_desc[i].desc.string_desc.default_value));
+            }
             break;
         case cr_ParameterDataType_ENUMERATION:
-            sCr_param_val[i].which_value = cr_ParameterValue_enum_value_tag;
-            if (param_desc[i].has_default_value)
-                sCr_param_val[i].value.enum_value = (uint32_t)param_desc[i].default_value;
+            if (param_desc[i].desc.enum_desc.has_default_value)
+                sCr_param_val[i].value.enum_value = param_desc[i].desc.enum_desc.default_value;
             break;
         case cr_ParameterDataType_BIT_FIELD:
-            sCr_param_val[i].which_value = cr_ParameterValue_bitfield_value_tag;
-            if (param_desc[i].has_default_value)
-                sCr_param_val[i].value.bitfield_value = (uint32_t)param_desc[i].default_value;
+            if (param_desc[i].desc.bitfield_desc.has_default_value)
+                sCr_param_val[i].value.bitfield_value = param_desc[i].desc.bitfield_desc.default_value;
             break;
         case cr_ParameterDataType_BYTE_ARRAY:
-            sCr_param_val[i].value.bytes_value.size = param_desc[i].size_in_bytes;
-            sCr_param_val[i].which_value = cr_ParameterValue_bytes_value_tag;
+            if (param_desc[i].desc.bytearray_desc.has_default_value)
+            {
+                sCr_param_val[i].value.bytes_value.size = param_desc[i].desc.bytearray_desc.default_value.size;
+                memcpy(sCr_param_val[i].value.bytes_value.bytes, param_desc[i].desc.bytearray_desc.default_value.bytes, sizeof(param_desc[i].desc.bytearray_desc.default_value.bytes));
+            }
+            else
+            {
+                sCr_param_val[i].value.bytes_value.size = param_desc[i].desc.bytearray_desc.max_size;
+                memset(sCr_param_val[i].value.bytes_value.bytes, 0, sCr_param_val[i].value.bytes_value.size);
+            }
             break;
         default:
             affirm(0);  // should not happen.
             break;
         }  // end switch
+
+        // Convert from description type identifier to value type identifier
+        sCr_param_val[i].which_value = (param_desc[i].which_desc - cr_ParameterInfo_uint32_desc_tag) + cr_ParameterValue_uint32_value_tag;
 
         if (param_desc[i].storage_location == cr_StorageLocation_STORAGE_LOCATION_INVALID || param_desc[i].storage_location > cr_StorageLocation_NONVOLATILE_EXTENDED)
         {
@@ -491,43 +612,43 @@ int crcb_parameter_write(const uint32_t pid, const cr_ParameterValue *data)
     sCr_param_val[pid].timestamp = data->timestamp;
     sCr_param_val[pid].which_value = data->which_value;
 
-    switch (data->which_value)
+    switch ((data->which_value - cr_ParameterValue_uint32_value_tag))
     {
-        case cr_ParameterValue_uint32_value_tag:
+        case cr_ParameterDataType_UINT32:
             sCr_param_val[pid].value.uint32_value = data->value.uint32_value;
             break;
-        case cr_ParameterValue_sint32_value_tag:
+        case cr_ParameterDataType_INT32:
             sCr_param_val[pid].value.sint32_value = data->value.sint32_value;
             break;
-        case cr_ParameterValue_float32_value_tag:
+        case cr_ParameterDataType_FLOAT32:
             sCr_param_val[pid].value.float32_value = data->value.float32_value;
             break;
-        case cr_ParameterValue_uint64_value_tag:
+        case cr_ParameterDataType_UINT64:
             sCr_param_val[pid].value.uint64_value = data->value.uint64_value;
             break;
-        case cr_ParameterValue_sint64_value_tag:
+        case cr_ParameterDataType_INT64:
             sCr_param_val[pid].value.sint64_value = data->value.sint64_value;
             break;
-        case cr_ParameterValue_float64_value_tag:
+        case cr_ParameterDataType_FLOAT64:
             sCr_param_val[pid].value.float64_value = data->value.float64_value;
             break;
-        case cr_ParameterValue_bool_value_tag:
+        case cr_ParameterDataType_BOOL:
             sCr_param_val[pid].value.bool_value = data->value.bool_value;
             break;
-        case cr_ParameterValue_string_value_tag:
+        case cr_ParameterDataType_STRING:
             memcpy(sCr_param_val[pid].value.string_value,
                    data->value.string_value, REACH_PVAL_STRING_LEN);
             sCr_param_val[pid].value.string_value[REACH_PVAL_STRING_LEN-1] = 0;
             I3_LOG(LOG_MASK_PARAMS, "String value: %s",
                    sCr_param_val[pid].value.string_value);
             break;
-        case cr_ParameterValue_bitfield_value_tag:
+        case cr_ParameterDataType_BIT_FIELD:
             sCr_param_val[pid].value.bitfield_value = data->value.bitfield_value;
             break;
-        case cr_ParameterValue_enum_value_tag:
+        case cr_ParameterDataType_ENUMERATION:
             sCr_param_val[pid].value.enum_value = data->value.enum_value;
             break;
-        case cr_ParameterValue_bytes_value_tag:
+        case cr_ParameterDataType_BYTE_ARRAY:
             memcpy(sCr_param_val[pid].value.bytes_value.bytes,
                    data->value.bytes_value.bytes, 
                    REACH_PVAL_BYTES_LEN);
@@ -675,7 +796,7 @@ int crcb_parameter_ex_get_count(const int32_t pid)
     int num_ex_msgs = 0;
 
     for (int i=0; i<NUM_EX_PARAMS; i++) {
-        if ((int32_t)param_ex_desc[i].associated_pid == pid) {
+        if ((int32_t)param_ex_desc[i].pei_id == pid) {
             num_ex_msgs++;
         }
     }
@@ -696,7 +817,7 @@ int crcb_parameter_ex_discover_reset(const int32_t pid)
 int crcb_parameter_ex_discover_next(cr_ParamExInfoResponse *pDesc)
 {
     affirm(pDesc);
-    pDesc->enumerations_count = 0;
+    pDesc->keys_count = 0;
 #ifdef NUM_EX_PARAMS
     if (sCurrentExParam>=NUM_EX_PARAMS)
     {
@@ -714,7 +835,7 @@ int crcb_parameter_ex_discover_next(cr_ParamExInfoResponse *pDesc)
 
     for (int i=sCurrentExParam; i<NUM_EX_PARAMS; i++)
     {
-        if ((int32_t)param_ex_desc[i].associated_pid == sRequestedParamPid)
+        if ((int32_t)param_ex_desc[i].pei_id == sRequestedParamPid)
         {
             I3_LOG(LOG_MASK_PARAMS, "%s: For pid %d, return param_ex %d.",
                    __FUNCTION__, sRequestedParamPid, sCurrentExParam);
@@ -871,7 +992,7 @@ int __attribute__((weak)) app_handle_param_repo_pre_init(void)
 {
     return 0;
 }
-int __attribute__((weak)) app_handle_param_repo_init(cr_ParameterValue *data, cr_ParameterInfo *desc)
+int __attribute__((weak)) app_handle_param_repo_init(cr_ParameterValue *data, const cr_ParameterInfo *desc)
 {
     (void) desc;
     return app_handle_param_repo_read(data);

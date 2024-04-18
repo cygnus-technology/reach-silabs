@@ -45,7 +45,7 @@
 
 #define INCLUDE_PARAMETER_SERVICE
 #define NUM_PARAMS                19
-#define NUM_EX_PARAMS             2
+#define NUM_EX_PARAMS             6
 #define INCLUDE_FILE_SERVICE
 #define NUM_FILES                 3
 #define INCLUDE_COMMAND_SERVICE
@@ -110,13 +110,13 @@ typedef enum {
 } command_t;
 
 extern cr_ParameterValue sCr_param_val[NUM_PARAMS];
-extern cr_ParameterInfo param_desc[NUM_PARAMS];
-extern cr_ParamExInfoResponse param_ex_desc[NUM_EX_PARAMS];
+extern const cr_ParameterInfo param_desc[NUM_PARAMS];
+extern const cr_ParamExInfoResponse param_ex_desc[NUM_EX_PARAMS];
 extern cr_FileInfo file_descriptions[NUM_FILES];
-extern cr_CommandInfo command_desc[NUM_COMMANDS];
+extern const cr_CommandInfo command_desc[NUM_COMMANDS];
 
 int app_handle_param_repo_pre_init(void);
-int app_handle_param_repo_init(cr_ParameterValue *data, cr_ParameterInfo *desc);
+int app_handle_param_repo_init(cr_ParameterValue *data, const cr_ParameterInfo *desc);
 int app_handle_param_repo_post_init(void);
 int app_handle_param_repo_read(cr_ParameterValue *data);
 int app_handle_param_repo_write(cr_ParameterValue *data);

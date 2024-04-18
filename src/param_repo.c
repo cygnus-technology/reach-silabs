@@ -99,67 +99,59 @@ int param_repo_reset_nvm(void)
     switch (param.which_value)
     {
       case cr_ParameterValue_uint32_value_tag:
-        if (param_desc[param.parameter_id].has_default_value)
-          param.value.uint32_value = (uint32_t) param_desc[param.parameter_id].default_value;
-        else
-          param.value.uint32_value = 0;
+                if (param_desc[i].desc.uint32_desc.has_default_value)
+                    sCr_param_val[i].value.uint32_value = param_desc[i].desc.uint32_desc.default_value;
         break;
       case cr_ParameterValue_sint32_value_tag:
-        if (param_desc[param.parameter_id].has_default_value)
-          param.value.sint32_value = (int32_t) param_desc[param.parameter_id].default_value;
-        else
-          param.value.sint32_value = 0;
+                if (param_desc[i].desc.int32_desc.has_default_value)
+                    sCr_param_val[i].value.sint32_value = param_desc[i].desc.int32_desc.default_value;
         break;
       case cr_ParameterValue_float32_value_tag:
-        if (param_desc[param.parameter_id].has_default_value)
-          param.value.float32_value = (float) param_desc[param.parameter_id].default_value;
-        else
-          param.value.float32_value = 0;
+                if (param_desc[i].desc.float32_desc.has_default_value)
+                    sCr_param_val[i].value.float32_value = param_desc[i].desc.float32_desc.default_value;
         break;
       case cr_ParameterValue_uint64_value_tag:
-        if (param_desc[param.parameter_id].has_default_value)
-          param.value.uint64_value = (uint64_t) param_desc[param.parameter_id].default_value;
-        else
-          param.value.uint64_value = 0;
+                if (param_desc[i].desc.uint64_desc.has_default_value)
+                    sCr_param_val[i].value.uint64_value = param_desc[i].desc.uint64_desc.default_value;
         break;
       case cr_ParameterValue_sint64_value_tag:
-        if (param_desc[param.parameter_id].has_default_value)
-          param.value.sint64_value = (int64_t) param_desc[param.parameter_id].default_value;
-        else
-          param.value.sint64_value = 0;
+                if (param_desc[i].desc.int64_desc.has_default_value)
+                    sCr_param_val[i].value.sint64_value = param_desc[i].desc.int64_desc.default_value;
         break;
       case cr_ParameterValue_float64_value_tag:
-        if (param_desc[param.parameter_id].has_default_value)
-          param.value.float64_value = param_desc[param.parameter_id].default_value;
-        else
-          param.value.float64_value = 0;
+                if (param_desc[i].desc.float64_desc.has_default_value)
+                    sCr_param_val[i].value.float64_value = param_desc[i].desc.float64_desc.default_value;
         break;
       case cr_ParameterValue_bool_value_tag:
-        if (param_desc[param.parameter_id].has_default_value)
-          param.value.bool_value = (bool) param_desc[param.parameter_id].default_value;
-        else
-          param.value.bool_value = false;
+                if (param_desc[i].desc.bool_desc.has_default_value)
+                    sCr_param_val[i].value.bool_value = param_desc[i].desc.bool_desc.default_value;
+                break;
+            case cr_ParameterValue_string_value_tag:
+                if (param_desc[i].desc.string_desc.has_default_value)
+                {
+                    memset(sCr_param_val[i].value.string_value, 0, sizeof(sCr_param_val[i].value.string_value));
+                    memcpy(sCr_param_val[i].value.string_value, param_desc[i].desc.string_desc.default_value, sizeof(param_desc[i].desc.string_desc.default_value));
+                }
         break;
       case cr_ParameterValue_enum_value_tag:
-        if (param_desc[param.parameter_id].has_default_value)
-          param.value.enum_value = (uint32_t) param_desc[param.parameter_id].default_value;
-        else
-          param.value.enum_value = 0;
+                if (param_desc[i].desc.enum_desc.has_default_value)
+                    sCr_param_val[i].value.enum_value = param_desc[i].desc.enum_desc.default_value;
         break;
       case cr_ParameterValue_bitfield_value_tag:
-        if (param_desc[param.parameter_id].has_default_value)
-          param.value.bitfield_value = (uint32_t) param_desc[param.parameter_id].default_value;
-        else
-          param.value.bitfield_value = 0;
+                if (param_desc[i].desc.bitfield_desc.has_default_value)
+                    sCr_param_val[i].value.bitfield_value = param_desc[i].desc.bitfield_desc.default_value;
         break;
       case cr_ParameterValue_bytes_value_tag:
-        // Default value does not exist, but there is a default size
-        param.value.bytes_value.size = param_desc[param.parameter_id].size_in_bytes;
-        memset(param.value.bytes_value.bytes, 0, sizeof(param.value.bytes_value.bytes));
-        break;
-      case cr_ParameterValue_string_value_tag:
-        // No initialization necessary
-        memset(param.value.string_value, 0, sizeof(param.value.string_value));
+                if (param_desc[i].desc.bytearray_desc.has_default_value)
+                {
+                    sCr_param_val[i].value.bytes_value.size = param_desc[i].desc.bytearray_desc.default_value.size;
+                    memcpy(sCr_param_val[i].value.bytes_value.bytes, param_desc[i].desc.bytearray_desc.default_value.bytes, sizeof(param_desc[i].desc.bytearray_desc.default_value.bytes));
+                }
+                else
+                {
+                    sCr_param_val[i].value.bytes_value.size = param_desc[i].desc.bytearray_desc.max_size;
+                    memset(sCr_param_val[i].value.bytes_value.bytes, 0, sCr_param_val[i].value.bytes_value.size);
+                }
         break;
       default:
         affirm(0);  // should not happen.
@@ -217,7 +209,7 @@ int app_handle_param_repo_pre_init(void)
   return 0;
 }
 
-int app_handle_param_repo_init(cr_ParameterValue *data, cr_ParameterInfo *desc)
+int app_handle_param_repo_init(cr_ParameterValue *data, const cr_ParameterInfo *desc)
 {
   int rval = 0;
 #ifdef PARAM_REPO_USE_NVM_STORAGE
