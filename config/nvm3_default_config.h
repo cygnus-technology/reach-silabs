@@ -11,14 +11,14 @@
 // <i> should be equal to or higher than the number of NVM3 objects in the
 // <i> default NVM3 instance.
 // <i> Default: 200
-#define NVM3_DEFAULT_CACHE_SIZE  200
+#define NVM3_DEFAULT_CACHE_SIZE  32
 #endif
 
 #ifndef NVM3_DEFAULT_MAX_OBJECT_SIZE
 // <o NVM3_DEFAULT_MAX_OBJECT_SIZE> NVM3 Default Instance Max Object Size
 // <i> Max NVM3 object size that can be stored.
 // <i> Default: 254
-#define NVM3_DEFAULT_MAX_OBJECT_SIZE  254
+#define NVM3_DEFAULT_MAX_OBJECT_SIZE  4096
 #endif
 
 #ifndef NVM3_DEFAULT_REPACK_HEADROOM

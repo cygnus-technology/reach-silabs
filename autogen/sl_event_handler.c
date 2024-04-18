@@ -10,6 +10,7 @@
 #include "sl_device_init_clocks.h"
 #include "sl_device_init_emu.h"
 #include "pa_conversions_efr32.h"
+#include "sl_rail_util_power_manager_init.h"
 #include "sl_rail_util_pti.h"
 #include "btl_interface.h"
 #include "sl_board_control.h"
@@ -17,19 +18,21 @@
 #include "app_timer.h"
 #include "sl_bluetooth.h"
 #include "sl_debug_swo.h"
+#include "gpiointerrupt.h"
+#include "sl_i2cspm_instances.h"
 #include "sl_iostream_stdlib_config.h"
 #include "sl_iostream_init_usart_instances.h"
 #include "sl_mbedtls.h"
 #include "sl_mpu.h"
 #include "nvm3_default.h"
+#include "sl_sensor_sound.h"
+#include "sl_simple_button_instances.h"
 #include "sl_simple_led_instances.h"
-#include "sl_cli_instances.h"
 #include "psa/crypto.h"
 #include "sli_protocol_crypto.h"
 #include "sl_iostream_init_instances.h"
 #include "sl_power_manager.h"
 #include "sl_cos.h"
-#include "sl_rail_util_power_manager_init.h"
 
 void sl_platform_init(void)
 {
@@ -51,6 +54,9 @@ void sl_platform_init(void)
 void sl_driver_init(void)
 {
   sl_debug_swo_init();
+  GPIOINT_Init();
+  sl_i2cspm_init_instances();
+  sl_simple_button_init_instances();
   sl_simple_led_init_instances();
   sl_cos_send_config();
 }
@@ -65,15 +71,14 @@ void sl_service_init(void)
   psa_crypto_init();
   sli_aes_seed_mask();
   sl_iostream_init_instances();
-  sl_cli_instances_init();
 }
 
 void sl_stack_init(void)
 {
   sl_rail_util_pa_init();
+  sl_rail_util_power_manager_init();
   sl_rail_util_pti_init();
   sl_bt_init();
-  sl_rail_util_power_manager_init();
 }
 
 void sl_internal_app_init(void)
@@ -87,7 +92,6 @@ void sl_platform_process_action(void)
 void sl_service_process_action(void)
 {
   sli_app_timer_step();
-  sl_cli_instances_tick();
 }
 
 void sl_stack_process_action(void)
@@ -97,6 +101,7 @@ void sl_stack_process_action(void)
 
 void sl_internal_app_process_action(void)
 {
+  sl_sensor_sound_step();
 }
 
 void sl_iostream_init_instances(void)
