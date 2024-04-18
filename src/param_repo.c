@@ -217,7 +217,7 @@ int app_handle_param_repo_pre_init(void)
   return 0;
 }
 
-int app_handle_param_repo_init(cr_ParameterValue *data, cr_ParameterInfo *desc)
+int app_handle_param_repo_init(cr_ParameterValue *data, const cr_ParameterInfo *desc)
 {
   int rval = 0;
 #ifdef PARAM_REPO_USE_NVM_STORAGE

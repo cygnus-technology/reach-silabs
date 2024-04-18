@@ -57,7 +57,7 @@ const cr_DeviceInfoResponse device_info =
 
 cr_ParameterValue sCr_param_val[NUM_PARAMS];
 
-cr_ParameterInfo param_desc[NUM_PARAMS] = {
+const cr_ParameterInfo param_desc[NUM_PARAMS] = {
     {
         .id                = PARAM_USER_DEVICE_NAME,
         .name              = "User Device Name",
@@ -260,7 +260,7 @@ cr_ParameterInfo param_desc[NUM_PARAMS] = {
     }
 };
 
-cr_ParamExInfoResponse param_ex_desc[NUM_EX_PARAMS] = {
+const cr_ParamExInfoResponse param_ex_desc[NUM_EX_PARAMS] = {
     {
         .associated_pid = PARAM_CLI_TEXT_COLOR,
         .data_type = cr_ParameterDataType_ENUMERATION,
@@ -318,7 +318,7 @@ cr_FileInfo file_descriptions[NUM_FILES] = {
     }
 };
 
-cr_CommandInfo command_desc[NUM_COMMANDS] = {
+const cr_CommandInfo command_desc[NUM_COMMANDS] = {
     {
         .id   = COMMAND_RESET_DEFAULTS,
         .name = "Reset Defaults",
@@ -871,7 +871,7 @@ int __attribute__((weak)) app_handle_param_repo_pre_init(void)
 {
     return 0;
 }
-int __attribute__((weak)) app_handle_param_repo_init(cr_ParameterValue *data, cr_ParameterInfo *desc)
+int __attribute__((weak)) app_handle_param_repo_init(cr_ParameterValue *data, const cr_ParameterInfo *desc)
 {
     (void) desc;
     return app_handle_param_repo_read(data);
