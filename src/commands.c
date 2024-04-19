@@ -221,7 +221,7 @@ int crcb_command_execute(const uint8_t cid)
     }
     default:
       // Unsupported command
-      return cr_ErrorCodes_INVALID_PARAMETER;
+      return cr_ErrorCodes_INVALID_ID;
   }
   if (rval)
   {

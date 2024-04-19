@@ -309,7 +309,7 @@ int app_handle_param_repo_read(cr_ParameterValue *data)
   // we don't return permission denied because we don't want 
   // to reveal features that are not permitted.
   if (!crcb_access_granted(cr_ServiceIds_PARAMETER_REPO, data->parameter_id))
-      return cr_ErrorCodes_INVALID_PARAMETER;
+      return cr_ErrorCodes_INVALID_ID;
 
   if (0 == (param_desc[data->parameter_id].access & cr_AccessLevel_READ))
   {
@@ -405,7 +405,7 @@ int app_handle_param_repo_write(cr_ParameterValue *data)
   // we don't return permission denied because we don't want 
   // to reveal features that are not permitted.
   if (!crcb_access_granted(cr_ServiceIds_PARAMETER_REPO, data->parameter_id))
-      return cr_ErrorCodes_INVALID_PARAMETER;
+      return cr_ErrorCodes_INVALID_ID;
 
   if (0 == (param_desc[data->parameter_id].access & cr_AccessLevel_WRITE))
   {

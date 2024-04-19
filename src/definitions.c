@@ -589,7 +589,7 @@ int crcb_parameter_read(const uint32_t pid, cr_ParameterValue *data)
 {
     affirm(data != NULL);
     if (pid >= NUM_PARAMS)
-        return cr_ErrorCodes_INVALID_PARAMETER;
+        return cr_ErrorCodes_INVALID_ID;
     int rval = app_handle_param_repo_read(&sCr_param_val[pid]);
     *data = sCr_param_val[pid];
     return rval;
@@ -598,7 +598,7 @@ int crcb_parameter_read(const uint32_t pid, cr_ParameterValue *data)
 int crcb_parameter_write(const uint32_t pid, const cr_ParameterValue *data)
 {   
     if (pid >= NUM_PARAMS)
-        return cr_ErrorCodes_INVALID_PARAMETER;
+        return cr_ErrorCodes_INVALID_ID;
     int rval = 0;
     I3_LOG(LOG_MASK_PARAMS, "Write param, pid %d (%d)", pid, data->parameter_id);
     I3_LOG(LOG_MASK_PARAMS, "  timestamp %d", data->timestamp);
@@ -736,7 +736,7 @@ int crcb_parameter_discover_reset(const uint32_t pid)
     {
         sCurrentParameter = 0;
         I3_LOG(LOG_MASK_PARAMS, "dp reset(%d) reset defaults to %d", pid, sCurrentParameter);
-        return cr_ErrorCodes_INVALID_PARAMETER;
+        return cr_ErrorCodes_INVALID_ID;
     }
     sCurrentParameter = pid;
     int i;
@@ -750,7 +750,7 @@ int crcb_parameter_discover_reset(const uint32_t pid)
         }
     }
     I3_LOG(LOG_MASK_PARAMS, "dp reset(%d) reset defaults to %d", pid, sCurrentParameter);
-    return cr_ErrorCodes_INVALID_PARAMETER;
+    return cr_ErrorCodes_INVALID_ID;
 }
 
 // Gets the parameter description for the next parameter.
@@ -822,7 +822,7 @@ int crcb_parameter_ex_discover_next(cr_ParamExInfoResponse *pDesc)
     if (sCurrentExParam>=NUM_EX_PARAMS)
     {
         I3_LOG(LOG_MASK_PARAMS, "%s: No more ex params.", __FUNCTION__);
-        return cr_ErrorCodes_INVALID_PARAMETER;
+        return cr_ErrorCodes_INVALID_ID;
     }
 
     if (sRequestedParamPid < 0)
@@ -847,7 +847,7 @@ int crcb_parameter_ex_discover_next(cr_ParamExInfoResponse *pDesc)
     // should not get here.
     I3_LOG(LOG_MASK_PARAMS, "%s: No more ex params 2.", __FUNCTION__);
 #endif // NUM_EX_PARAMS
-    return cr_ErrorCodes_INVALID_PARAMETER;
+    return cr_ErrorCodes_INVALID_ID;
 }
 
 int crcb_file_get_description(uint32_t fid, cr_FileInfo *file_desc)
@@ -894,7 +894,7 @@ int crcb_file_discover_reset(const uint8_t fid)
     }
     sFid_index = crcb_file_get_file_count();
     I3_LOG(LOG_MASK_PARAMS, "discover file reset (%d) reset defaults to %d", fid, sFid_index);
-    return cr_ErrorCodes_INVALID_PARAMETER;
+    return cr_ErrorCodes_BAD_FILE;
 }
 
 int crcb_file_discover_next(cr_FileInfo *file_desc)
@@ -968,7 +968,7 @@ int crcb_command_discover_reset(const uint32_t cid)
     {
         i3_log(LOG_MASK_ERROR, "%s: Command ID %d does not exist.",
                __FUNCTION__, cid);
-        return cr_ErrorCodes_INVALID_PARAMETER;
+        return cr_ErrorCodes_INVALID_ID;
     }
 
     for (sCommandIndex = 0; sCommandIndex < NUM_COMMANDS; sCommandIndex++)
@@ -985,7 +985,7 @@ int crcb_command_discover_reset(const uint32_t cid)
     }
     sCommandIndex = crcb_get_command_count();
     I3_LOG(LOG_MASK_PARAMS, "discover command reset (%d) reset defaults to %d", cid, sCurrentParameter);
-    return cr_ErrorCodes_INVALID_PARAMETER;
+    return cr_ErrorCodes_INVALID_ID;
 }
 
 int __attribute__((weak)) app_handle_param_repo_pre_init(void)
