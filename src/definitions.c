@@ -51,7 +51,7 @@ const cr_DeviceInfoResponse device_info =
     .device_name        = "Thunderboard",
     .manufacturer       = "Silicon Labs",
     .device_description = "A demo of Reach features",
-    .protocol_version   = cr_ReachProtoVersion_CURRENT_VERSION,
+    // .protocol_version   = cr_ReachProtoVersion_CURRENT_VERSION,
     .services           = cr_ServiceIds_PARAMETER_REPO | cr_ServiceIds_FILES | cr_ServiceIds_COMMANDS | cr_ServiceIds_CLI | cr_ServiceIds_TIME
 };
 
