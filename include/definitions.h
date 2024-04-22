@@ -87,9 +87,9 @@ typedef enum {
 } cli_text_color_t;
 
 typedef enum {
-    CLI_TEXT_RGB_STATE_BIT_RED   = (0x1 << 0),
-    CLI_TEXT_RGB_STATE_BIT_GREEN = (0x1 << 1),
-    CLI_TEXT_RGB_STATE_BIT_BLUE  = (0x1 << 2),
+    CLI_TEXT_RGB_STATE_BIT_RED   = (0),
+    CLI_TEXT_RGB_STATE_BIT_GREEN = (1),
+    CLI_TEXT_RGB_STATE_BIT_BLUE  = (2),
 } cli_text_rgb_state_t;
 
 typedef enum {
