@@ -357,7 +357,7 @@ const cr_ParamExInfoResponse param_ex_desc[NUM_EX_PARAMS] = {
     },
     {
         .pei_id = 1,
-        .data_type = cr_ParameterDataType_ENUMERATION,
+        .data_type = cr_ParameterDataType_BIT_FIELD,
         .keys_count = 3,
         .keys = {
             {CLI_TEXT_RGB_STATE_BIT_RED,   "Red"},
