@@ -25,6 +25,8 @@ make
 rem:  echo With Microsoft
 rem:  cmake --build .
 
+python %src%\proto\postprocess_comments.py
+
 echo Copy generated reach.pb.h
 cp reach.pb.c %curdir%\reach-c-stack\src
 cp reach.pb.h %curdir%\reach-c-stack\include
