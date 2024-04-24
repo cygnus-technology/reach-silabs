@@ -735,7 +735,7 @@ int crcb_parameter_discover_reset(const uint32_t pid)
     if (pid >= NUM_PARAMS)
     {
         sCurrentParameter = 0;
-        I3_LOG(LOG_MASK_PARAMS, "dp reset(%d) reset defaults to %d", pid, sCurrentParameter);
+        I3_LOG(LOG_MASK_PARAMS, "dp reset(%d) reset > defaults to %d", pid, sCurrentParameter);
         return cr_ErrorCodes_INVALID_ID;
     }
     sCurrentParameter = pid;
@@ -745,11 +745,11 @@ int crcb_parameter_discover_reset(const uint32_t pid)
     {
         if (param_desc[i].id == pid) {
             sCurrentParameter = i;
-            I3_LOG(LOG_MASK_PARAMS, "dp reset(%d) reset to %d", pid, sCurrentParameter);
+            // I3_LOG(LOG_MASK_PARAMS, "dp reset(%d) reset to %d", pid, sCurrentParameter);
             return 0;
         }
     }
-    I3_LOG(LOG_MASK_PARAMS, "dp reset(%d) reset defaults to %d", pid, sCurrentParameter);
+    I3_LOG(LOG_MASK_PARAMS, "dp reset(%d) reset not found defaults to %d", pid, sCurrentParameter);
     return cr_ErrorCodes_INVALID_ID;
 }
 
