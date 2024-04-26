@@ -334,7 +334,7 @@
 						</toolChain>
 					</folderInfo>
 					<sourceEntries>
-						<entry excluding="gecko_sdk_4.4.0|reach-c-stack/docs|reach-protobuf|reach-silabs-2_cmake|trashed_modified_files|reach-silabs_cmake" flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name=""/>
+						<entry excluding="reach-util|src/param_repo.c|reach-c-stack/templates|gecko_sdk_4.4.0|reach-c-stack/docs|reach-protobuf|reach-silabs-2_cmake|trashed_modified_files|reach-silabs_cmake" flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name=""/>
 					</sourceEntries>
 				</configuration>
 			</storageModule>
@@ -673,7 +673,7 @@
 						</toolChain>
 					</folderInfo>
 					<sourceEntries>
-						<entry excluding="gecko_sdk_4.4.0|reach-c-stack/docs|reach-protobuf|reach-silabs-2_cmake|trashed_modified_files|reach-silabs_cmake" flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name=""/>
+						<entry excluding="reach-util|src/param_repo.c|reach-c-stack/templates|gecko_sdk_4.4.0|reach-c-stack/docs|reach-protobuf|reach-silabs-2_cmake|trashed_modified_files|reach-silabs_cmake" flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name=""/>
 					</sourceEntries>
 				</configuration>
 			</storageModule>

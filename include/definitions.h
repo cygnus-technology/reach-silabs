@@ -46,12 +46,33 @@
 #define INCLUDE_PARAMETER_SERVICE
 #define NUM_PARAMS                19
 #define NUM_EX_PARAMS             6
+#define NUM_INIT_NOTIFICATIONS    10
+
 #define INCLUDE_FILE_SERVICE
 #define NUM_FILES                 3
+
 #define INCLUDE_COMMAND_SERVICE
 #define NUM_COMMANDS              8
+
 #define INCLUDE_CLI_SERVICE
 #define INCLUDE_TIME_SERVICE
+
+// #define INCLUDE_WIFI_SERVICE
+#define NUM_WIFI_AP            4
+
+// #define INCLUDE_STREAM_SERVICE
+#define NUM_STREAMS            2
+
+extern cr_ParameterValue sCr_param_val[NUM_PARAMS];
+
+extern const cr_DeviceInfoResponse device_info;
+extern const cr_ParameterInfo param_desc[NUM_PARAMS];
+extern const cr_ParamExInfoResponse param_ex_desc[NUM_EX_PARAMS];
+extern const cr_ParameterNotifyConfig sParamNotifyInit[NUM_INIT_NOTIFICATIONS];
+extern cr_FileInfo file_descriptions[NUM_FILES];
+extern const cr_CommandInfo command_desc[NUM_COMMANDS];
+extern const cr_StreamInfo streams_desc[NUM_STREAMS];
+extern cr_ConnectionDescription connections[NUM_WIFI_AP];
 
 typedef enum {
     PARAM_USER_DEVICE_NAME,
@@ -108,17 +129,5 @@ typedef enum {
     COMMAND_REMOTE_CLI_ON,
     COMMAND_REMOTE_CLI_OFF,
 } command_t;
-
-extern cr_ParameterValue sCr_param_val[NUM_PARAMS];
-extern const cr_ParameterInfo param_desc[NUM_PARAMS];
-extern const cr_ParamExInfoResponse param_ex_desc[NUM_EX_PARAMS];
-extern cr_FileInfo file_descriptions[NUM_FILES];
-extern const cr_CommandInfo command_desc[NUM_COMMANDS];
-
-int app_handle_param_repo_pre_init(void);
-int app_handle_param_repo_init(cr_ParameterValue *data, const cr_ParameterInfo *desc);
-int app_handle_param_repo_post_init(void);
-int app_handle_param_repo_read(cr_ParameterValue *data);
-int app_handle_param_repo_write(cr_ParameterValue *data);
 
 #endif // _DEFINITIONS_H

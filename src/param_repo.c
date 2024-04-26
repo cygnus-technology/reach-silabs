@@ -513,7 +513,7 @@ static uint32_t calculate_nvm_hash(void)
 // Notice that turning on all of these notifications causes us to constantly read all of 
 // the sensors which does slow things down.
 #define NUM_INIT_NOTIFICATIONS  10
-static const cr_ParameterNotifyConfig sParamNotifyInit[NUM_INIT_NOTIFICATIONS] =
+const cr_ParameterNotifyConfig sParamNotifyInit[NUM_INIT_NOTIFICATIONS] =
 {
     {
         .parameter_id                = 2,   // button pressed
