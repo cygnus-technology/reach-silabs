@@ -551,7 +551,7 @@ const cr_StreamInfo streams_desc[NUM_STREAMS] = {
 #endif // def INCLUDE_STREAM_SERVICE
 
 #ifdef INCLUDE_WIFI_SERVICE
-cr_ConnectionDescription connections[NUM_WIFI_AP];
+cr_ConnectionDescription wifi_desc[NUM_WIFI_AP];
 #endif  // def INCLUDE_WIFI_SERVICE
 
 

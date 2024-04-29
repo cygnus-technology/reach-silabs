@@ -72,7 +72,7 @@ extern const cr_ParameterNotifyConfig sParamNotifyInit[NUM_INIT_NOTIFICATIONS];
 extern cr_FileInfo file_descriptions[NUM_FILES];
 extern const cr_CommandInfo command_desc[NUM_COMMANDS];
 extern const cr_StreamInfo streams_desc[NUM_STREAMS];
-extern cr_ConnectionDescription connections[NUM_WIFI_AP];
+extern cr_ConnectionDescription wifi_desc[NUM_WIFI_AP];
 
 typedef enum {
     PARAM_USER_DEVICE_NAME,
