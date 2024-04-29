@@ -73,8 +73,6 @@ static bool nvm_reset_required = false;
 static bool nvm_failed = false;
 #endif // PARAM_REPO_USE_NVM_STORAGE
 
-static int64_t time_offset = 0;
-
 char get_cli_text_color_response[] = TEXT_BLACK;
 
 char * param_repo_get_cli_text_color(void)
