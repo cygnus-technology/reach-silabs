@@ -375,16 +375,18 @@
 			]
 		},
         "streamService": {
-            {
-                "name": "from device",
-                "access": "read",
-                "description": "counting up for a test"
-            },
-            {
-                "name": "to device",
-                "access": "write",
-                "description": "throw away received data"
-            }
+            "streams": [
+                {
+                    "name": "from device",
+                    "access": "read",
+                    "description": "counting up for a test"
+                },
+                {
+                    "name": "to device",
+                    "access": "write",
+                    "description": "throw away received data"
+                }
+            ]
         },
         "WiFService": {
             "AP count": 4
