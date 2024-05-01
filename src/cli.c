@@ -123,7 +123,7 @@ char sAppVersion[CR_STACK_VERSION_LEN];
 const char *get_app_version()
 {
   #ifdef DEV_BUILD
-    snprintf(sAppVersion, CR_STACK_VERSION_LEN, "%u.%u.%u-dev", 
+    snprintf(sAppVersion, CR_STACK_VERSION_LEN, "%u.%u.%u-rc1", 
              APP_MAJOR_VERSION, APP_MINOR_VERSION, APP_PATCH_VERSION);
   #else
     snprintf(sAppVersion, CR_STACK_VERSION_LEN, "%u.%u.%u", 
