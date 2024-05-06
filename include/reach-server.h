@@ -89,10 +89,6 @@
 /// With code changes it could be less.
 #define REACH_PARAM_BUFFER_COUNT REACH_COUNT_PARAM_IDS
 
-/// Define this to test compatibility with the Ahsoka header.
-/// You must also change reach.proto.
-#define AHSOKA_HEADER
-
 // prints out buffer sizes for tuning.
 // #define VERBOSE_SIZES
 
