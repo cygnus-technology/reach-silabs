@@ -42,8 +42,6 @@
 
 #include "reach.pb.h"
 
-#define NUM_INIT_NOTIFICATIONS 10
-
 #define INCLUDE_PARAMETER_SERVICE
 #define NUM_PARAMS    19
 #define NUM_EX_PARAMS 5
@@ -56,12 +54,6 @@
 
 #define INCLUDE_CLI_SERVICE
 
-#define INCLUDE_STREAM_SERVICE
-#define NUM_STREAMS 2
-
-#define INCLUDE_WIFI_SERVICE
-#define NUM_WIFI_AP 4
-
 typedef struct {
   uint32_t pei_id;
   uint8_t data_type;
@@ -73,11 +65,8 @@ extern cr_ParameterValue sCr_param_val[NUM_PARAMS];
 extern const cr_DeviceInfoResponse device_info;
 extern const cr_ParameterInfo param_desc[NUM_PARAMS];
 extern const cr_gen_param_ex_t param_ex_desc[NUM_EX_PARAMS];
-extern const cr_ParameterNotifyConfig sParamNotifyInit[NUM_INIT_NOTIFICATIONS];
 extern cr_FileInfo file_descriptions[NUM_FILES];
 extern const cr_CommandInfo command_desc[NUM_COMMANDS];
-extern const cr_StreamInfo streams_desc[NUM_STREAMS];
-extern cr_ConnectionDescription wifi_desc[NUM_WIFI_AP];
 
 typedef enum {
     PARAM_USER_DEVICE_NAME        = 0,
@@ -100,6 +89,14 @@ typedef enum {
     PARAM_TIMEZONE_OFFSET         = 17,
     PARAM_BT_DEVICE_ADDRESS       = 18,
 } param_t;
+
+typedef enum {
+    PARAM_EI_IDENTIFY_SWITCH = 0,
+    PARAM_EI_IDENTIFY_LED    = 1,
+    PARAM_EI_TIMEZONE        = 2,
+    PARAM_EI_BITTYBIT        = 3,
+    PARAM_EI_CLI_COLOR       = 4,
+} param_ei_t;
 
 typedef enum {
     BITTYBIT_INDICES_RED   = 0,

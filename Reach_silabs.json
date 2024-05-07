@@ -373,23 +373,6 @@
 					"description": "Get ('lm') or set ('lm <hex value>') the current Reach log mask"
 				}
 			]
-		},
-        "streamService": {
-            "streams": [
-                {
-                    "name": "from device",
-                    "access": "read",
-                    "description": "counting up for a test"
-                },
-                {
-                    "name": "to device",
-                    "access": "write",
-                    "description": "throw away received data"
-                }
-            ]
-        },
-        "WiFService": {
-            "AP count": 4
-        }
+		}
 	}
 }

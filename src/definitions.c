@@ -49,7 +49,7 @@ const cr_DeviceInfoResponse device_info = {
     .device_name = "Thunderboard",
     .manufacturer = "Silicon Labs",
     .device_description = "A demo of Reach features",
-    .services = cr_ServiceIds_PARAMETER_REPO | cr_ServiceIds_FILES | cr_ServiceIds_COMMANDS | cr_ServiceIds_CLI | cr_ServiceIds_STREAMS | cr_ServiceIds_WIFI
+    .services = cr_ServiceIds_PARAMETER_REPO | cr_ServiceIds_FILES | cr_ServiceIds_COMMANDS | cr_ServiceIds_CLI
 };
 cr_ParameterValue sCr_param_val[NUM_PARAMS];
 const cr_ParameterInfo param_desc[NUM_PARAMS] = {
@@ -446,38 +446,54 @@ cr_FileInfo file_descriptions[NUM_FILES] = {
         .require_checksum = false
     }
 };
-cr_CommandInfo command_desc[NUM_COMMANDS] = {
+const cr_CommandInfo command_desc[NUM_COMMANDS] = {
     {
         .id = COMMAND_RESET_DEFAULTS,
-        .name = "Restore factory values."
+        .name = "Reset Defaults",
+        .has_description = true,
+        .description = "Restore factory values."
     },
     {
         .id = COMMAND_CLICK_FOR_WISDOM,
-        .name = "Press it and find out"
+        .name = "Click for Wisdom",
+        .has_description = true,
+        .description = "Press it and find out"
     },
     {
         .id = COMMAND_NO_LOGGING,
-        .name = "lm 0"
+        .name = "No logging",
+        .has_description = true,
+        .description = "lm 0"
     },
     {
         .id = COMMAND_MUCH_LOGGING,
-        .name = "lm 1c7"
+        .name = "Much logging",
+        .has_description = true,
+        .description = "lm 1c7"
     },
     {
         .id = COMMAND_NOTIFICATIONS_ON,
-        .name = "Enable notifications on changes"
+        .name = "Notifications On",
+        .has_description = true,
+        .description = "Enable notifications on changes"
     },
     {
         .id = COMMAND_NOTIFICATIONS_OFF,
-        .name = "disable all notifications"
+        .name = "Notifications Off",
+        .has_description = true,
+        .description = "disable all notifications"
     },
     {
         .id = COMMAND_REMOTE_CLI_ON,
-        .name = "To interact remotely"
+        .name = "Remote CLI On",
+        .has_description = true,
+        .description = "To interact remotely"
     },
     {
         .id = COMMAND_REMOTE_CLI_OFF,
-        .name = "Avoids heavy communication load"
+        .name = "Remote CLI Off",
+        .has_description = true,
+        .description = "Avoids heavy communication load"
     }
 };
 

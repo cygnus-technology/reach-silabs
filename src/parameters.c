@@ -932,8 +932,7 @@ static uint32_t calculate_nvm_hash(void)
 #endif // PARAM_REPO_USE_NVM_STORAGE
 
 
-#if NUM_SUPPORTED_PARAM_NOTIFY != 0
-
+#ifdef NUM_INIT_NOTIFICATIONS
 int crcb_parameter_notification_init(const cr_ParameterNotifyConfig **pNoteArray, size_t *pNum)
 {
     *pNum = NUM_INIT_NOTIFICATIONS;
@@ -941,7 +940,7 @@ int crcb_parameter_notification_init(const cr_ParameterNotifyConfig **pNoteArray
     return 0;
 }
 
-#endif // NUM_SUPPORTED_PARAM_NOTIFY != 0
+#endif // NUM_INIT_NOTIFICATIONS
 
 // User code end [P7]
 
