@@ -424,26 +424,29 @@ cr_FileInfo file_descriptions[NUM_FILES] = {
     {
         .file_id = FILE_IO_TXT,
         .file_name = "io.txt",
-        .maximum_size_bytes = 2048,
         .access = cr_AccessLevel_READ_WRITE,
         .storage_location = cr_StorageLocation_NONVOLATILE,
-        .require_checksum = false
+        .require_checksum = false,
+        .has_maximum_size_bytes = true,
+        .maximum_size_bytes = 2048
     },
     {
         .file_id = FILE_CYGNUS_REACH_LOGO_PNG,
         .file_name = "cygnus-reach-logo.png",
-        .maximum_size_bytes = 17900,
         .access = cr_AccessLevel_READ,
         .storage_location = cr_StorageLocation_NONVOLATILE,
-        .require_checksum = false
+        .require_checksum = false,
+        .has_maximum_size_bytes = true,
+        .maximum_size_bytes = 17900
     },
     {
         .file_id = FILE_DEV_NULL,
         .file_name = "dev_null",
-        .maximum_size_bytes = 100000,
         .access = cr_AccessLevel_READ_WRITE,
         .storage_location = cr_StorageLocation_RAM,
-        .require_checksum = false
+        .require_checksum = false,
+        .has_maximum_size_bytes = true,
+        .maximum_size_bytes = 100000
     }
 };
 const cr_CommandInfo command_desc[NUM_COMMANDS] = {

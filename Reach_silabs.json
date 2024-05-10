@@ -1,102 +1,96 @@
 {
-	"name": "Thunderboard",
-	"manufacturer": "Silicon Labs",
-	"description": "A demo of Reach features",
-	"services":
-	{
-		"parameterRepositoryService": {
-			"features": {
-				"descriptions": true,
-				"discovery": true,
-				"storage": true
-			},
-			"parameters": [
-				{
-					"name": "User Device Name",
-					"description": "The advertised BLE name",
-					"access": "Read/Write",
-					"storageLocation": "NVM",
-					"dataType": "string",
-					"maxSize": 29
-				},
-				{
-					"name": "Uptime",
-					"access": "Read",
-					"storageLocation": "RAM",
-					"dataType": "int64",
-					"units": "milliseconds"
-				},
-				{
-					"name": "Button Pressed",
-					"access": "Read",
-					"storageLocation": "RAM",
-					"dataType": "boolean",
+    "name": "Thunderboard",
+    "manufacturer": "Silicon Labs",
+    "description": "A demo of Reach features",
+    "services":
+    {
+        "parameterRepositoryService": {
+            "features": {
+                "descriptions": true,
+                "discovery": true,
+                "storage": true
+            },
+            "parameters": [
+                {
+                    "name": "User Device Name",
+                    "description": "The advertised BLE name",
+                    "access": "Read/Write",
+                    "storageLocation": "NVM",
+                    "dataType": "string",
+                    "maxSize": 29
+                },
+                {
+                    "name": "Uptime",
+                    "access": "Read",
+                    "storageLocation": "RAM",
+                    "dataType": "int64",
+                    "units": "milliseconds"
+                },
+                {
+                    "name": "Button Pressed",
+                    "access": "Read",
+                    "storageLocation": "RAM",
+                    "dataType": "boolean",
                     "labelName": "Identify Switch"
-				},
-				{
-					"name": "Identify LED",
-					"access": "Read",
-					"storageLocation": "RAM",
-					"dataType": "boolean",
-					"labelName": "Identify LED",
-                    "minimum_notification_period": 302,
-                    "maximum_notification_period": 0,
-                    "minimum_delta": 1
-				},
-				{
-					"name": "RGB LED State",
-					"description": "A demo of a bitfield",
-					"access": "Read/Write",
-					"storageLocation": "RAM",
-					"dataType": "bitfield",
-					"bitsAvailable": 3,
-					"labelName": "BittyBit"
-				},
-				{
-					"name": "Command Line Color",
-					"description": "Reset on disconnection",
-					"access": "Read/Write",
-					"storageLocation": "RAM",
-					"dataType": "enumeration",
-					"rangeMin": 0,
-					"rangeMax": 7,
-					"labelName": "CLI Color"
-				},
-				{
-					"name": "Identify",
-					"description": "Turn on to blink the yellow LED",
-					"access": "Read/Write",
-					"storageLocation": "RAM",
-					"dataType": "boolean",
-					"defaultValue": false,
-                    "minimum_notification_period": 501,
-                    "maximum_notification_period": 0,
-                    "minimum_delta": 1
-				},
-				{
-					"name": "Identify Interval",
-					"access": "Read/Write",
-					"storageLocation": "NVM",
-					"dataType": "float32",
-					"rangeMin": 0.01,
-					"rangeMax": 60,
-					"defaultValue": 1
-				},
+                },
+                {
+                    "name": "Identify LED",
+                    "access": "Read",
+                    "storageLocation": "RAM",
+                    "dataType": "boolean",
+                    "labelName": "Identify LED",
+                    "defaultNotifications": {"minInterval": 302, "minDelta": 1}
+                },
+                {
+                    "name": "RGB LED State",
+                    "description": "A demo of a bitfield",
+                    "access": "Read/Write",
+                    "storageLocation": "RAM",
+                    "dataType": "bitfield",
+                    "bitsAvailable": 3,
+                    "labelName": "BittyBit"
+                },
+                {
+                    "name": "Command Line Color",
+                    "description": "Reset on disconnection",
+                    "access": "Read/Write",
+                    "storageLocation": "RAM",
+                    "dataType": "enumeration",
+                    "rangeMin": 0,
+                    "rangeMax": 7,
+                    "labelName": "CLI Color"
+                },
+                {
+                    "name": "Identify",
+                    "description": "Turn on to blink the yellow LED",
+                    "access": "Read/Write",
+                    "storageLocation": "RAM",
+                    "dataType": "boolean",
+                    "defaultValue": false,
+                    "defaultNotifications": {"minInterval": 501, "minDelta": 1}
+                },
+                {
+                    "name": "Identify Interval",
+                    "access": "Read/Write",
+                    "storageLocation": "NVM",
+                    "dataType": "float32",
+                    "rangeMin": 0.01,
+                    "rangeMax": 60,
+                    "defaultValue": 1
+                },
 
-				{
-					"name": "Relative Humidity",
+                {
+                    "name": "Relative Humidity",
                     "description": "Read from Thunderboard Sensor",
-					"access": "Read",
+                    "access": "Read",
                     "units": "%",
-					"storageLocation": "RAM",
-					"dataType": "float32",
-					"rangeMin": 0.01,
-					"rangeMax": 100,
+                    "storageLocation": "RAM",
+                    "dataType": "float32",
+                    "rangeMin": 0.01,
+                    "rangeMax": 100,
                     "precision": 1,
-                    "minimum_notification_period": 2010,
-                    "maximum_notification_period": 60000,
-                    "minimum_delta": 1.0
-				},
+                    "defaultNotifications": {"minInterval": 2010, "maxInterval": 60000, "minDelta": 1}
+                },
                 {
                     "name": "Temperature",
                     "description": "Read from Thunderboard Sensor",
@@ -107,9 +101,7 @@
                     "rangeMax": 99,
                     "precision": 1,
                     "units": "\u00B0 C",
-                    "minimum_notification_period": 2020,
-                    "maximum_notification_period": 60000,
-                    "minimum_delta": 0.2
+                    "defaultNotifications": {"minInterval": 2020, "maxInterval": 60000, "minDelta": 0.2}
                 },
                 {
                     "name": "Light Level",
@@ -121,9 +113,7 @@
                     "rangeMax": 1000,
                     "precision": 1,
                     "units": "lux",
-                    "minimum_notification_period": 1020,
-                    "maximum_notification_period": 60000,
-                    "minimum_delta": 20.0
+                    "defaultNotifications": {"minInterval": 1020, "maxInterval": 60000, "minDelta": 20}
                 },
                 {
                     "name": "UV Index",
@@ -135,9 +125,7 @@
                     "rangeMax": 100,
                     "precision": 1,
                     "units": "W/sq meter",
-                    "minimum_notification_period": 3031,
-                    "maximum_notification_period": 60000,
-                    "minimum_delta": 1.0
+                    "defaultNotifications": {"minInterval": 3031, "maxInterval": 60000, "minDelta": 1}
                 },
                 {
                     "name": "Magnetic Field Strength",
@@ -149,9 +137,7 @@
                     "rangeMax": 5000,
                     "precision": 1,
                     "units": "millitesla",
-                    "minimum_notification_period": 3019,
-                    "maximum_notification_period": 60000,
-                    "minimum_delta": 0.2
+                    "defaultNotifications": {"minInterval": 3019, "maxInterval": 60000, "minDelta": 0.2}
                 },
                 {
                     "name": "Acceleration (X axis)",
@@ -163,9 +149,7 @@
                     "rangeMax": 50,
                     "precision": 2,
                     "units": "m/s",
-                    "minimum_notification_period": 2037,
-                    "maximum_notification_period": 0,
-                    "minimum_delta": 0.2
+                    "defaultNotifications": {"minInterval": 2037, "minDelta": 0.2}
                 },
                 {
                     "name": "Acceleration (Y axis)",
@@ -177,9 +161,7 @@
                     "rangeMax": 50,
                     "precision": 2,
                     "units": "m/s",
-                    "minimum_notification_period": 2047,
-                    "maximum_notification_period": 0,
-                    "minimum_delta": 0.2
+                    "defaultNotifications": {"minInterval": 2047, "minDelta": 0.2}
                 },
                 {
                     "name": "Acceleration (Z axis)",
@@ -191,9 +173,7 @@
                     "rangeMax": 50,
                     "precision": 2,
                     "units": "m/s",
-                    "minimum_notification_period": 2057,
-                    "maximum_notification_period": 0,
-                    "minimum_delta": 0.2
+                    "defaultNotifications": {"minInterval": 2057, "minDelta": 0.2}
                 },
 
                 {
@@ -221,14 +201,14 @@
                     "maxSize": 6
                 }
 
-			],
-			"extendedLabels": [
-				{
-					"name": "Identify Switch",
-					"dataType": "boolean",
-					"falseLabel": "Not Identifying",
-					"trueLabel": "Identifying"
-				},
+            ],
+            "extendedLabels": [
+                {
+                    "name": "Identify Switch",
+                    "dataType": "boolean",
+                    "falseLabel": "Not Identifying",
+                    "trueLabel": "Identifying"
+                },
                 {
                     "name": "Identify LED",
                     "dataType": "boolean",
@@ -241,97 +221,100 @@
                     "falseLabel": "Non-Timezoned",
                     "trueLabel": "Timezoned"
                 },
-				{
-					"name": "BittyBit",
-					"dataType": "bitfield",
-					"bitIndices": [
-						{
-							"label": "Red"
-						},
-						{
-							"label": "Green"
-						},
-						{
-							"label": "Blue"
-						}
-					]
-				},
-				{
-					"name": "CLI Color",
-					"dataType": "enumeration",
-					"enumValues": [
-						{
-							"label": "Off"
-						},
-						{
-							"label": "Red"
-						},
-						{
-							"label": "Green"
-						},
-						{
-							"label": "Yellow"
-						},
-						{
-							"label": "Blue"
-						},
-						{
-							"label": "Magenta"
-						},
-						{
-							"label": "Cyan"
-						},
-						{
-							"label": "White"
-						}
-					]
-				}
-			]
-		},
-		"fileService": {
-			"features": {
-				"descriptions": true,
-				"discovery": true
-			},
-			"files": [
-				{
-					"name": "io.txt",
-					"maxSize": 2048,
-					"access": "Read/Write",
-					"storageLocation": "NVM"
-				},
-				{
-					"name": "cygnus-reach-logo.png",
-					"maxSize": 17900,
-					"access": "Read",
-					"storageLocation": "NVM"
-				},
-				{
-					"name": "dev_null",
-					"maxSize": 100000,
-					"access": "Read/Write",
-					"storageLocation": "RAM"
-				}
-			]
-		},
-		"commandService": {
-			"features": {
-				"descriptions": true,
-				"discovery": true
-			},
-			"commands": [
-				{
-					"name": "Reset Defaults",
-					"description": "Restore factory values."
-				},
-				{
-					"name": "Click for Wisdom",
-					"description": "Press it and find out"
-				},
-				{
-					"name": "No logging",
-					"description": "lm 0"
-				},
+                {
+                    "name": "BittyBit",
+                    "dataType": "bitfield",
+                    "bitIndices": [
+                        {
+                            "label": "Red"
+                        },
+                        {
+                            "label": "Green"
+                        },
+                        {
+                            "label": "Blue"
+                        }
+                    ]
+                },
+                {
+                    "name": "CLI Color",
+                    "dataType": "enumeration",
+                    "enumValues": [
+                        {
+                            "label": "Off"
+                        },
+                        {
+                            "label": "Red"
+                        },
+                        {
+                            "label": "Green"
+                        },
+                        {
+                            "label": "Yellow"
+                        },
+                        {
+                            "label": "Blue"
+                        },
+                        {
+                            "label": "Magenta"
+                        },
+                        {
+                            "label": "Cyan"
+                        },
+                        {
+                            "label": "White"
+                        }
+                    ]
+                }
+            ]
+        },
+        "fileService": {
+            "features": {
+                "descriptions": true,
+                "discovery": true
+            },
+            "files": [
+                {
+                    "name": "io.txt",
+                    "maxSize": 2048,
+                    "access": "Read/Write",
+                    "storageLocation": "NVM",
+                    "requireChecksum": false
+                },
+                {
+                    "name": "cygnus-reach-logo.png",
+                    "maxSize": 17900,
+                    "access": "Read",
+                    "storageLocation": "NVM",
+                    "requireChecksum": false
+                },
+                {
+                    "name": "dev_null",
+                    "maxSize": 100000,
+                    "access": "Read/Write",
+                    "storageLocation": "RAM",
+                    "requireChecksum": false
+                }
+            ]
+        },
+        "commandService": {
+            "features": {
+                "descriptions": true,
+                "discovery": true
+            },
+            "commands": [
+                {
+                    "name": "Reset Defaults",
+                    "description": "Restore factory values."
+                },
+                {
+                    "name": "Click for Wisdom",
+                    "description": "Press it and find out"
+                },
+                {
+                    "name": "No logging",
+                    "description": "lm 0"
+                },
                 {
                     "name": "Much logging",
                     "description": "lm 1c7"
@@ -352,27 +335,27 @@
                     "name": "Remote CLI Off",
                     "description": "Avoids heavy communication load"
                 }
-			]
-		},
-		"cliService": {
-			"features": {
-				"ble": true,
-				"uart": true
-			},
-			"commands": [
-				{
-					"string": "ver",
-					"description": "Print versions"
-				},
-				{
-					"string": "/",
-					"description": "Display status"
-				},
-				{
-					"string": "lm",
-					"description": "Get ('lm') or set ('lm <hex value>') the current Reach log mask"
-				}
-			]
-		}
-	}
+            ]
+        },
+        "cliService": {
+            "features": {
+                "ble": true,
+                "uart": true
+            },
+            "commands": [
+                {
+                    "string": "ver",
+                    "description": "Print versions"
+                },
+                {
+                    "string": "/",
+                    "description": "Display status"
+                },
+                {
+                    "string": "lm",
+                    "description": "Get ('lm') or set ('lm <hex value>') the current Reach log mask"
+                }
+            ]
+        }
+    }
 }
