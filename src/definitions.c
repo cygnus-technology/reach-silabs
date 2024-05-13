@@ -310,6 +310,63 @@ const cr_ParameterInfo param_desc[NUM_PARAMS] = {
         .desc.bytearray_desc.max_size = 6
     }
 };
+const cr_ParameterNotifyConfig sParamNotifyInit[NUM_INIT_NOTIFICATIONS] = {
+    {
+        .parameter_id = PARAM_IDENTIFY_LED,
+        .minimum_notification_period = 302,
+        .minimum_delta = 1
+    },
+    {
+        .parameter_id = PARAM_IDENTIFY,
+        .minimum_notification_period = 501,
+        .minimum_delta = 1
+    },
+    {
+        .parameter_id = PARAM_RELATIVE_HUMIDITY,
+        .minimum_notification_period = 2010,
+        .maximum_notification_period = 60000,
+        .minimum_delta = 1
+    },
+    {
+        .parameter_id = PARAM_TEMPERATURE,
+        .minimum_notification_period = 2020,
+        .maximum_notification_period = 60000,
+        .minimum_delta = 0.2
+    },
+    {
+        .parameter_id = PARAM_LIGHT_LEVEL,
+        .minimum_notification_period = 1020,
+        .maximum_notification_period = 60000,
+        .minimum_delta = 20
+    },
+    {
+        .parameter_id = PARAM_UV_INDEX,
+        .minimum_notification_period = 3031,
+        .maximum_notification_period = 60000,
+        .minimum_delta = 1
+    },
+    {
+        .parameter_id = PARAM_MAGNETIC_FIELD_STRENGTH,
+        .minimum_notification_period = 3019,
+        .maximum_notification_period = 60000,
+        .minimum_delta = 0.2
+    },
+    {
+        .parameter_id = PARAM_ACCELERATION_X_AXIS,
+        .minimum_notification_period = 2037,
+        .minimum_delta = 0.2
+    },
+    {
+        .parameter_id = PARAM_ACCELERATION_Y_AXIS,
+        .minimum_notification_period = 2047,
+        .minimum_delta = 0.2
+    },
+    {
+        .parameter_id = PARAM_ACCELERATION_Z_AXIS,
+        .minimum_notification_period = 2057,
+        .minimum_delta = 0.2
+    }
+};
 static const cr_ParamExKey __cr_gen_pei_identify_switch_labels[] = {
     {
         .id = 0,

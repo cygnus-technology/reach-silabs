@@ -43,7 +43,8 @@
 #include "reach.pb.h"
 
 #define INCLUDE_PARAMETER_SERVICE
-#define NUM_PARAMS    19
+#define NUM_PARAMS 19
+#define NUM_INIT_NOTIFICATIONS 10
 #define NUM_EX_PARAMS 5
 
 #define INCLUDE_FILE_SERVICE
@@ -65,6 +66,7 @@ extern cr_ParameterValue sCr_param_val[NUM_PARAMS];
 extern const cr_DeviceInfoResponse device_info;
 extern const cr_ParameterInfo param_desc[NUM_PARAMS];
 extern const cr_gen_param_ex_t param_ex_desc[NUM_EX_PARAMS];
+extern const cr_ParameterNotifyConfig sParamNotifyInit[NUM_INIT_NOTIFICATIONS];
 extern cr_FileInfo file_descriptions[NUM_FILES];
 extern const cr_CommandInfo command_desc[NUM_COMMANDS];
 
@@ -105,9 +107,9 @@ typedef enum {
 } bittybit_indices_t;
 
 typedef enum {
-    BITTYBIT_RED   = 0b1 << BITTYBIT_INDICES_RED,
-    BITTYBIT_GREEN = 0b1 << BITTYBIT_INDICES_GREEN,
-    BITTYBIT_BLUE  = 0b1 << BITTYBIT_INDICES_BLUE,
+    BITTYBIT_RED   = (0b1 << BITTYBIT_INDICES_RED),
+    BITTYBIT_GREEN = (0b1 << BITTYBIT_INDICES_GREEN),
+    BITTYBIT_BLUE  = (0b1 << BITTYBIT_INDICES_BLUE),
 } bittybit_t;
 
 typedef enum {
