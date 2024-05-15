@@ -38,6 +38,9 @@
  ********************************************************************************************/
 
 #include "definitions.h"
+
+#ifdef INCLUDE_PARAMETER_SERVICE
+
 #include <stdio.h>
 #include <string.h>
 #include <assert.h>
@@ -45,17 +48,7 @@
 #include "app_version.h"
 #include "cr_stack.h"
 
-#ifdef NUM_INIT_NOTIFICATIONS
-#if NUM_INIT_NOTIFICATIONS > NUM_SUPPORTED_PARAM_NOTIFY
-#error "Too many default notifications for the current NUM_SUPPORTED_PARAM_NOTIFY value"
-#endif // NUM_INIT_NOTIFICATIONS > NUM_SUPPORTED_PARAM_NOTIFY
-#endif // NUM_INIT_NOTIFICATIONS
-
-#define PARAM_EI_TO_NUM_PEI_RESPONSES(param_ex) ((param_ex.num_labels / 8) + ((param_ex.num_labels % 8) ? 1:0))
-
-// Extra includes and forward declarations here.
-// User code start [P1]
-
+/* User code start [Parameter Repository: User Includes] */
 #include "sl_bluetooth.h"
 #include "sl_sensor_hall.h"
 #include "sl_sensor_light.h"
@@ -67,6 +60,17 @@
 #include "definitions.h"
 #include "i3_log.h"
 #include "reach_silabs.h"
+/* User code end [Parameter Repository: User Includes] */
+
+#ifdef NUM_INIT_NOTIFICATIONS
+#if NUM_INIT_NOTIFICATIONS > NUM_SUPPORTED_PARAM_NOTIFY
+#error "Too many default notifications for the current NUM_SUPPORTED_PARAM_NOTIFY value"
+#endif // NUM_INIT_NOTIFICATIONS > NUM_SUPPORTED_PARAM_NOTIFY
+#endif // NUM_INIT_NOTIFICATIONS
+
+#define PARAM_EI_TO_NUM_PEI_RESPONSES(param_ex) ((param_ex.num_labels / 8) + ((param_ex.num_labels % 8) ? 1:0))
+
+/* User code start [Parameter Repository: User Defines/Variables/Function Declarations] */
 
 #define PARAM_REPO_USE_NVM_STORAGE
 
@@ -83,29 +87,15 @@ static bool nvm_failed = false;
 
 char get_cli_text_color_response[] = TEXT_BLACK;
 
-char* param_repo_get_cli_text_color(void)
-{
-    memcpy(get_cli_text_color_response, TEXT_BLACK, sizeof(TEXT_BLACK));
-    switch (sCr_param_val[PARAM_COMMAND_LINE_COLOR].value.enum_value)
-    {
-    case CLI_COLOR_OFF:
-        memset(get_cli_text_color_response, 0, sizeof(get_cli_text_color_response));
-        break;
-    default:
-        // Change one character to get the color right
-        get_cli_text_color_response[3] = '0' + sCr_param_val[PARAM_COMMAND_LINE_COLOR].value.enum_value;
-        break;
-    }
-    return get_cli_text_color_response;
-}
-
+char* param_repo_get_cli_text_color(void);
 int param_repo_reset_nvm(void);
 int app_handle_param_repo_pre_init(void);
 int app_handle_param_repo_init(cr_ParameterValue *data, const cr_ParameterInfo *desc);
 int app_handle_param_repo_post_init(void);
 int app_handle_param_repo_read(cr_ParameterValue *data);
 int app_handle_param_repo_write(cr_ParameterValue *data);
-// User code end [P1]
+
+/* User code end [Parameter Repository: User Defines/Variables/Function Declarations] */
 
 #ifdef NUM_PARAMS
 static int sFindIndexFromPid(uint32_t pid, uint32_t *index)
@@ -142,14 +132,14 @@ static int sFindIndexFromPeiId(uint32_t pei_id, uint32_t *index)
 #ifdef NUM_PARAMS
 void init_param_repo()
 {
-    // User code start [P2]
+    /* User code start [Parameter Repository: Pre-Init]
+     * Here is the place to do any initialization required before individual parameters are initialized */
     int rval = app_handle_param_repo_pre_init();
     if (rval)
     {
         I3_LOG(LOG_MASK_ERROR, "App-specific param repo pre-init failed (error %d), continuing with init", rval);
     }
-
-    // User code end [P2]
+    /* User code end [Parameter Repository: Pre-Init] */
     memset(sCr_param_val, 0, sizeof(sCr_param_val));
     for (int i = 0; i < NUM_PARAMS; i++)
     {
@@ -227,24 +217,25 @@ void init_param_repo()
                    i, param_desc[i].storage_location);
         }
 
-        // User code start [P3]
+        /* User code start [Parameter Repository: Parameter Init]
+         * Here is the place to do any initialization specific to a certain parameter */
         rval = app_handle_param_repo_init(&sCr_param_val[i], &param_desc[i]);
         if (rval != 0)
         {
             I3_LOG(LOG_MASK_ERROR, "At param index %d, failed to initialize data (error %d)", i, rval);
         }
-
-        // User code end [P3]
+        /* User code end [Parameter Repository: Parameter Init] */
 
     } // end for
 
-    // User code start [P4]
+    /* User code start [Parameter Repository: Post-Init]
+     * Here is the place to do any initialization required after parameters have been initialized */
     rval = app_handle_param_repo_post_init();
     if (rval)
     {
         I3_LOG(LOG_MASK_ERROR, "App-specific param repo post-init failed (error %d), continuing with init", rval);
     }
-    // User code end [P4]
+    /* User code end [Parameter Repository: Post-Init] */
 }
 #endif // NUM_PARAMS
 
@@ -275,9 +266,10 @@ int crcb_parameter_read(const uint32_t pid, cr_ParameterValue *data)
     if (0 != rval) 
         return rval;
 
-    // User code start [P5]
+    /* User code start [Parameter Repository: Parameter Read]
+     * Here is the place to update the data from an external source, and update the return value if necessary */
     rval = app_handle_param_repo_read(&sCr_param_val[idx]);
-    // User code end [P5]
+    /* User code end [Parameter Repository: Parameter Read] */
 
     *data = sCr_param_val[idx];
     return rval;
@@ -294,15 +286,15 @@ int crcb_parameter_write(const uint32_t pid, const cr_ParameterValue *data)
     I3_LOG(LOG_MASK_PARAMS, "  timestamp %d", data->timestamp);
     I3_LOG(LOG_MASK_PARAMS, "  which %d", data->which_value);
 
-    // User code start [P6]
+    /* User code start [Parameter Repository: Parameter Write]
+     * Here is the place to apply this change externally, and return an error if necessary */
     rval = app_handle_param_repo_write((cr_ParameterValue *)data);
     if (rval != 0)
     {
         // Invalid data or NVM storage failed
         return rval;
     }
-
-    // User code end [P6]
+    /* User code end [Parameter Repository: Parameter Write] */
 
     sCr_param_val[idx].timestamp = data->timestamp;
     sCr_param_val[idx].which_value = data->which_value;
@@ -566,8 +558,23 @@ int crcb_parameter_notification_init(const cr_ParameterNotifyConfig **pNoteArray
 }
 #endif // NUM_INIT_NOTIFICATIONS
 
-// User functions here
-// User code start [P7]
+/* User code start [Parameter Repository: User Functions] */
+
+char* param_repo_get_cli_text_color(void)
+{
+    memcpy(get_cli_text_color_response, TEXT_BLACK, sizeof(TEXT_BLACK));
+    switch (sCr_param_val[PARAM_COMMAND_LINE_COLOR].value.enum_value)
+    {
+    case CLI_COLOR_OFF:
+        memset(get_cli_text_color_response, 0, sizeof(get_cli_text_color_response));
+        break;
+    default:
+        // Change one character to get the color right
+        get_cli_text_color_response[3] = '0' + sCr_param_val[PARAM_COMMAND_LINE_COLOR].value.enum_value;
+        break;
+    }
+    return get_cli_text_color_response;
+}
 
 int param_repo_reset_nvm(void)
 {
@@ -944,6 +951,6 @@ static uint32_t calculate_nvm_hash(void)
 }
 #endif // PARAM_REPO_USE_NVM_STORAGE
 
-// User code end [P7]
+/* User code end [Parameter Repository: User Functions] */
 
-
+#endif // INCLUDE_PARAMETER_SERVICE

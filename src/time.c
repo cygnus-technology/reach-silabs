@@ -48,16 +48,18 @@
 #include "app_version.h"
 #include "cr_stack.h"
 
-// Extra includes and forward declarations here.
-// User code start [T1]
-static int64_t time_offset = 0;
+/* User code start [Time: User Includes] */
 #include "reach_silabs.h"
-// User code end [T1]
+/* User code end [Time: User Includes] */
+
+/* User code start [Time: User Defines/Variables/Function Declarations] */
+static int64_t time_offset = 0;
+/* User code end [Time: User Defines/Variables/Function Declarations] */
 
 
 int crcb_time_get(cr_TimeGetResponse *response)
 {
-  // User code start [T2]
+  /* User code start [Time: Get] */
   response->seconds_utc = (rsl_get_system_uptime() + time_offset) / 1000;
   response->has_timezone = sCr_param_val[PARAM_TIMEZONE_ENABLED].value.bool_value;
   if (!response->has_timezone)
@@ -68,13 +70,13 @@ int crcb_time_get(cr_TimeGetResponse *response)
   {
     response->timezone = sCr_param_val[PARAM_TIMEZONE_OFFSET].value.int32_value;
   }
-  // User code end [T2]
+  /* User code end [Time: Get] */
   return 0;
 }
 
 int crcb_time_set(const cr_TimeSetRequest *request)
 {
-  // User code start [T3]
+  /* User code start [Time: Set] */
   time_offset = (request->seconds_utc * 1000) - rsl_get_system_uptime();
   if (request->has_timezone)
   {
@@ -85,12 +87,12 @@ int crcb_time_set(const cr_TimeSetRequest *request)
     param.value.int32_value = request->timezone;
     crcb_parameter_write(PARAM_TIMEZONE_OFFSET, &param);
   }
-  // User code end [T3]
+  /* User code end [Time: Set] */
   return 0;
 }
 
-// Local variables and functions here
-// User code start [T4]
-// User code end [T4]
+/* User code start [Time: User Functions] */
+/* User code end [Time: User Functions] */
+
 #endif
 

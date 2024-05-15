@@ -47,15 +47,36 @@
 #include "app_version.h"
 #include "cr_stack.h"
 
+/* User code start [Files: User Includes] */
+#include "const_files.h"
+/* User code end [Files: User Includes] */
 
-// Extra includes and forward declarations here.
-// User code start [F10]
-// User code end [F10]
-
-static uint8_t sFid_index = 0;
 #if NUM_FILES > 255
   #error "Can't have more than 255 files"
 #endif
+
+static uint8_t sFid_index = 0;
+
+/* User code start [Files: User Defines/Variables/Function Declarations] */
+
+// If defined, NVM files will be stored in the NVM3 system
+#define FILES_USE_NVM_STORAGE
+
+#ifdef FILES_USE_NVM_STORAGE
+#include "nvm3_generic.h"
+#define IO_TXT_KEY 0x1010
+#endif
+
+#define MAX_IO_TXT_LENGTH 2048
+
+void files_init(void);
+void files_reset(void);
+
+static char io_txt[MAX_IO_TXT_LENGTH];
+static size_t io_txt_size = 0;
+
+/* User code end [Files: User Defines/Variables/Function Declarations] */
+
 static int sFindIndexFromFid(uint32_t fid, uint8_t *index)
 {
     uint8_t idx;
@@ -75,11 +96,14 @@ int crcb_file_get_description(uint32_t fid, cr_FileInfo *file_desc)
     affirm(file_desc != NULL);
     uint8_t idx;
     rval = sFindIndexFromFid(fid, &idx);
-    if (rval != 0) return rval;
-    *file_desc = file_descriptions[idx];
+    if (rval != 0)
+        return rval;
 
-    // User code start [F0]
-    // User code end [F0]
+    /* User code start [Files: Get Description]
+     * If the file description needs to be updated (for example, changing the current size), now's the time */
+    /* User code end [Files: Get Description] */
+
+    *file_desc = file_descriptions[idx];
 
     return 0;
 }
@@ -137,23 +161,217 @@ int crcb_file_discover_next(cr_FileInfo *file_desc)
     return 0;
 }
 
-// Place helper functions here:
-// User code start [F1]
+int crcb_read_file(const uint32_t fid,           // which file
+                   const int offset,             // offset, negative value specifies current location.
+                   const size_t bytes_requested, // how many bytes to read
+                   uint8_t *pData,               // where the data goes
+                   int *bytes_read)              // bytes actually read, negative for errors.
+{
+    int rval = 0;
+    uint8_t idx;
+    rval = sFindIndexFromFid(fid, &idx);
+    if (0 != rval)
+    {
+        I3_LOG(LOG_MASK_ERROR, "%s(%d): invalid FID.", __FUNCTION__, fid);
+        return cr_ErrorCodes_INVALID_ID;
+    }
+    if (bytes_requested > REACH_BYTES_IN_A_FILE_PACKET)
+    {
+        I3_LOG(LOG_MASK_ERROR, "%s: %d is more than the buffer for a file read (%d).", __FUNCTION__, fid, REACH_BYTES_IN_A_FILE_PACKET);
+        return cr_ErrorCodes_BUFFER_TOO_SMALL;
+    }
 
-#include "const_files.h"
-
-// If defined, NVM files will be stored in the NVM3 system
-#define FILES_USE_NVM_STORAGE
-
+    /* User code start [Files: Read]
+     * The code generator does nothing to handle storing files, so this is where pData and bytes_read should be updated */
+  switch (fid)
+  {
+    case FILE_IO_TXT:
+      if (offset < 0 || offset >= (int) io_txt_size)
+      {
+        I3_LOG(LOG_MASK_ERROR, "io.txt read: Offset of %d is outside of the file size %d", offset, io_txt_size);
+        return cr_ErrorCodes_READ_FAILED;
+      }
 #ifdef FILES_USE_NVM_STORAGE
-#include "nvm3_generic.h"
-#define IO_TXT_KEY 0x1010
+      if (offset == 0)
+      {
+        // Update the local buffer of the file in case a write failed before this read
+        int rval = (int) nvm3_readData(nvm3_defaultHandle, IO_TXT_KEY, (uint8_t*) io_txt, io_txt_size);
+        if (rval != 0)
+          I3_LOG(LOG_MASK_ERROR, "io.txt read failed, error %d", rval);
+      }
 #endif
+      I3_LOG(LOG_MASK_FILES, "Read fid %u, offset %d, requested %d, size %d", 
+             fid, offset, bytes_requested, io_txt_size);
+      if (offset > (int)io_txt_size)
+      {
+        I3_LOG(LOG_MASK_ERROR, "io.txt read: Offset of %d is greater than size of %d", offset, io_txt_size);
+        return cr_ErrorCodes_READ_FAILED;
+      }
+      *bytes_read = ((offset + bytes_requested) > io_txt_size) ? (io_txt_size - offset) : bytes_requested;
+      memcpy(pData, &io_txt[offset], (size_t) *bytes_read);
+      break;
 
-#define MAX_IO_TXT_LENGTH 2048
+    case FILE_CYGNUS_REACH_LOGO_PNG:
+      I3_LOG(LOG_MASK_FILES, "Read fid %u, offset %d, requested %d", fid, offset, bytes_requested);
+      if (offset < 0 || offset >= (int) sizeof(cygnus_reach_logo))
+      {
+        I3_LOG(LOG_MASK_ERROR, "cygnus logo read: Offset of %d is outside of the file size %d", offset, sizeof(cygnus_reach_logo));
+        return cr_ErrorCodes_READ_FAILED;
+      }
+      *bytes_read = ((offset + bytes_requested) > sizeof(cygnus_reach_logo)) ? (sizeof(cygnus_reach_logo) - offset) : bytes_requested;
+      memcpy(pData, &cygnus_reach_logo[offset], (size_t) *bytes_read);
+      break;
+    case FILE_DEV_NULL:
+      I3_LOG(LOG_MASK_FILES, "Read fid %u (dev/null), offset %d, requested %d", fid, offset, bytes_requested);
+      *bytes_read = bytes_requested;
+      break;
+    default:
+      i3_log(LOG_MASK_ERROR, "Invalid file read (ID %u)", fid);
+      return cr_ErrorCodes_BAD_FILE;
+  }
+    /* User code end [Files: Read] */
 
-static char io_txt[MAX_IO_TXT_LENGTH];
-static size_t io_txt_size = 0;
+    return rval;
+}
+
+int crcb_file_prepare_to_write(const uint32_t fid, const size_t offset, const size_t bytes)
+{
+    int rval = 0;
+    uint8_t idx;
+    rval = sFindIndexFromFid(fid, &idx);
+    if (0 != rval)
+    {
+        I3_LOG(LOG_MASK_ERROR, "%s(%d): invalid FID.", __FUNCTION__, fid);
+        return cr_ErrorCodes_INVALID_ID;
+    }
+    /* User code start [Files: Pre-Write]
+     * This is the opportunity to prepare for a file write, or to reject it. */
+
+  switch (fid)
+  {
+    case FILE_IO_TXT:
+      // Partial writes are currently not supported by this demo
+      if (offset != 0)
+        return cr_ErrorCodes_INVALID_PARAMETER;
+      if (offset + bytes > sizeof(io_txt))
+        return cr_ErrorCodes_BUFFER_TOO_SMALL;
+      memset(&io_txt[offset], 0, bytes);
+      io_txt_size = bytes + offset;
+      break;
+
+    case FILE_DEV_NULL:
+      break;
+
+    default:
+      return cr_ErrorCodes_BAD_FILE;
+  }
+    /* User code end [Files: Pre-Write] */
+    return 0;
+}
+
+int crcb_write_file(const uint32_t fid, // which file
+                    const int offset,      // offset, negative value specifies current location.
+                    const size_t bytes,    // how many bytes to write
+                    const uint8_t *pData)  // where to get the data from
+{
+    int rval = 0;
+    uint8_t idx;
+    rval = sFindIndexFromFid(fid, &idx);
+    if (0 != rval)
+    {
+        I3_LOG(LOG_MASK_ERROR, "%s(%d): invalid FID.", __FUNCTION__, fid);
+        return cr_ErrorCodes_INVALID_ID;
+    }
+    /* User code start [Files: Write]
+     * Here is where the received data should be copied to wherever the application is storing it */
+
+  switch (fid)
+  {
+    case FILE_IO_TXT:
+      if (offset < 0 || offset + bytes > io_txt_size)
+      {
+        I3_LOG(LOG_MASK_ERROR, "io.txt write failed outside of limited size, error %d", cr_ErrorCodes_WRITE_FAILED);
+        return cr_ErrorCodes_WRITE_FAILED;
+      }
+      memcpy(&io_txt[offset], pData, bytes);
+      break;
+    case FILE_DEV_NULL:
+      I3_LOG(LOG_MASK_FILES, "Write fid %u (dev/null), offset %d, bytes %d", fid, offset, bytes);
+      break;
+
+    default:
+      return cr_ErrorCodes_BAD_FILE;
+  }
+    /* User code end [Files: Write] */
+    return 0;
+}
+
+int crcb_file_transfer_complete(const uint32_t fid)
+{
+    int rval = 0;
+    uint8_t idx;
+    rval = sFindIndexFromFid(fid, &idx);
+    if (0 != rval)
+    {
+        I3_LOG(LOG_MASK_ERROR, "%s(%d): invalid FID.", __FUNCTION__, fid);
+        return cr_ErrorCodes_INVALID_ID;
+    }
+    /* User code start [Files: Write Complete]
+     * This allows the application to handle any actions which need to occur after a file has successfully been written */
+  switch (fid)
+  {
+    case FILE_IO_TXT:
+#ifdef FILES_USE_NVM_STORAGE
+      int rval = (int) nvm3_writeData(nvm3_defaultHandle, IO_TXT_KEY, (uint8_t*) io_txt, io_txt_size);
+      if (rval != 0)
+        I3_LOG(LOG_MASK_ERROR, "io.txt write failed, error %d", rval);
+#endif
+      file_descriptions[FILE_IO_TXT].current_size_bytes = (int32_t) io_txt_size;
+      break;
+
+    case FILE_DEV_NULL:
+      break;
+
+    default:
+      return cr_ErrorCodes_BAD_FILE;
+  }
+    /* User code end [Files: Write Complete] */
+    return 0;
+}
+
+// returns zero or an error code
+int crcb_erase_file(const uint32_t fid)
+{
+    int rval = 0;
+    uint8_t idx;
+    rval = sFindIndexFromFid(fid, &idx);
+    if (0 != rval)
+    {
+        I3_LOG(LOG_MASK_ERROR, "%s(%d): invalid FID.", __FUNCTION__, fid);
+        return cr_ErrorCodes_INVALID_ID;
+    }
+    /* User code start [Files: Erase]
+     * The exact meaning of "erasing" is user-defined, depending on how files are stored by the application */
+  switch (fid)
+  {
+    case FILE_IO_TXT:
+#ifdef FILES_USE_NVM_STORAGE
+      int rval = nvm3_deleteObject(nvm3_defaultHandle, IO_TXT_KEY);
+      if (rval != 0)
+        I3_LOG(LOG_MASK_ERROR, "Failed to erase io.txt, error %d", rval);
+#endif
+      io_txt_size = 0;
+      memset(io_txt, 0, sizeof(io_txt));
+      file_descriptions[FILE_IO_TXT].current_size_bytes = (int32_t) io_txt_size;
+      break;
+    default:
+      return cr_ErrorCodes_BAD_FILE;
+  }
+    /* User code end [Files: Erase] */
+    return 0;
+}
+
+/* User code start [Files: User Functions] */
 
 void files_init(void)
 {
@@ -210,213 +428,8 @@ void files_reset(void)
     I3_LOG(LOG_MASK_ERROR, "io.txt write failed, error %d", rval);
 #endif
 }
-// User code end [F1]
 
-
-int crcb_read_file(const uint32_t fid,           // which file
-                   const int offset,             // offset, negative value specifies current location.
-                   const size_t bytes_requested, // how many bytes to read
-                   uint8_t *pData,               // where the data goes
-                   int *bytes_read)              // bytes actually read, negative for errors.
-{
-    int rval = 0;
-    uint8_t idx;
-    rval = sFindIndexFromFid(fid, &idx);
-    if (0 != rval)
-    {
-        I3_LOG(LOG_MASK_ERROR, "%s(%d): invalid FID.", __FUNCTION__, fid);
-        return cr_ErrorCodes_INVALID_ID;
-    }
-    if (bytes_requested > REACH_BYTES_IN_A_FILE_PACKET)
-    {
-        I3_LOG(LOG_MASK_ERROR, "%s: %d is more than the buffer for a file read (%d).", __FUNCTION__, fid, REACH_BYTES_IN_A_FILE_PACKET);
-        return cr_ErrorCodes_BUFFER_TOO_SMALL;
-    }
-
-    // User code start [F2]
-  switch (fid)
-  {
-    case FILE_IO_TXT:
-      if (offset < 0 || offset >= (int) io_txt_size)
-      {
-        I3_LOG(LOG_MASK_ERROR, "io.txt read: Offset of %d is outside of the file size %d", offset, io_txt_size);
-        return cr_ErrorCodes_READ_FAILED;
-      }
-#ifdef FILES_USE_NVM_STORAGE
-      if (offset == 0)
-      {
-        // Update the local buffer of the file in case a write failed before this read
-        int rval = (int) nvm3_readData(nvm3_defaultHandle, IO_TXT_KEY, (uint8_t*) io_txt, io_txt_size);
-        if (rval != 0)
-          I3_LOG(LOG_MASK_ERROR, "io.txt read failed, error %d", rval);
-      }
-#endif
-      I3_LOG(LOG_MASK_FILES, "Read fid %u, offset %d, requested %d, size %d", 
-             fid, offset, bytes_requested, io_txt_size);
-      if (offset > (int)io_txt_size)
-      {
-        I3_LOG(LOG_MASK_ERROR, "io.txt read: Offset of %d is greater than size of %d", offset, io_txt_size);
-        return cr_ErrorCodes_READ_FAILED;
-      }
-      *bytes_read = ((offset + bytes_requested) > io_txt_size) ? (io_txt_size - offset) : bytes_requested;
-      memcpy(pData, &io_txt[offset], (size_t) *bytes_read);
-      break;
-
-    case FILE_CYGNUS_REACH_LOGO_PNG:
-      I3_LOG(LOG_MASK_FILES, "Read fid %u, offset %d, requested %d", fid, offset, bytes_requested);
-      if (offset < 0 || offset >= (int) sizeof(cygnus_reach_logo))
-      {
-        I3_LOG(LOG_MASK_ERROR, "cygnus logo read: Offset of %d is outside of the file size %d", offset, sizeof(cygnus_reach_logo));
-        return cr_ErrorCodes_READ_FAILED;
-      }
-      *bytes_read = ((offset + bytes_requested) > sizeof(cygnus_reach_logo)) ? (sizeof(cygnus_reach_logo) - offset) : bytes_requested;
-      memcpy(pData, &cygnus_reach_logo[offset], (size_t) *bytes_read);
-      break;
-    case FILE_DEV_NULL:
-      I3_LOG(LOG_MASK_FILES, "Read fid %u (dev/null), offset %d, requested %d", fid, offset, bytes_requested);
-      *bytes_read = bytes_requested;
-      break;
-    default:
-      i3_log(LOG_MASK_ERROR, "Invalid file read (ID %u)", fid);
-      return cr_ErrorCodes_BAD_FILE;
-  }
-    // User code end [F2]
-
-    return 0;
-}
-
-int crcb_file_prepare_to_write(const uint32_t fid, const size_t offset, const size_t bytes)
-{
-    int rval = 0;
-    uint8_t idx;
-    rval = sFindIndexFromFid(fid, &idx);
-    if (0 != rval)
-    {
-        I3_LOG(LOG_MASK_ERROR, "%s(%d): invalid FID.", __FUNCTION__, fid);
-        return cr_ErrorCodes_INVALID_ID;
-    }
-    // User code start [F3]
-
-  switch (fid)
-  {
-    case FILE_IO_TXT:
-      // Partial writes are currently not supported by this demo
-      if (offset != 0)
-        return cr_ErrorCodes_INVALID_PARAMETER;
-      if (offset + bytes > sizeof(io_txt))
-        return cr_ErrorCodes_BUFFER_TOO_SMALL;
-      memset(&io_txt[offset], 0, bytes);
-      io_txt_size = bytes + offset;
-      break;
-
-    case FILE_DEV_NULL:
-      break;
-
-    default:
-      return cr_ErrorCodes_BAD_FILE;
-  }
-    // User code end [F3]
-    return 0;
-}
-
-int crcb_write_file(const uint32_t fid, // which file
-                    const int offset,      // offset, negative value specifies current location.
-                    const size_t bytes,    // how many bytes to write
-                    const uint8_t *pData)  // where to get the data from
-{
-    int rval = 0;
-    uint8_t idx;
-    rval = sFindIndexFromFid(fid, &idx);
-    if (0 != rval)
-    {
-        I3_LOG(LOG_MASK_ERROR, "%s(%d): invalid FID.", __FUNCTION__, fid);
-        return cr_ErrorCodes_INVALID_ID;
-    }
-    // User code start [F4]
-
-  switch (fid)
-  {
-    case FILE_IO_TXT:
-      if (offset < 0 || offset + bytes > io_txt_size)
-      {
-        I3_LOG(LOG_MASK_ERROR, "io.txt write failed outside of limited size, error %d", cr_ErrorCodes_WRITE_FAILED);
-        return cr_ErrorCodes_WRITE_FAILED;
-      }
-      memcpy(&io_txt[offset], pData, bytes);
-      break;
-    case FILE_DEV_NULL:
-      I3_LOG(LOG_MASK_FILES, "Write fid %u (dev/null), offset %d, bytes %d", fid, offset, bytes);
-      break;
-
-    default:
-      return cr_ErrorCodes_BAD_FILE;
-  }
-    // User code end [F4]
-    return 0;
-}
-
-int crcb_file_transfer_complete(const uint32_t fid)
-{
-    int rval = 0;
-    uint8_t idx;
-    rval = sFindIndexFromFid(fid, &idx);
-    if (0 != rval)
-    {
-        I3_LOG(LOG_MASK_ERROR, "%s(%d): invalid FID.", __FUNCTION__, fid);
-        return cr_ErrorCodes_INVALID_ID;
-    }
-    // User code start [F5]
-  switch (fid)
-  {
-    case FILE_IO_TXT:
-#ifdef FILES_USE_NVM_STORAGE
-      int rval = (int) nvm3_writeData(nvm3_defaultHandle, IO_TXT_KEY, (uint8_t*) io_txt, io_txt_size);
-      if (rval != 0)
-        I3_LOG(LOG_MASK_ERROR, "io.txt write failed, error %d", rval);
-#endif
-      file_descriptions[FILE_IO_TXT].current_size_bytes = (int32_t) io_txt_size;
-      break;
-
-    case FILE_DEV_NULL:
-      break;
-
-    default:
-      return cr_ErrorCodes_BAD_FILE;
-  }
-    // User code end [F5]
-    return 0;
-}
-
-// returns zero or an error code
-int crcb_erase_file(const uint32_t fid)
-{
-    int rval = 0;
-    uint8_t idx;
-    rval = sFindIndexFromFid(fid, &idx);
-    if (0 != rval)
-    {
-        I3_LOG(LOG_MASK_ERROR, "%s(%d): invalid FID.", __FUNCTION__, fid);
-        return cr_ErrorCodes_INVALID_ID;
-    }
-    // User code start [F6]
-  switch (fid)
-  {
-    case FILE_IO_TXT:
-#ifdef FILES_USE_NVM_STORAGE
-      int rval = nvm3_deleteObject(nvm3_defaultHandle, IO_TXT_KEY);
-      if (rval != 0)
-        I3_LOG(LOG_MASK_ERROR, "Failed to erase io.txt, error %d", rval);
-#endif
-      io_txt_size = 0;
-      memset(io_txt, 0, sizeof(io_txt));
-      file_descriptions[FILE_IO_TXT].current_size_bytes = (int32_t) io_txt_size;
-      break;
-    default:
-      return cr_ErrorCodes_BAD_FILE;
-  }
-    // User code end [F6]
-    return 0;
-}
+/* User code end [Files: User Functions] */
 
 #endif  // def INCLUDE_FILE_SERVICE
 

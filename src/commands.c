@@ -48,16 +48,28 @@
 #include "app_version.h"
 #include "cr_stack.h"
 
-// Extra includes and forward declarations here.
-// User code start [C1]
- 
+/* User code start [Commands: User Includes] */
 #include "reach_silabs.h"
+/* User code end [Commands: User Includes] */
+
+uint8_t sCommandIndex = 0;
+
+/* User code start [Commands: User Defines/Variables/Function Declarations] */
+
+typedef enum
+{
+  SEQUENCE_AUTOBIOGRAPHY,
+  SEQUENCE_REDESIGN_YOUR_LOGO,
+  SEQUENCE_SAY_HELLO,
+  SEQUENCE_INACTIVE = 0xFF
+} sequence_t;
 
 int app_command_execute(const uint8_t cid);
 
-// User code end [C1]
-
-uint8_t sCommandIndex = 0;
+static uint32_t times_clicked = 0;
+static uint8_t sequence_position = 0;
+static sequence_t active_sequence = SEQUENCE_INACTIVE;
+/* User code end [Commands: User Defines/Variables/Function Declarations] */
 
 int crcb_get_command_count()
 {
@@ -125,27 +137,21 @@ int crcb_command_discover_reset(const uint32_t cid)
 int crcb_command_execute(const uint8_t cid)
 {
     int rval = 0;
-    // User code start [C2]
+    switch (cid)
+    {
+        /* User code start [Commands: Command Handler] */
+        /* User code end [Commands: Command Handler] */
+        default:
+            rval = cr_ErrorCodes_INVALID_ID;
+            break;
+    }
+    /* User code start [Commands: Command Handler Post-Switch] */
     rval = app_command_execute(cid);
-    // User code end [C2]
+    /* User code end [Commands: Command Handler Post-Switch] */
     return rval;
 }
 
-
-
-// local variables and functions here.
-// User code start [C3]
-typedef enum
-{
-  SEQUENCE_AUTOBIOGRAPHY,
-  SEQUENCE_REDESIGN_YOUR_LOGO,
-  SEQUENCE_SAY_HELLO,
-  SEQUENCE_INACTIVE = 0xFF
-} sequence_t;
-
-static uint32_t times_clicked = 0;
-static uint8_t sequence_position = 0;
-static sequence_t active_sequence = SEQUENCE_INACTIVE;
+/* User code start [Commands: User Functions] */
 
 int app_command_execute(const uint8_t cid)
 {
@@ -320,9 +326,7 @@ int app_command_execute(const uint8_t cid)
   }
   return rval;
 }
-// User code end [C3]
-
-
+/* User code end [Commands: User Functions] */
 
 #endif  // def INCLUDE_COMMAND_SERVICE
 
