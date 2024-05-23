@@ -42,23 +42,23 @@
                     "defaultNotifications": {"minInterval": 302, "minDelta": 1}
                 },
                 {
-                    "name": "RGB LED State",
-                    "description": "A demo of a bitfield",
+                    "name": "Color Demo RGB State",
+                    "description": "RGB representation of colors",
                     "access": "Read/Write",
                     "storageLocation": "RAM",
                     "dataType": "bitfield",
                     "bitsAvailable": 3,
-                    "labelName": "BittyBit"
+                    "labelName": "RGB State"
                 },
                 {
-                    "name": "Command Line Color",
-                    "description": "Reset on disconnection",
+                    "name": "Color Demo Enumeration",
+                    "description": "Human-readable RGB translation",
                     "access": "Read/Write",
                     "storageLocation": "RAM",
                     "dataType": "enumeration",
                     "rangeMin": 0,
                     "rangeMax": 7,
-                    "labelName": "CLI Color"
+                    "labelName": "RGB State Translation"
                 },
                 {
                     "name": "Identify",
@@ -222,7 +222,7 @@
                     "trueLabel": "Timezoned"
                 },
                 {
-                    "name": "BittyBit",
+                    "name": "RGB State",
                     "dataType": "bitfield",
                     "bitIndices": [
                         {
@@ -237,7 +237,7 @@
                     ]
                 },
                 {
-                    "name": "CLI Color",
+                    "name": "RGB State Translation",
                     "dataType": "enumeration",
                     "enumValues": [
                         {
@@ -356,6 +356,7 @@
                     "description": "Get ('lm') or set ('lm <hex value>') the current Reach log mask"
                 }
             ]
-        }
+        },
+        "timeService": {}
     }
 }

@@ -61,6 +61,7 @@
 #include "app_version.h"
 #include "reach_silabs.h"
 #include "reach-server.h"  // determines configuration
+#include "parameters.h"
 
 // Demonstrate Access Control:
 #define ACCESS_FREE         0   // no access control
@@ -148,9 +149,9 @@
         {
             switch (id)
             {
-            case 13: // acceleration is only available with full access
-            case 14:
-            case 15:
+            case PARAM_ACCELERATION_X_AXIS: // acceleration is only available with full access
+            case PARAM_ACCELERATION_Y_AXIS:
+            case PARAM_ACCELERATION_Z_AXIS:
                 return sDev_full_access_OK;
             default:
                 break;
@@ -210,9 +211,9 @@
 
         switch (id)
         {
-        case 13: // accelleration is only available with full access
-        case 14:
-        case 15:
+        case PARAM_ACCELERATION_X_AXIS: // acceleration is only available with full access
+        case PARAM_ACCELERATION_Y_AXIS:
+        case PARAM_ACCELERATION_Z_AXIS:
             return sDev_full_access_OK;
         default:
             break;

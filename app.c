@@ -44,6 +44,9 @@
 #include "app.h"
 
 #include "reach_silabs.h"
+#include "parameters.h"
+#include "files.h"
+#include "cli.h"
 
 // The advertising set handle allocated from Bluetooth stack.
 static uint8_t advertising_set_handle = 0xff;
@@ -72,13 +75,8 @@ SL_WEAK void app_init(void)
   sl_sensor_imu_enable(true);
   sl_sensor_imu_calibrate();
 
-  extern void init_param_repo();
-  init_param_repo();
-
-  extern void files_init(void);
+  parameters_init();
   files_init();
-
-  extern void cli_init(void);
   cli_init();
 
   rsl_init();
@@ -96,7 +94,6 @@ SL_WEAK void app_process_action(void)
   /////////////////////////////////////////////////////////////////////////////
   rsl_process_action();
 
-  extern void cli_poll(void);
   cli_poll();
 
   if (identify_enabled && (rsl_get_system_uptime() - last_blink_time) > identify_interval_ms)

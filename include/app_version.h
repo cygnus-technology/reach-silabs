@@ -13,7 +13,4 @@
 // appends a note string to the version
 #define DEV_BUILD
 
-extern void print_versions();
-extern const char *get_app_version();
-
 #endif  // ndef _APP_VERSION_H_

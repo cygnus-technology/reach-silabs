@@ -41,7 +41,8 @@
 
 /// definitions.h is generated from the reach-utils/c-gen scripts and the "Thunderboard Demo.xlsx" definition file.
 /// A number of defines are in definitions.h, these could be here if the services were being implemented manually
-#include "definitions.h"
+#include "device.h"
+#include "parameters.h"
 
 // Services not yet supported by the reach-util/c-gen code generator
 // #define INCLUDE_WIFI_SERVICE
