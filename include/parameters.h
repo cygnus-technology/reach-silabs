@@ -30,7 +30,7 @@
  * \brief A minimal implementation of Reach data access.
  *
  * Original Author: Chuck Peplinski
- * Script Author: Joseph Peplinski
+ * Script Authors: Joseph Peplinski and Andrew Carlson
  *
  * Generated with version 1.0.0 of the C code generator
  *
@@ -112,8 +112,10 @@ typedef enum {
 void parameters_init(void);
 const char *parameters_get_ei_label(int32_t pei_id, uint32_t enum_bit_position);
 /* User code start [parameters.h: User Global Functions] */
+
 char* parameters_get_cli_text_color(void);
 int parameters_reset_nvm(void);
+
 /* User code end [parameters.h: User Global Functions] */
 
 #endif // _PARAMETERS_H_

@@ -30,7 +30,7 @@
  * \brief A minimal command-line interface implementation
  *
  * Original Author: Chuck Peplinski
- * Script Author: Joseph Peplinski
+ * Script Authors: Joseph Peplinski and Andrew Carlson
  *
  * Generated with version 1.0.0 of the C code generator
  *
@@ -45,12 +45,14 @@
 #include "i3_log.h"
 
 /* User code start [cli.c: User Includes] */
+
 #include "sl_gsdk_version.h"
 #include "sl_iostream.h"
 #include "sl_iostream_handles.h"
 #include "nvm3_generic.h"
 #include "reach_silabs.h"
 #include "app_version.h"
+
 /* User code end [cli.c: User Includes] */
 
 /********************************************************************************************
@@ -82,7 +84,9 @@ static char input[64];
 static uint8_t input_length = 0;
 
 /* User code start [cli.c: User Local/Extern Variables] */
+
 static sl_iostream_t *handle;
+
 /* User code end [cli.c: User Local/Extern Variables] */
 
 /********************************************************************************************
@@ -110,10 +114,12 @@ static void lm(const char *input);
 void cli_init(void)
 {
   /* User code start [CLI: Init] */
+
   handle = sl_iostream_get_handle("vcom");
   // Clear the screen
   cli_write("\033[2J\033]H");
   print_versions();
+
   /* User code end [CLI: Init] */
   cli_write_prompt();
 }
@@ -191,19 +197,25 @@ int crcb_cli_enter(const char *ins)
 	if (!strncmp("ver", ins, 3))
 	{
 		/* User code start [CLI: 'ver' handler] */
+
 	    print_versions();
+
 		/* User code end [CLI: 'ver' handler] */
 	}
 	else if (!strncmp("/", ins, 1))
 	{
 		/* User code start [CLI: '/' handler] */
+
 	    slash();
+
 		/* User code end [CLI: '/' handler] */
 	}
 	else if (!strncmp("lm", ins, 2))
 	{
 		/* User code start [CLI: 'lm' handler] */
+
 	    lm(ins);
+
 		/* User code end [CLI: 'lm' handler] */
 	}
 	/* User code start [CLI: Custom command handling] */
@@ -225,7 +237,9 @@ static void cli_write_prompt(void)
     /* User code start [CLI: Write Prompt]
      * This is called after a command is sent and processed, indicating that the CLI is ready for a new prompt.
      * A typical implementation of this is to send a single '>' character. */
+
     cli_write_char('>');
+
     /* User code end [CLI: Write Prompt] */
 }
 
@@ -234,7 +248,9 @@ static void cli_write(char *text)
     /* User code start [CLI: Write]
      * This is where other output sources should be handled (for example, writing to a UART port)
      * This is called for outputs which are not necessary via BLE, such as clearing lines or handling backspaces */
+
     sl_iostream_write(handle, text, strlen(text));
+
     /* User code end [CLI: Write] */
 }
 
@@ -242,7 +258,9 @@ static void cli_write_char(char c)
 {
     /* User code start [CLI: Write Char]
      * This is used to write single characters, which may be handled differently from longer strings. */
+
     sl_iostream_putchar(handle, c);
+
     /* User code end [CLI: Write Char] */
 }
 
@@ -251,7 +269,9 @@ static bool cli_read_char(char *received)
     /* User code start [CLI: Read]
      * This is where other input sources (such as a UART) should be handled.
      * This should be non-blocking, and return true if a character was received, or false if not. */
+
     return !sl_iostream_getchar(handle, received);
+
     /* User code end [CLI: Read] */
 }
 

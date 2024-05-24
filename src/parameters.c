@@ -30,7 +30,7 @@
  * \brief A minimal implementation of Reach data access.
  *
  * Original Author: Chuck Peplinski
- * Script Author: Joseph Peplinski
+ * Script Authors: Joseph Peplinski and Andrew Carlson
  *
  * Generated with version 1.0.0 of the C code generator
  *
@@ -47,6 +47,7 @@
 #include "i3_log.h"
 
 /* User code start [parameters.c: User Includes] */
+
 #include "sl_bluetooth.h"
 #include "sl_sensor_hall.h"
 #include "sl_sensor_light.h"
@@ -55,6 +56,7 @@
 #include "app.h"
 #include "reach_silabs.h"
 #include "nvm3_generic.h"
+
 /* User code end [parameters.c: User Includes] */
 
 /********************************************************************************************
@@ -64,7 +66,9 @@
 #define PARAM_EI_TO_NUM_PEI_RESPONSES(param_ex) ((param_ex.num_labels / 8) + ((param_ex.num_labels % 8) ? 1:0))
 
 /* User code start [parameters.c: User Defines] */
+
 #define PARAM_REPO_HASH_KEY 0xFFFFF
+
 /* User code end [parameters.c: User Defines] */
 
 /********************************************************************************************
@@ -531,9 +535,11 @@ static const cr_gen_param_ex_t param_ex_desc[] = {
 };
 
 /* User code start [parameters.c: User Local/Extern Variables] */
+
 char get_cli_text_color_response[] = TEXT_BLACK;
 static bool nvm_reset_required = false;
 static bool nvm_failed = false;
+
 /* User code end [parameters.c: User Local/Extern Variables] */
 
 /********************************************************************************************
@@ -544,6 +550,7 @@ static int sFindIndexFromPid(uint32_t pid, uint32_t *index);
 static int sFindIndexFromPeiId(uint32_t pei_id, uint32_t *index);
 
 /* User code start [parameters.c: User Local Function Declarations] */
+
 static uint32_t calculate_nvm_hash(void);
 char* param_repo_get_cli_text_color(void);
 int param_repo_reset_nvm(void);
@@ -552,6 +559,7 @@ int app_handle_param_repo_init(cr_ParameterValue *data, const cr_ParameterInfo *
 int app_handle_param_repo_post_init(void);
 int app_handle_param_repo_read(cr_ParameterValue *data);
 int app_handle_param_repo_write(cr_ParameterValue *data);
+
 /* User code end [parameters.c: User Local Function Declarations] */
 
 /********************************************************************************************
@@ -562,11 +570,13 @@ void parameters_init(void)
 {
     /* User code start [Parameter Repository: Pre-Init]
      * Here is the place to do any initialization required before individual parameters are initialized */
+
     int rval = app_handle_param_repo_pre_init();
     if (rval)
     {
         I3_LOG(LOG_MASK_ERROR, "App-specific param repo pre-init failed (error %d), continuing with init", rval);
     }
+
     /* User code end [Parameter Repository: Pre-Init] */
     memset(sCr_param_val, 0, sizeof(sCr_param_val));
     for (int i = 0; i < NUM_PARAMS; i++)
@@ -647,22 +657,26 @@ void parameters_init(void)
 
         /* User code start [Parameter Repository: Parameter Init]
          * Here is the place to do any initialization specific to a certain parameter */
+
         rval = app_handle_param_repo_init(&sCr_param_val[i], &param_desc[i]);
         if (rval != 0)
         {
             I3_LOG(LOG_MASK_ERROR, "At param index %d, failed to initialize data (error %d)", i, rval);
         }
+
         /* User code end [Parameter Repository: Parameter Init] */
 
     } // end for
 
     /* User code start [Parameter Repository: Post-Init]
      * Here is the place to do any initialization required after parameters have been initialized */
+
     rval = app_handle_param_repo_post_init();
     if (rval)
     {
         I3_LOG(LOG_MASK_ERROR, "App-specific param repo post-init failed (error %d), continuing with init", rval);
     }
+
     /* User code end [Parameter Repository: Post-Init] */
 }
 
@@ -827,7 +841,9 @@ int crcb_parameter_read(const uint32_t pid, cr_ParameterValue *data)
 
     /* User code start [Parameter Repository: Parameter Read]
      * Here is the place to update the data from an external source, and update the return value if necessary */
+
     rval = app_handle_param_repo_read(&sCr_param_val[idx]);
+
     /* User code end [Parameter Repository: Parameter Read] */
 
     *data = sCr_param_val[idx];
@@ -847,12 +863,14 @@ int crcb_parameter_write(const uint32_t pid, const cr_ParameterValue *data)
 
     /* User code start [Parameter Repository: Parameter Write]
      * Here is the place to apply this change externally, and return an error if necessary */
+
     rval = app_handle_param_repo_write((cr_ParameterValue *)data);
     if (rval != 0)
     {
         // Invalid data or NVM storage failed
         return rval;
     }
+
     /* User code end [Parameter Repository: Parameter Write] */
 
     sCr_param_val[idx].timestamp = data->timestamp;

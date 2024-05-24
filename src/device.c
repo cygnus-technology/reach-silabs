@@ -30,7 +30,7 @@
  * \brief A minimal implementation of device info discovery
  *
  * Original Author: Chuck Peplinski
- * Script Author: Joseph Peplinski
+ * Script Authors: Joseph Peplinski and Andrew Carlson
  *
  * Generated with version 1.0.0 of the C code generator
  *
@@ -87,7 +87,7 @@ const cr_DeviceInfoResponse device_info = {
     .device_name = "Thunderboard",
     .manufacturer = "Silicon Labs",
     .device_description = "A demo of Reach features",
-    .services = cr_ServiceIds_PARAMETER_REPO | cr_ServiceIds_FILES | cr_ServiceIds_COMMANDS | cr_ServiceIds_CLI | cr_ServiceIds_TIME
+    .services = cr_ServiceIds_PARAMETER_REPO | cr_ServiceIds_FILES | cr_ServiceIds_COMMANDS | cr_ServiceIds_CLI | cr_ServiceIds_TIME | cr_ServiceIds_WIFI
 };
 
 /* User code start [device.c: User Local/Extern Variables] */

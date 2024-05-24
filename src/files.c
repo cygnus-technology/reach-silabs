@@ -30,7 +30,7 @@
  * \brief A minimal implementation of file discovery and read/write handling
  *
  * Original Author: Chuck Peplinski
- * Script Author: Joseph Peplinski
+ * Script Authors: Joseph Peplinski and Andrew Carlson
  *
  * Generated with version 1.0.0 of the C code generator
  *
@@ -46,8 +46,10 @@
 #include "i3_log.h"
 
 /* User code start [files.c: User Includes] */
+
 #include "const_files.h"
 #include "nvm3_generic.h"
+
 /* User code end [files.c: User Includes] */
 
 /********************************************************************************************
@@ -55,8 +57,10 @@
  *******************************************************************************************/
 
 /* User code start [files.c: User Defines] */
+
 #define IO_TXT_KEY 0x1010
 #define MAX_IO_TXT_LENGTH 2048
+
 /* User code end [files.c: User Defines] */
 
 /********************************************************************************************
@@ -135,6 +139,7 @@ void nvm_reset(void);
 void files_init(void)
 {
     /* User code start [Files: Init] */
+
     size_t object_length;
     uint32_t type;
     int rval = (int) nvm3_getObjectInfo(nvm3_defaultHandle, IO_TXT_KEY, &type, &object_length);
@@ -167,6 +172,7 @@ void files_init(void)
       }
     }
     file_descriptions[FILE_IO_TXT].current_size_bytes = (int32_t) io_txt_size;
+
     /* User code end [Files: Init] */
 }
 
@@ -278,6 +284,7 @@ int crcb_read_file(const uint32_t fid, const int offset, const size_t bytes_requ
 
     /* User code start [Files: Read]
      * The code generator does nothing to handle storing files, so this is where pData and bytes_read should be updated */
+
     switch (fid)
     {
       case FILE_IO_TXT:
@@ -322,6 +329,7 @@ int crcb_read_file(const uint32_t fid, const int offset, const size_t bytes_requ
         i3_log(LOG_MASK_ERROR, "Invalid file read (ID %u)", fid);
         return cr_ErrorCodes_BAD_FILE;
     }
+
     /* User code end [Files: Read] */
 
     return rval;
@@ -339,6 +347,7 @@ int crcb_file_prepare_to_write(const uint32_t fid, const size_t offset, const si
     }
     /* User code start [Files: Pre-Write]
      * This is the opportunity to prepare for a file write, or to reject it. */
+
     switch (fid)
     {
       case FILE_IO_TXT:
@@ -357,6 +366,7 @@ int crcb_file_prepare_to_write(const uint32_t fid, const size_t offset, const si
       default:
         return cr_ErrorCodes_BAD_FILE;
     }
+
     /* User code end [Files: Pre-Write] */
     return 0;
 }
@@ -373,6 +383,7 @@ int crcb_write_file(const uint32_t fid, const int offset, const size_t bytes, co
     }
     /* User code start [Files: Write]
      * Here is where the received data should be copied to wherever the application is storing it */
+
     switch (fid)
     {
       case FILE_IO_TXT:
@@ -390,6 +401,7 @@ int crcb_write_file(const uint32_t fid, const int offset, const size_t bytes, co
       default:
         return cr_ErrorCodes_BAD_FILE;
     }
+
     /* User code end [Files: Write] */
     return 0;
 }
@@ -406,6 +418,7 @@ int crcb_file_transfer_complete(const uint32_t fid)
     }
     /* User code start [Files: Write Complete]
      * This allows the application to handle any actions which need to occur after a file has successfully been written */
+
     switch (fid)
     {
       case FILE_IO_TXT:
@@ -421,6 +434,7 @@ int crcb_file_transfer_complete(const uint32_t fid)
       default:
         return cr_ErrorCodes_BAD_FILE;
     }
+
     /* User code end [Files: Write Complete] */
     return 0;
 }
@@ -437,6 +451,7 @@ int crcb_erase_file(const uint32_t fid)
     }
     /* User code start [Files: Erase]
      * The exact meaning of "erasing" is user-defined, depending on how files are stored by the application */
+
     switch (fid)
     {
       case FILE_IO_TXT:
@@ -450,6 +465,7 @@ int crcb_erase_file(const uint32_t fid)
       default:
         return cr_ErrorCodes_BAD_FILE;
     }
+
     /* User code end [Files: Erase] */
     return 0;
 }
@@ -476,6 +492,8 @@ static int sFindIndexFromFid(uint32_t fid, uint8_t *index)
 }
 
 /* User code start [files.c: User Local Functions] */
+
+
 
 /* User code end [files.c: User Local Functions] */
 

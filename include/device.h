@@ -30,7 +30,7 @@
  * \brief A minimal implementation of device info discovery
  *
  * Original Author: Chuck Peplinski
- * Script Author: Joseph Peplinski
+ * Script Authors: Joseph Peplinski and Andrew Carlson
  *
  * Generated with version 1.0.0 of the C code generator
  *
@@ -50,6 +50,7 @@
 #define INCLUDE_COMMAND_SERVICE
 #define INCLUDE_CLI_SERVICE
 #define INCLUDE_TIME_SERVICE
+#define INCLUDE_WIFI_SERVICE
 /* User code start [device.h: User Defines] */
 /* User code end [device.h: User Defines] */
 // Data Types

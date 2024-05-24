@@ -30,7 +30,7 @@
  * \brief A minimal implementation of file discovery and read/write handling
  *
  * Original Author: Chuck Peplinski
- * Script Author: Joseph Peplinski
+ * Script Authors: Joseph Peplinski and Andrew Carlson
  *
  * Generated with version 1.0.0 of the C code generator
  *
@@ -65,7 +65,9 @@ typedef enum {
 
 void files_init(void);
 /* User code start [files.h: User Global Functions] */
+
 void files_nvm_reset(void);
+
 /* User code end [files.h: User Global Functions] */
 
 #endif // _FILES_H_

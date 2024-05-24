@@ -30,7 +30,7 @@
  * \brief A minimal implementation of command discovery and handling
  *
  * Original Author: Chuck Peplinski
- * Script Author: Joseph Peplinski
+ * Script Authors: Joseph Peplinski and Andrew Carlson
  *
  * Generated with version 1.0.0 of the C code generator
  *
@@ -46,9 +46,11 @@
 #include "i3_log.h"
 
 /* User code start [commands.c: User Includes] */
+
 #include "files.h"
 #include "parameters.h"
 #include "reach_silabs.h"
+
 /* User code end [commands.c: User Includes] */
 
 /********************************************************************************************
@@ -63,6 +65,7 @@
  *******************************************************************************************/
 
 /* User code start [commands.c: User Data Types] */
+
 typedef enum
 {
   SEQUENCE_AUTOBIOGRAPHY,
@@ -70,6 +73,7 @@ typedef enum
   SEQUENCE_SAY_HELLO,
   SEQUENCE_INACTIVE = 0xFF
 } sequence_t;
+
 /* User code end [commands.c: User Data Types] */
 
 /********************************************************************************************
@@ -136,9 +140,11 @@ static const cr_CommandInfo command_desc[] = {
 };
 
 /* User code start [commands.c: User Local/Extern Variables] */
+
 static uint32_t times_clicked = 0;
 static uint8_t sequence_position = 0;
 static sequence_t active_sequence = SEQUENCE_INACTIVE;
+
 /* User code end [commands.c: User Local/Extern Variables] */
 
 /********************************************************************************************
@@ -146,7 +152,9 @@ static sequence_t active_sequence = SEQUENCE_INACTIVE;
  *******************************************************************************************/
 
 /* User code start [commands.c: User Local Function Declarations] */
+
 int app_command_execute(const uint8_t cid);
+
 /* User code end [commands.c: User Local Function Declarations] */
 
 /********************************************************************************************
@@ -235,7 +243,9 @@ int crcb_command_execute(const uint8_t cid)
             break;
     }
     /* User code start [Commands: Command Handler Post-Switch] */
+
     rval = app_command_execute(cid);
+
     /* User code end [Commands: Command Handler Post-Switch] */
     return rval;
 }

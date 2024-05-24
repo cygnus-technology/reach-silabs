@@ -30,7 +30,7 @@
  * \brief A (user-defined) implementation of the time service
  *
  * Original Author: Chuck Peplinski
- * Script Author: Joseph Peplinski
+ * Script Authors: Joseph Peplinski and Andrew Carlson
  *
  * Generated with version 1.0.0 of the C code generator
  *
@@ -43,8 +43,10 @@
 #include "cr_stack.h"
 
 /* User code start [time.c: User Includes] */
+
 #include "parameters.h"
 #include "reach_silabs.h"
+
 /* User code end [time.c: User Includes] */
 
 /********************************************************************************************
@@ -73,7 +75,9 @@
  *******************************************************************************************/
 
 /* User code start [time.c: User Local/Extern Variables] */
+
 static int64_t time_offset = 0;
+
 /* User code end [time.c: User Local/Extern Variables] */
 
 /********************************************************************************************
@@ -97,6 +101,7 @@ static int64_t time_offset = 0;
 int crcb_time_get(cr_TimeGetResponse *response)
 {
   /* User code start [Time: Get] */
+
   response->seconds_utc = (rsl_get_system_uptime() + time_offset) / 1000;
   cr_ParameterValue data;
   int rval = crcb_parameter_read(PARAM_TIMEZONE_ENABLED, &data);
@@ -114,6 +119,7 @@ int crcb_time_get(cr_TimeGetResponse *response)
   {
     response->timezone = data.value.int32_value;
   }
+
   /* User code end [Time: Get] */
   return 0;
 }
@@ -121,6 +127,7 @@ int crcb_time_get(cr_TimeGetResponse *response)
 int crcb_time_set(const cr_TimeSetRequest *request)
 {
   /* User code start [Time: Set] */
+
   time_offset = (request->seconds_utc * 1000) - rsl_get_system_uptime();
   if (request->has_timezone)
   {
@@ -131,6 +138,7 @@ int crcb_time_set(const cr_TimeSetRequest *request)
     param.value.int32_value = request->timezone;
     crcb_parameter_write(PARAM_TIMEZONE_OFFSET, &param);
   }
+
   /* User code end [Time: Set] */
   return 0;
 }

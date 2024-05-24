@@ -357,6 +357,7 @@
                 }
             ]
         },
-        "timeService": {}
+        "timeService": {},
+		"wifiService": {"maxAccessPoints": 4}
     }
 }
