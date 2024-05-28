@@ -353,7 +353,8 @@
                 },
                 {
                     "string": "lm",
-                    "description": "Get ('lm') or set ('lm <hex value>') the current Reach log mask"
+                    "argDescription": "(<new log mask>)",
+                    "description": "Print current log mask, or set a new log mask"
                 }
             ]
         },

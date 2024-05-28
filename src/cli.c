@@ -188,7 +188,7 @@ int crcb_cli_enter(const char *ins)
 		{
 		i3_log(LOG_MASK_ALWAYS, "  ver: Print versions");
 		i3_log(LOG_MASK_ALWAYS, "  /: Display status");
-		i3_log(LOG_MASK_ALWAYS, "  lm: Get ('lm') or set ('lm <hex value>') the current Reach log mask");
+		i3_log(LOG_MASK_ALWAYS, "  lm (<new log mask>): Print current log mask, or set a new log mask");
 		return 0;
 	}
 

@@ -181,7 +181,7 @@ int crcb_wifi_connection(const cr_WiFiConnectionRequest *request, cr_WiFiConnect
 
     /* User code start [WiFi: Connect/Disconnect] */
 
-    for (int i = 0; i < sWiFi_count; i++)
+    for (uint32_t i = 0; i < sWiFi_count; i++)
     {
       if (!memcmp(request->ssid, wifi_desc[i].ssid, sizeof(wifi_desc[i].ssid)))
       {
