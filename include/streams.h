@@ -27,7 +27,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  *
- * \brief A minimal implementation of file discovery and read/write handling
+ * \brief A minimal implementation of stream discovery and access
  *
  * Original Author: Chuck Peplinski
  * Script Authors: Joseph Peplinski and Andrew Carlson
@@ -36,38 +36,33 @@
  *
  ********************************************************************************************/
 
-#ifndef _FILES_H_
-#define _FILES_H_
+#ifndef _STREAMS_H_
+#define _STREAMS_H_
 
 // Includes
 
-/* User code start [files.h: User Includes] */
-/* User code end [files.h: User Includes] */
+/* User code start [streams.h: User Includes] */
+/* User code end [streams.h: User Includes] */
 // Defines
 
-#define NUM_FILES 3
-/* User code start [files.h: User Defines] */
-/* User code end [files.h: User Defines] */
+#define NUM_STREAMS 2
+/* User code start [streams.h: User Defines] */
+/* User code end [streams.h: User Defines] */
 // Data Types
 
 typedef enum {
-    FILE_IO_TXT                = 0,
-    FILE_CYGNUS_REACH_LOGO_PNG = 1,
-    FILE_DEV_NULL              = 2,
-} file_t;
-/* User code start [files.h: User Data Types] */
-/* User code end [files.h: User Data Types] */
+    STREAM_THING1_R,
+    STREAM_THING2_W,
+} stream_t;
+/* User code start [streams.h: User Data Types] */
+/* User code end [streams.h: User Data Types] */
 // Global Variables
 
-/* User code start [files.h: User Global Variables] */
-/* User code end [files.h: User Global Variables] */
+/* User code start [streams.h: User Global Variables] */
+/* User code end [streams.h: User Global Variables] */
 // Global Functions
 
-void files_init(void);
-/* User code start [files.h: User Global Functions] */
+/* User code start [streams.h: User Global Functions] */
+/* User code end [streams.h: User Global Functions] */
 
-void files_nvm_reset(void);
-
-/* User code end [files.h: User Global Functions] */
-
-#endif // _FILES_H_
+#endif // _STREAMS_H_

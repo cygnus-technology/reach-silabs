@@ -51,6 +51,7 @@
 #define INCLUDE_CLI_SERVICE
 #define INCLUDE_TIME_SERVICE
 #define INCLUDE_WIFI_SERVICE
+#define INCLUDE_STREAM_SERVICE
 /* User code start [device.h: User Defines] */
 /* User code end [device.h: User Defines] */
 // Data Types

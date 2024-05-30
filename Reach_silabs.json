@@ -359,6 +359,25 @@
             ]
         },
         "timeService": {},
-		"wifiService": {"maxAccessPoints": 4}
+		"wifiService": {"maxAccessPoints": 4},
+        "streamService": {
+            "features": {
+                "descriptions": true,
+                "discovery": true
+            },
+            "streams":  [
+                {
+                    "name": "thing1-R",
+                    "access": "Read",
+                    "description": "Read this stream"
+                },
+                {
+                    "name": "thing2-W",
+                    "access": "Write",
+                    "description": "Write this stream"
+                }
+            ]
+
+        }
     }
 }
