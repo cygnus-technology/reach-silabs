@@ -45,7 +45,7 @@
 /* User code end [streams.h: User Includes] */
 // Defines
 
-#define NUM_STREAMS 2
+#define NUM_STREAMS 6
 /* User code start [streams.h: User Defines] */
 /* User code end [streams.h: User Defines] */
 // Data Types
@@ -53,6 +53,10 @@
 typedef enum {
     STREAM_THING1_R,
     STREAM_THING2_W,
+    STREAM_THING3_R,
+    STREAM_THING4_W,
+    STREAM_THING5_R,
+    STREAM_THING6_W,
 } stream_t;
 /* User code start [streams.h: User Data Types] */
 /* User code end [streams.h: User Data Types] */

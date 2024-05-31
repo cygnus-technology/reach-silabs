@@ -92,6 +92,30 @@ static cr_StreamInfo stream_descriptions[] = {
         .name = "thing2-W",
         .description = "Write this stream",
         .access = cr_AccessLevel_WRITE
+    },
+    {
+        .stream_id = STREAM_THING3_R,
+        .name = "thing3-R",
+        .description = "Read this stream 3",
+        .access = cr_AccessLevel_READ
+    },
+    {
+        .stream_id = STREAM_THING4_W,
+        .name = "thing4-W",
+        .description = "Write this stream 4",
+        .access = cr_AccessLevel_WRITE
+    },
+    {
+        .stream_id = STREAM_THING5_R,
+        .name = "thing5-R",
+        .description = "Read this stream 5",
+        .access = cr_AccessLevel_READ
+    },
+    {
+        .stream_id = STREAM_THING6_W,
+        .name = "thing6-W",
+        .description = "Write this stream 6",
+        .access = cr_AccessLevel_WRITE
     }
 };
 

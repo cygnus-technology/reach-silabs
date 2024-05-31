@@ -375,6 +375,26 @@
                     "name": "thing2-W",
                     "access": "Write",
                     "description": "Write this stream"
+                },
+                {
+                    "name": "thing3-R",
+                    "access": "Read",
+                    "description": "Read this stream 3"
+                },
+                {
+                    "name": "thing4-W",
+                    "access": "Write",
+                    "description": "Write this stream 4"
+                },
+                {
+                    "name": "thing5-R",
+                    "access": "Read",
+                    "description": "Read this stream 5"
+                },
+                {
+                    "name": "thing6-W",
+                    "access": "Write",
+                    "description": "Write this stream 6"
                 }
             ]
 

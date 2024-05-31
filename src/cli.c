@@ -219,6 +219,31 @@ int crcb_cli_enter(const char *ins)
 		/* User code end [CLI: 'lm' handler] */
 	}
 	/* User code start [CLI: Custom command handling] */
+
+    else if (!strncmp("test", ins, 4))
+    {
+        extern int pvtCr_discover_streams(cr_DiscoverStreams *req,
+                                          cr_DiscoverStreamsResponse *resp);
+        extern void message_util_log_discover_streams_response(cr_DiscoverStreamsResponse *data);
+        cr_DiscoverStreams request;
+        cr_DiscoverStreamsResponse response;
+        memset(&request, 0, sizeof(cr_DiscoverStreams));
+        memset(&response, 0, sizeof(cr_DiscoverStreamsResponse));
+
+        i3_log(LOG_MASK_ALWAYS, "Test Discover streams.");
+        int rval;
+        rval = pvtCr_discover_streams(&request, &response);
+        message_util_log_discover_streams_response(&response);
+        i3_log(LOG_MASK_ALWAYS, "Discover Streams, rval %d.", rval);
+        while (rval == cr_ErrorCodes_NO_ERROR)
+        {
+            rval = pvtCr_discover_streams(NULL, &response);
+            message_util_log_discover_streams_response(&response);
+            i3_log(LOG_MASK_ALWAYS, "Discover Streams, rval %d.", rval);
+        }
+        i3_log(LOG_MASK_ALWAYS, "Discover Streams Test Complete.");
+    }
+
 	/* User code end [CLI: Custom command handling] */
 	else
 		i3_log(LOG_MASK_WARN, "CLI command '%s' not recognized.", ins, *ins);
