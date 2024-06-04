@@ -389,9 +389,6 @@ static void lm(const char *input)
     i3_log(LOG_MASK_ALWAYS, "    LOG_MASK_ACME               0x4000");
     i3_log(LOG_MASK_ALWAYS, "    LOG_MASK_DEBUG              0x8000");
     i3_log(LOG_MASK_ALWAYS, "    LOG_MASK_TIMEOUT           0x10000");
-    i3_log(LOG_MASK_ALWAYS, "    LOG_MASK_DATASTREAM_DEBUG 0x100000");
-    i3_log(LOG_MASK_ALWAYS, "    LOG_MASK_ZIGBEE_DEBUG     0x200000");
-    i3_log(LOG_MASK_ALWAYS, "    LOG_MASK_ZIGBEE_OTA_DEBUG 0x400000");
 #else
         // Logging is typically disabled to save space, so don't waste it with a bunch of printouts
         i3_log(LOG_MASK_WARN, "Log mask is of limited use, as logging is disabled");
