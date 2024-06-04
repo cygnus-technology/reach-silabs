@@ -191,6 +191,8 @@ int crcb_cli_enter(const char *ins)
     i3_log(LOG_MASK_ALWAYS, "  ver: Print versions");
     i3_log(LOG_MASK_ALWAYS, "  /: Display status");
     i3_log(LOG_MASK_ALWAYS, "  lm (<new log mask>): Print current log mask, or set a new log mask");
+    /* User code start [CLI: Custom help handling] */
+    /* User code end [CLI: Custom help handling] */
     return 0;
   }
 
