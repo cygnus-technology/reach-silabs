@@ -124,7 +124,7 @@ void cli_init(void)
   cli_write_prompt();
 }
 
-void cli_poll(void)
+bool cli_poll(void)
 {
   if (input_length == sizeof(input))
   {
@@ -167,7 +167,9 @@ void cli_poll(void)
           input_length++;
         break;
     }
+  return true;
   }
+  return false;
 }
 
 /* User code start [cli.c: User Global Functions] */
@@ -179,50 +181,50 @@ void cli_poll(void)
 
 int crcb_cli_enter(const char *ins)
 {
-	if (*ins == '\r' || *ins == '\n')
-	{
-		return 0;
-	}
+  if (*ins == '\r' || *ins == '\n')
+  {
+    return 0;
+  }
 
-	if ((*ins == '?') || (!strncmp("help", ins, 4)))
-		{
-		i3_log(LOG_MASK_ALWAYS, "  ver: Print versions");
-		i3_log(LOG_MASK_ALWAYS, "  /: Display status");
-		i3_log(LOG_MASK_ALWAYS, "  lm (<new log mask>): Print current log mask, or set a new log mask");
-		return 0;
-	}
+  if ((*ins == '?') || (!strncmp("help", ins, 4)))
+    {
+    i3_log(LOG_MASK_ALWAYS, "  ver: Print versions");
+    i3_log(LOG_MASK_ALWAYS, "  /: Display status");
+    i3_log(LOG_MASK_ALWAYS, "  lm (<new log mask>): Print current log mask, or set a new log mask");
+    return 0;
+  }
 
-	crcb_set_command_line(ins);
-	// step through remote_command_table and execute if matching
-	if (!strncmp("ver", ins, 3))
-	{
-		/* User code start [CLI: 'ver' handler] */
+  crcb_set_command_line(ins);
+  // step through remote_command_table and execute if matching
+  if (!strncmp("ver", ins, 3))
+  {
+    /* User code start [CLI: 'ver' handler] */
 
-	    print_versions();
+	print_versions();
 
-		/* User code end [CLI: 'ver' handler] */
-	}
-	else if (!strncmp("/", ins, 1))
-	{
-		/* User code start [CLI: '/' handler] */
+    /* User code end [CLI: 'ver' handler] */
+  }
+  else if (!strncmp("/", ins, 1))
+  {
+    /* User code start [CLI: '/' handler] */
 
-	    slash();
+	slash();
 
-		/* User code end [CLI: '/' handler] */
-	}
-	else if (!strncmp("lm", ins, 2))
-	{
-		/* User code start [CLI: 'lm' handler] */
+    /* User code end [CLI: '/' handler] */
+  }
+  else if (!strncmp("lm", ins, 2))
+  {
+    /* User code start [CLI: 'lm' handler] */
 
-	    lm(ins);
+	lm(ins);
 
-		/* User code end [CLI: 'lm' handler] */
-	}
-	/* User code start [CLI: Custom command handling] */
-	/* User code end [CLI: Custom command handling] */
-	else
-		i3_log(LOG_MASK_WARN, "CLI command '%s' not recognized.", ins, *ins);
-	return 0;
+    /* User code end [CLI: 'lm' handler] */
+  }
+  /* User code start [CLI: Custom command handling] */
+  /* User code end [CLI: Custom command handling] */
+  else
+    i3_log(LOG_MASK_WARN, "CLI command '%s' not recognized.", ins, *ins);
+  return 0;
 }
 
 /* User code start [cli.c: User Cygnus Reach Callback Functions] */
@@ -234,45 +236,45 @@ int crcb_cli_enter(const char *ins)
 
 static void cli_write_prompt(void)
 {
-    /* User code start [CLI: Write Prompt]
-     * This is called after a command is sent and processed, indicating that the CLI is ready for a new prompt.
-     * A typical implementation of this is to send a single '>' character. */
+  /* User code start [CLI: Write Prompt]
+   * This is called after a command is sent and processed, indicating that the CLI is ready for a new prompt.
+   * A typical implementation of this is to send a single '>' character. */
 
-    cli_write_char('>');
+  cli_write_char('>');
 
-    /* User code end [CLI: Write Prompt] */
+  /* User code end [CLI: Write Prompt] */
 }
 
 static void cli_write(char *text)
 {
-    /* User code start [CLI: Write]
-     * This is where other output sources should be handled (for example, writing to a UART port)
-     * This is called for outputs which are not necessary via BLE, such as clearing lines or handling backspaces */
+  /* User code start [CLI: Write]
+   * This is where other output sources should be handled (for example, writing to a UART port)
+   * This is called for outputs which are not necessary via BLE, such as clearing lines or handling backspaces */
 
-    sl_iostream_write(handle, text, strlen(text));
+  sl_iostream_write(handle, text, strlen(text));
 
-    /* User code end [CLI: Write] */
+  /* User code end [CLI: Write] */
 }
 
 static void cli_write_char(char c)
 {
-    /* User code start [CLI: Write Char]
-     * This is used to write single characters, which may be handled differently from longer strings. */
+  /* User code start [CLI: Write Char]
+   * This is used to write single characters, which may be handled differently from longer strings. */
 
-    sl_iostream_putchar(handle, c);
+  sl_iostream_putchar(handle, c);
 
-    /* User code end [CLI: Write Char] */
+  /* User code end [CLI: Write Char] */
 }
 
 static bool cli_read_char(char *received)
 {
-    /* User code start [CLI: Read]
-     * This is where other input sources (such as a UART) should be handled.
-     * This should be non-blocking, and return true if a character was received, or false if not. */
+  /* User code start [CLI: Read]
+   * This is where other input sources (such as a UART) should be handled.
+   * This should be non-blocking, and return true if a character was received, or false if not. */
 
-    return !sl_iostream_getchar(handle, received);
+  return !sl_iostream_getchar(handle, received);
 
-    /* User code end [CLI: Read] */
+  /* User code end [CLI: Read] */
 }
 
 /* User code start [cli.c: User Local Functions] */
@@ -287,9 +289,9 @@ static void print_versions(void)
 
 #ifdef INCLUDE_CLI_SERVICE
   if (i3_log_get_remote_cli_enable())
-      i3_log(LOG_MASK_ALWAYS, TEXT_GREEN "!!! Remote CLI support enabled.");
+    i3_log(LOG_MASK_ALWAYS, TEXT_GREEN "!!! Remote CLI support enabled.");
   else
-      i3_log(LOG_MASK_ALWAYS, TEXT_YELLOW "!!! Remote CLI support built but not enabled.");
+    i3_log(LOG_MASK_ALWAYS, TEXT_YELLOW "!!! Remote CLI support built but not enabled.");
 #else
   i3_log(LOG_MASK_ALWAYS, TEXT_YELLOW "!!! Remote CLI NOT support built in.");
 #endif

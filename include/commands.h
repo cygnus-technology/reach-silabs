@@ -51,14 +51,14 @@
 // Data Types
 
 typedef enum {
-    COMMAND_RESET_DEFAULTS    = 0,
-    COMMAND_CLICK_FOR_WISDOM  = 1,
-    COMMAND_NO_LOGGING        = 2,
-    COMMAND_MUCH_LOGGING      = 3,
-    COMMAND_NOTIFICATIONS_ON  = 4,
-    COMMAND_NOTIFICATIONS_OFF = 5,
-    COMMAND_REMOTE_CLI_ON     = 6,
-    COMMAND_REMOTE_CLI_OFF    = 7,
+  COMMAND_RESET_DEFAULTS    = 0,
+  COMMAND_CLICK_FOR_WISDOM  = 1,
+  COMMAND_NO_LOGGING        = 2,
+  COMMAND_MUCH_LOGGING      = 3,
+  COMMAND_NOTIFICATIONS_ON  = 4,
+  COMMAND_NOTIFICATIONS_OFF = 5,
+  COMMAND_REMOTE_CLI_ON     = 6,
+  COMMAND_REMOTE_CLI_OFF    = 7,
 } command_t;
 /* User code start [commands.h: User Data Types] */
 /* User code end [commands.h: User Data Types] */

@@ -84,10 +84,10 @@
 
 static const char sAppVersion[] = TOSTRING(APP_MAJOR_VERSION) "." TOSTRING(APP_MINOR_VERSION) "." TOSTRING(APP_PATCH_VERSION) APP_VERSION_TAIL;
 const cr_DeviceInfoResponse device_info = {
-    .device_name = "Thunderboard",
-    .manufacturer = "Silicon Labs",
-    .device_description = "A demo of Reach features",
-    .services = cr_ServiceIds_PARAMETER_REPO | cr_ServiceIds_FILES | cr_ServiceIds_COMMANDS | cr_ServiceIds_CLI | cr_ServiceIds_TIME | cr_ServiceIds_WIFI
+  .device_name = "Thunderboard",
+  .manufacturer = "Silicon Labs",
+  .device_description = "A demo of Reach features",
+  .services = cr_ServiceIds_PARAMETER_REPO | cr_ServiceIds_FILES | cr_ServiceIds_COMMANDS | cr_ServiceIds_CLI | cr_ServiceIds_TIME | cr_ServiceIds_WIFI
 };
 
 /* User code start [device.c: User Local/Extern Variables] */
@@ -106,7 +106,7 @@ const cr_DeviceInfoResponse device_info = {
 
 const char *get_app_version()
 {
-    return sAppVersion;
+  return sAppVersion;
 }
 
 /* User code start [device.c: User Global Functions] */
@@ -118,17 +118,17 @@ const char *get_app_version()
 
 int crcb_device_get_info(const cr_DeviceInfoRequest *request, cr_DeviceInfoResponse *pDi)
 {
-    (void) request;
-    memcpy(pDi, &device_info, sizeof(cr_DeviceInfoResponse));
-    I3_LOG(LOG_MASK_REACH, "%s: %s\n", __FUNCTION__, device_info.device_name);
+  (void) request;
+  memcpy(pDi, &device_info, sizeof(cr_DeviceInfoResponse));
+  I3_LOG(LOG_MASK_REACH, "%s: %s\n", __FUNCTION__, device_info.device_name);
 
-    sprintf(pDi->firmware_version, "%s", sAppVersion);
+  sprintf(pDi->firmware_version, "%s", sAppVersion);
 
-    /* User code start [Device: Get Info]
-     * Here, further modifications can be made to the contents of pDi if needed */
-    /* User code end [Device: Get Info] */
+  /* User code start [Device: Get Info]
+   * Here, further modifications can be made to the contents of pDi if needed */
+  /* User code end [Device: Get Info] */
 
-    return 0;
+  return 0;
 }
 
 /* User code start [device.c: User Cygnus Reach Callback Functions] */

@@ -41,6 +41,7 @@
 
 // Includes
 
+#include <stdbool.h>
 /* User code start [cli.h: User Includes] */
 /* User code end [cli.h: User Includes] */
 // Defines
@@ -58,7 +59,12 @@
 // Global Functions
 
 void cli_init(void);
-void cli_poll(void);
+
+/**
+ * Gets and processes data from the command line
+ * @return True if CLI data was received during the poll (from sources other than BLE), or false otherwise.
+ */
+bool cli_poll(void);
 /* User code start [cli.h: User Global Functions] */
 /* User code end [cli.h: User Global Functions] */
 
