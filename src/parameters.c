@@ -540,6 +540,11 @@ char get_cli_text_color_response[] = TEXT_BLACK;
 static bool nvm_reset_required = false;
 static bool nvm_failed = false;
 
+// only one stream at a time.
+#define BYTES_STREAM_DATA 32  // make divisible by 8, for uint64_t.
+uint8_t sStreamData[BYTES_STREAM_DATA];
+uint8_t sStreamByteCount = 0;
+
 /* User code end [parameters.c: User Local/Extern Variables] */
 
 /********************************************************************************************
@@ -1310,10 +1315,33 @@ int app_handle_param_repo_read(cr_ParameterValue *data)
       break;
     }
     case PARAM_LIGHT_LEVEL:
+    {
+        sl_sensor_light_get(&sCr_param_val[PARAM_LIGHT_LEVEL].value.float32_value, &sCr_param_val[PARAM_UV_INDEX].value.float32_value);
+      #ifdef TEST_STREAM
+        // Won't work if sClassic_header_format
+        if ((sStreamByteCount + sizeof(float)) <= BYTES_STREAM_DATA)
+        {
+            memcpy(&sStreamData[sStreamByteCount],
+                   &sCr_param_val[PARAM_LIGHT_LEVEL].value.float32_value,
+                   sizeof(float));
+            sStreamByteCount += sizeof(float);
+        }
+        if (sStreamByteCount >= BYTES_STREAM_DATA)
+        {
+            cr_StreamData strData;
+            strData.dataType = cr_ParameterDataType_FLOAT32;
+            memcpy(strData.message_data.bytes, sStreamData, sStreamByteCount);
+            strData.message_data.size = sStreamByteCount;
+            crcb_stream_read(0, &strData);
+            sStreamByteCount = 0;
+        }
+      #endif  // def TEST_STREAM
+        break;
+    }
+
     case PARAM_UV_INDEX:
     {
       sl_sensor_light_get(&sCr_param_val[PARAM_LIGHT_LEVEL].value.float32_value, &sCr_param_val[PARAM_UV_INDEX].value.float32_value);
-//          data->value.float32_value = ((float) t) / 1000;
       break;
     }
     case PARAM_MAGNETIC_FIELD_STRENGTH:

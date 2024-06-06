@@ -94,5 +94,8 @@
 // prints out buffer sizes for tuning.
 // #define VERBOSE_SIZES
 
+// define to enbable a preliminary test of stream functions.
+// #define TEST_STREAM
+
 #endif  // ndef _REACH_SERVER_H_
 

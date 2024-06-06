@@ -68,11 +68,6 @@
  *******************************************************************************************/
 
 /* User code start [streams.c: User Global Variables] */
-
-static int sReadFrequencyCounter = 0;
-#define STREAM_READ_FREQUENCY   100
-static uint32_t sRollCount[NUM_STREAMS];
-
 /* User code end [streams.c: User Global Variables] */
 
 /********************************************************************************************
@@ -120,6 +115,10 @@ static cr_StreamInfo stream_descriptions[] = {
 };
 
 /* User code start [streams.c: User Local/Extern Variables] */
+
+#define STREAM_READ_FREQUENCY   10
+static uint32_t sRollCount[NUM_STREAMS];
+
 /* User code end [streams.c: User Local/Extern Variables] */
 
 /********************************************************************************************
@@ -219,19 +218,25 @@ int crcb_stream_read(uint32_t sid, cr_StreamData *data)
 
     /* User code start [Streams: Read] */
 
+  // #define JUST_FAKE_DATA
+  #ifdef JUST_FAKE_DATA
+    // generate some fake data, but not too often
+    static int sReadFrequencyCounter;
     if (sReadFrequencyCounter++ < STREAM_READ_FREQUENCY)
         return cr_ErrorCodes_NO_DATA;
-
     sReadFrequencyCounter = 0;
-    // generate some fake data
-    data->stream_id = sid;
-    data->roll_count = sRollCount[idx]++;
-    data->has_checksum = false;
+    data->dataType = cr_ParameterDataType_BYTE_ARRAY;
+
     data->message_data.size = 10 + 10*(sRollCount[idx]%18);
     for (int i=0; i<data->message_data.size; i++ )
     {
         data->message_data.bytes[i] = 0xFF & (sRollCount[idx] + i);
     }
+  #endif // Just_FAKE_DATA
+
+    data->stream_id = sid;
+    data->roll_count = sRollCount[idx]++;
+    data->has_checksum = false;
 
     int pvtCr_notify_stream(cr_StreamData *data);
     rval = pvtCr_notify_stream(data);
