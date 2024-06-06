@@ -41,6 +41,7 @@
 
 // Includes
 
+#include "cr_stack.h"
 /* User code start [files.h: User Includes] */
 /* User code end [files.h: User Includes] */
 // Defines
@@ -51,14 +52,15 @@
 // Data Types
 
 typedef enum {
-    FILE_IO_TXT                = 0,
-    FILE_CYGNUS_REACH_LOGO_PNG = 1,
-    FILE_DEV_NULL              = 2,
+  FILE_IO_TXT                = 0,
+  FILE_CYGNUS_REACH_LOGO_PNG = 1,
+  FILE_DEV_NULL              = 2,
 } file_t;
 /* User code start [files.h: User Data Types] */
 /* User code end [files.h: User Data Types] */
 // Global Variables
 
+extern cr_FileInfo file_descriptions[3];
 /* User code start [files.h: User Global Variables] */
 /* User code end [files.h: User Global Variables] */
 // Global Functions

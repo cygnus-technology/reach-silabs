@@ -102,136 +102,136 @@ bool first_discover = true;
 
 int crcb_discover_wifi(const cr_DiscoverWiFi *request, cr_DiscoverWiFiResponse *response)
 {
-    (void)request;
-    response->result = cr_ErrorCodes_NOT_IMPLEMENTED;
-    int rval = cr_ErrorCodes_INCOMPLETE;
+  (void)request;
+  response->result = cr_ErrorCodes_NOT_IMPLEMENTED;
+  int rval = cr_ErrorCodes_INCOMPLETE;
 
-    /* User code start [WiFi: Discover]
-     * If you have not just launched a scan, launch one.
-     * If you don't yet have data, return cr_ErrorCodes_INCOMPLETE.
-     * The wifi_desc variable should be filled with available access points,
-     * and sWiFi_count should be updated appropriately */
+  /* User code start [WiFi: Discover]
+   * If you have not just launched a scan, launch one.
+   * If you don't yet have data, return cr_ErrorCodes_INCOMPLETE.
+   * The wifi_desc variable should be filled with available access points,
+   * and sWiFi_count should be updated appropriately */
 
-    response->result = 0;
-    rval = 0;
-    if (first_discover)
-    {
-      cr_ConnectionDescription temp = {
-          .ssid = "Test Network",
-          .has_signal_strength = true,
-          .signal_strength = -20,
-          .is_connected = false
-      };
-      cr_ConnectionDescription temp2 = {
-          .ssid = "Network with Password",
-          .has_signal_strength = true,
-          .signal_strength = -15,
-          .has_sec = true,
-          .sec = cr_WiFiSecurity_WEP,
-          .has_band = true,
-          .band = cr_WiFiBand_BAND_5,
-          .is_connected = false
-      };
-      wifi_desc[0] = temp;
-      wifi_desc[1] = temp2;
-      sWiFi_count = 2;
-      first_discover = false;
-    }
+  response->result = 0;
+  rval = 0;
+  if (first_discover)
+  {
+    cr_ConnectionDescription temp = {
+        .ssid = "Test Network",
+        .has_signal_strength = true,
+        .signal_strength = -20,
+        .is_connected = false
+    };
+    cr_ConnectionDescription temp2 = {
+        .ssid = "Network with Password",
+        .has_signal_strength = true,
+        .signal_strength = -15,
+        .has_sec = true,
+        .sec = cr_WiFiSecurity_WEP,
+        .has_band = true,
+        .band = cr_WiFiBand_BAND_5,
+        .is_connected = false
+    };
+    wifi_desc[0] = temp;
+    wifi_desc[1] = temp2;
+    sWiFi_count = 2;
+    first_discover = false;
+  }
 
-    /* User code end [WiFi: Discover] */
-    return rval;
+  /* User code end [WiFi: Discover] */
+  return rval;
 }
 
 int crcb_get_wifi_count()
 {
-    /* User code start [WiFi: Get Count] */
-    /* User code end [WiFi: Get Count] */
+  /* User code start [WiFi: Get Count] */
+  /* User code end [WiFi: Get Count] */
 
-    return sWiFi_count;
+  return sWiFi_count;
 }
 
 int crcb_wifi_discover_reset(const uint32_t cid)
 {
-    if (cid >= sWiFi_count)
-    {
-        sWiFi_index = MAX_NUM_WIFI_ACCESS_POINTS;
-        return cr_ErrorCodes_INVALID_ID;
-    }
-    sWiFi_index = cid;
-    return 0;
+  if (cid >= sWiFi_count)
+  {
+    sWiFi_index = MAX_NUM_WIFI_ACCESS_POINTS;
+    return cr_ErrorCodes_INVALID_ID;
+  }
+  sWiFi_index = cid;
+  return 0;
 }
 
 int crcb_wifi_discover_next(cr_ConnectionDescription *conn_desc)
 {
-    if (sWiFi_index >= MAX_NUM_WIFI_ACCESS_POINTS)
-        return cr_ErrorCodes_INVALID_ID;
+  if (sWiFi_index >= MAX_NUM_WIFI_ACCESS_POINTS)
+    return cr_ErrorCodes_INVALID_ID;
 
-    if (sWiFi_index >= sWiFi_count)
-        return cr_ErrorCodes_INVALID_PARAMETER;
+  if (sWiFi_index >= sWiFi_count)
+    return cr_ErrorCodes_INVALID_PARAMETER;
 
-    *conn_desc = wifi_desc[sWiFi_index];
-    sWiFi_index++;
-    return 0;
+  *conn_desc = wifi_desc[sWiFi_index];
+  sWiFi_index++;
+  return 0;
 }
 
 int crcb_wifi_connection(const cr_WiFiConnectionRequest *request, cr_WiFiConnectionResponse *response)
 {
-    affirm(request);
-    affirm(response);
+  affirm(request);
+  affirm(response);
 
-    /* User code start [WiFi: Connect/Disconnect] */
+  /* User code start [WiFi: Connect/Disconnect] */
 
-    for (uint32_t i = 0; i < sWiFi_count; i++)
+  for (uint32_t i = 0; i < sWiFi_count; i++)
+  {
+    if (!memcmp(request->ssid, wifi_desc[i].ssid, sizeof(wifi_desc[i].ssid)))
     {
-      if (!memcmp(request->ssid, wifi_desc[i].ssid, sizeof(wifi_desc[i].ssid)))
+      // Found a match
+      if (request->connect)
       {
-        // Found a match
-        if (request->connect)
+        if (i == 1)
         {
-          if (i == 1)
+          if (!request->has_password || strncmp(request->password, "password", sizeof(request->password)))
           {
-            if (!request->has_password || strncmp(request->password, "password", sizeof(request->password)))
-            {
-              response->result = cr_ErrorCodes_PERMISSION_DENIED;
-              response->has_result_message = true;
-              strncpy(response->result_message, "Incorrect password!", sizeof(response->result_message));
-              return 0;
-            }
-          }
-          wifi_desc[i].is_connected = response->connected = true;
-          if (wifi_desc[i].has_signal_strength)
-          {
-            response->has_signal_strength = true;
-            response->signal_strength = wifi_desc[i].signal_strength;
+            response->result = cr_ErrorCodes_PERMISSION_DENIED;
+            response->has_result_message = true;
+            strncpy(response->result_message, "Incorrect password!", sizeof(response->result_message));
+            return 0;
           }
         }
-        else if (request->disconnect)
+        wifi_desc[i].is_connected = response->connected = true;
+        if (wifi_desc[i].has_signal_strength)
         {
-          wifi_desc[i].is_connected = response->connected = false;
-          if (wifi_desc[i].has_signal_strength)
-          {
-            response->has_signal_strength = true;
-            response->signal_strength = wifi_desc[i].signal_strength;
-          }
+          response->has_signal_strength = true;
+          response->signal_strength = wifi_desc[i].signal_strength;
         }
-        else
-        {
-          response->connected = wifi_desc[i].is_connected;
-          if (wifi_desc[i].has_signal_strength)
-          {
-            response->has_signal_strength = true;
-            response->signal_strength = wifi_desc[i].signal_strength;
-          }
-        }
-        response->result = 0;
-        return 0;
       }
+      else if (request->disconnect)
+      {
+        wifi_desc[i].is_connected = response->connected = false;
+        if (wifi_desc[i].has_signal_strength)
+        {
+          response->has_signal_strength = true;
+          response->signal_strength = wifi_desc[i].signal_strength;
+        }
+      }
+      else
+      {
+        response->connected = wifi_desc[i].is_connected;
+        if (wifi_desc[i].has_signal_strength)
+        {
+          response->has_signal_strength = true;
+          response->signal_strength = wifi_desc[i].signal_strength;
+        }
+      }
+      response->result = 0;
+      return 0;
     }
-    return cr_ErrorCodes_INVALID_ID;
+  }
+  return cr_ErrorCodes_INVALID_ID;
 
-    /* User code end [WiFi: Connect/Disconnect] */
+  /* User code end [WiFi: Connect/Disconnect] */
 
-    return 0;
+  return 0;
 }
 
 /* User code start [wifi.c: User Cygnus Reach Callback Functions] */

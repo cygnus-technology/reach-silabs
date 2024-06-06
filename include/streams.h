@@ -51,12 +51,12 @@
 // Data Types
 
 typedef enum {
-    STREAM_THING1_R,
-    STREAM_THING2_W,
-    STREAM_THING3_R,
-    STREAM_THING4_W,
-    STREAM_THING5_R,
-    STREAM_THING6_W,
+  STREAM_THING1_R,
+  STREAM_THING2_W,
+  STREAM_THING3_R,
+  STREAM_THING4_W,
+  STREAM_THING5_R,
+  STREAM_THING6_W,
 } stream_t;
 /* User code start [streams.h: User Data Types] */
 /* User code end [streams.h: User Data Types] */

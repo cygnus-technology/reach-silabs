@@ -89,54 +89,54 @@ typedef enum
 
 static int sCommandIndex = 0;
 static const cr_CommandInfo command_desc[] = {
-    {
-        .id = COMMAND_RESET_DEFAULTS,
-        .name = "Reset Defaults",
-        .has_description = true,
-        .description = "Restore factory values."
-    },
-    {
-        .id = COMMAND_CLICK_FOR_WISDOM,
-        .name = "Click for Wisdom",
-        .has_description = true,
-        .description = "Press it and find out"
-    },
-    {
-        .id = COMMAND_NO_LOGGING,
-        .name = "No logging",
-        .has_description = true,
-        .description = "lm 0"
-    },
-    {
-        .id = COMMAND_MUCH_LOGGING,
-        .name = "Much logging",
-        .has_description = true,
-        .description = "lm 1c7"
-    },
-    {
-        .id = COMMAND_NOTIFICATIONS_ON,
-        .name = "Notifications On",
-        .has_description = true,
-        .description = "Enable notifications on changes"
-    },
-    {
-        .id = COMMAND_NOTIFICATIONS_OFF,
-        .name = "Notifications Off",
-        .has_description = true,
-        .description = "disable all notifications"
-    },
-    {
-        .id = COMMAND_REMOTE_CLI_ON,
-        .name = "Remote CLI On",
-        .has_description = true,
-        .description = "To interact remotely"
-    },
-    {
-        .id = COMMAND_REMOTE_CLI_OFF,
-        .name = "Remote CLI Off",
-        .has_description = true,
-        .description = "Avoids heavy communication load"
-    }
+  {
+    .id = COMMAND_RESET_DEFAULTS,
+    .name = "Reset Defaults",
+    .has_description = true,
+    .description = "Restore factory values."
+  },
+  {
+    .id = COMMAND_CLICK_FOR_WISDOM,
+    .name = "Click for Wisdom",
+    .has_description = true,
+    .description = "Press it and find out"
+  },
+  {
+    .id = COMMAND_NO_LOGGING,
+    .name = "No logging",
+    .has_description = true,
+    .description = "lm 0"
+  },
+  {
+    .id = COMMAND_MUCH_LOGGING,
+    .name = "Much logging",
+    .has_description = true,
+    .description = "lm 1c7"
+  },
+  {
+    .id = COMMAND_NOTIFICATIONS_ON,
+    .name = "Notifications On",
+    .has_description = true,
+    .description = "Enable notifications on changes"
+  },
+  {
+    .id = COMMAND_NOTIFICATIONS_OFF,
+    .name = "Notifications Off",
+    .has_description = true,
+    .description = "disable all notifications"
+  },
+  {
+    .id = COMMAND_REMOTE_CLI_ON,
+    .name = "Remote CLI On",
+    .has_description = true,
+    .description = "To interact remotely"
+  },
+  {
+    .id = COMMAND_REMOTE_CLI_OFF,
+    .name = "Remote CLI Off",
+    .has_description = true,
+    .description = "Avoids heavy communication load"
+  }
 };
 
 /* User code start [commands.c: User Local/Extern Variables] */
@@ -170,84 +170,80 @@ int app_command_execute(const uint8_t cid);
 
 int crcb_get_command_count()
 {
-    int i;
-    int numAvailable = 0;
-    for (i=0; i<NUM_COMMANDS; i++)
-    {
-        if (crcb_access_granted(cr_ServiceIds_COMMANDS, command_desc[i].id))
-            numAvailable++;
-    }
-    return numAvailable;
+  int i;
+  int numAvailable = 0;
+  for (i=0; i<NUM_COMMANDS; i++)
+  {
+    if (crcb_access_granted(cr_ServiceIds_COMMANDS, command_desc[i].id))
+      numAvailable++;
+  }
+  return numAvailable;
 }
 
 int crcb_command_discover_next(cr_CommandInfo *cmd_desc)
 {
+  if (sCommandIndex >= NUM_COMMANDS)
+  {
+    I3_LOG(LOG_MASK_REACH, "%s: Command index %d indicates discovery complete.", __FUNCTION__, sCommandIndex);
+    return cr_ErrorCodes_NO_DATA;
+  }
+
+  while (!crcb_access_granted(cr_ServiceIds_COMMANDS, command_desc[sCommandIndex].id))
+  {
+    I3_LOG(LOG_MASK_FILES, "%s: sCommandIndex (%d) skip, access not granted", __FUNCTION__, sCommandIndex);
+    sCommandIndex++;
     if (sCommandIndex >= NUM_COMMANDS)
     {
-        I3_LOG(LOG_MASK_REACH, "%s: Command index %d indicates discovery complete.",
-               __FUNCTION__, sCommandIndex);
-        return cr_ErrorCodes_NO_DATA;
+      I3_LOG(LOG_MASK_PARAMS, "%s: skipped to sCommandIndex (%d) >= NUM_COMMANDS (%d)", __FUNCTION__, sCommandIndex, NUM_COMMANDS);
+      return cr_ErrorCodes_NO_DATA;
     }
-
-    while (!crcb_access_granted(cr_ServiceIds_COMMANDS, command_desc[sCommandIndex].id))
-    {
-        I3_LOG(LOG_MASK_FILES, "%s: sCommandIndex (%d) skip, access not granted",
-                   __FUNCTION__, sCommandIndex);
-        sCommandIndex++;
-        if (sCommandIndex >= NUM_COMMANDS)
-        {
-            I3_LOG(LOG_MASK_PARAMS, "%s: skipped to sCommandIndex (%d) >= NUM_COMMANDS (%d)",
-                   __FUNCTION__, sCommandIndex, NUM_COMMANDS);
-            return cr_ErrorCodes_NO_DATA;
-        }
-    }
-    *cmd_desc = command_desc[sCommandIndex++];
-    return 0;
+  }
+  *cmd_desc = command_desc[sCommandIndex++];
+  return 0;
 }
 
 int crcb_command_discover_reset(const uint32_t cid)
 {
-    if (cid >= NUM_COMMANDS)
-    {
-        i3_log(LOG_MASK_ERROR, "%s: Command ID %d does not exist.",
-               __FUNCTION__, cid);
-        return cr_ErrorCodes_INVALID_ID;
-    }
-
-    for (sCommandIndex = 0; sCommandIndex < NUM_COMMANDS; sCommandIndex++)
-    {
-        if (command_desc[sCommandIndex].id == cid) {
-            if (!crcb_access_granted(cr_ServiceIds_COMMANDS, command_desc[sCommandIndex].id))
-            {
-                sCommandIndex = 0;
-                break;
-            }
-            I3_LOG(LOG_MASK_PARAMS, "discover command reset (%d) reset to %d", cid, sCommandIndex);
-            return 0;
-        }
-    }
-    sCommandIndex = crcb_get_command_count();
-    I3_LOG(LOG_MASK_PARAMS, "discover command reset (%d) reset defaults to %d", cid, sCommandIndex);
+  if (cid >= NUM_COMMANDS)
+  {
+    i3_log(LOG_MASK_ERROR, "%s: Command ID %d does not exist.", __FUNCTION__, cid);
     return cr_ErrorCodes_INVALID_ID;
+  }
+
+  for (sCommandIndex = 0; sCommandIndex < NUM_COMMANDS; sCommandIndex++)
+  {
+    if (command_desc[sCommandIndex].id == cid) {
+      if (!crcb_access_granted(cr_ServiceIds_COMMANDS, command_desc[sCommandIndex].id))
+      {
+        sCommandIndex = 0;
+        break;
+      }
+      I3_LOG(LOG_MASK_PARAMS, "discover command reset (%d) reset to %d", cid, sCommandIndex);
+      return 0;
+    }
+  }
+  sCommandIndex = crcb_get_command_count();
+  I3_LOG(LOG_MASK_PARAMS, "discover command reset (%d) reset defaults to %d", cid, sCommandIndex);
+  return cr_ErrorCodes_INVALID_ID;
 }
 
 int crcb_command_execute(const uint8_t cid)
 {
-    int rval = 0;
-    switch (cid)
-    {
-        /* User code start [Commands: Command Handler] */
-        /* User code end [Commands: Command Handler] */
-        default:
-            rval = cr_ErrorCodes_INVALID_ID;
-            break;
-    }
-    /* User code start [Commands: Command Handler Post-Switch] */
+  int rval = 0;
+  switch (cid)
+  {
+    /* User code start [Commands: Command Handler] */
+    /* User code end [Commands: Command Handler] */
+    default:
+      rval = cr_ErrorCodes_INVALID_ID;
+      break;
+  }
+  /* User code start [Commands: Command Handler Post-Switch] */
 
-    rval = app_command_execute(cid);
+  rval = app_command_execute(cid);
 
-    /* User code end [Commands: Command Handler Post-Switch] */
-    return rval;
+  /* User code end [Commands: Command Handler Post-Switch] */
+  return rval;
 }
 
 /* User code start [commands.c: User Cygnus Reach Callback Functions] */

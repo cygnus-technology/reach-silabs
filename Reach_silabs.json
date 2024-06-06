@@ -5,11 +5,6 @@
     "services":
     {
         "parameterRepositoryService": {
-            "features": {
-                "descriptions": true,
-                "discovery": true,
-                "storage": true
-            },
             "parameters": [
                 {
                     "name": "User Device Name",
@@ -269,10 +264,6 @@
             ]
         },
         "fileService": {
-            "features": {
-                "descriptions": true,
-                "discovery": true
-            },
             "files": [
                 {
                     "name": "io.txt",
@@ -298,10 +289,6 @@
             ]
         },
         "commandService": {
-            "features": {
-                "descriptions": true,
-                "discovery": true
-            },
             "commands": [
                 {
                     "name": "Reset Defaults",
@@ -338,10 +325,6 @@
             ]
         },
         "cliService": {
-            "features": {
-                "ble": true,
-                "uart": true
-            },
             "commands": [
                 {
                     "string": "ver",
@@ -361,10 +344,6 @@
         "timeService": {},
 		"wifiService": {"maxAccessPoints": 4},
         "streamService": {
-            "features": {
-                "descriptions": true,
-                "discovery": true
-            },
             "streams":  [
                 {
                     "name": "thing1-R",
