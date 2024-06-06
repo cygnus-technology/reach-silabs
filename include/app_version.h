@@ -8,7 +8,7 @@
 
 #define APP_MAJOR_VERSION 4
 #define APP_MINOR_VERSION 1
-#define APP_PATCH_VERSION 3
+#define APP_PATCH_VERSION 4
 
 // appends a note string to the version
 #define DEV_BUILD

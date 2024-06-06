@@ -43,16 +43,25 @@
 
 // <pdm signal=DAT0,CLK> SL_MIC_PDM
 // $[PDM_SL_MIC_PDM]
+#ifndef SL_MIC_PDM_PERIPHERAL                   
 #define SL_MIC_PDM_PERIPHERAL                    PDM
+#endif
 
 // PDM DAT0 on PC07
+#ifndef SL_MIC_PDM_DAT0_PORT                    
 #define SL_MIC_PDM_DAT0_PORT                     gpioPortC
+#endif
+#ifndef SL_MIC_PDM_DAT0_PIN                     
 #define SL_MIC_PDM_DAT0_PIN                      7
+#endif
 
 // PDM CLK on PC06
+#ifndef SL_MIC_PDM_CLK_PORT                     
 #define SL_MIC_PDM_CLK_PORT                      gpioPortC
+#endif
+#ifndef SL_MIC_PDM_CLK_PIN                      
 #define SL_MIC_PDM_CLK_PIN                       6
-
+#endif
 // [PDM_SL_MIC_PDM]$
 // <<< sl:end pin_tool >>>
 

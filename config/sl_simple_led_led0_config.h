@@ -47,9 +47,12 @@
 
 // <gpio> SL_SIMPLE_LED_LED0
 // $[GPIO_SL_SIMPLE_LED_LED0]
+#ifndef SL_SIMPLE_LED_LED0_PORT                 
 #define SL_SIMPLE_LED_LED0_PORT                  gpioPortB
+#endif
+#ifndef SL_SIMPLE_LED_LED0_PIN                  
 #define SL_SIMPLE_LED_LED0_PIN                   0
-
+#endif
 // [GPIO_SL_SIMPLE_LED_LED0]$
 
 // <<< sl:end pin_tool >>>

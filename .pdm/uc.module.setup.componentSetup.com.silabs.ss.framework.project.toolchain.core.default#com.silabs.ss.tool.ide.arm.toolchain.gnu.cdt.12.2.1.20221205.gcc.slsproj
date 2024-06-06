@@ -7,7 +7,7 @@
     <file name="readme_img3.png" linked="false" uri="studio:/project/image/readme_img3.png"/>
     <file name="readme_img4.png" linked="false" uri="studio:/project/image/readme_img4.png"/>
   </folder>
-  <folder name="gecko_sdk_4.4.2">
+  <folder name="gecko_sdk_4.4.3">
     <folder name="platform">
       <folder name="Device">
         <folder name="SiliconLabs">

@@ -84,25 +84,44 @@
 // <<< sl:start pin_tool >>>
 // <usart signal=TX,RX,(CTS),(RTS)> SL_IOSTREAM_USART_VCOM
 // $[USART_SL_IOSTREAM_USART_VCOM]
+#ifndef SL_IOSTREAM_USART_VCOM_PERIPHERAL       
 #define SL_IOSTREAM_USART_VCOM_PERIPHERAL        USART1
+#endif
+#ifndef SL_IOSTREAM_USART_VCOM_PERIPHERAL_NO    
 #define SL_IOSTREAM_USART_VCOM_PERIPHERAL_NO     1
+#endif
 
 // USART1 TX on PA05
+#ifndef SL_IOSTREAM_USART_VCOM_TX_PORT          
 #define SL_IOSTREAM_USART_VCOM_TX_PORT           gpioPortA
+#endif
+#ifndef SL_IOSTREAM_USART_VCOM_TX_PIN           
 #define SL_IOSTREAM_USART_VCOM_TX_PIN            5
+#endif
 
 // USART1 RX on PA06
+#ifndef SL_IOSTREAM_USART_VCOM_RX_PORT          
 #define SL_IOSTREAM_USART_VCOM_RX_PORT           gpioPortA
+#endif
+#ifndef SL_IOSTREAM_USART_VCOM_RX_PIN           
 #define SL_IOSTREAM_USART_VCOM_RX_PIN            6
+#endif
 
 // USART1 CTS on PA08
+#ifndef SL_IOSTREAM_USART_VCOM_CTS_PORT         
 #define SL_IOSTREAM_USART_VCOM_CTS_PORT          gpioPortA
+#endif
+#ifndef SL_IOSTREAM_USART_VCOM_CTS_PIN          
 #define SL_IOSTREAM_USART_VCOM_CTS_PIN           8
+#endif
 
 // USART1 RTS on PA07
+#ifndef SL_IOSTREAM_USART_VCOM_RTS_PORT         
 #define SL_IOSTREAM_USART_VCOM_RTS_PORT          gpioPortA
+#endif
+#ifndef SL_IOSTREAM_USART_VCOM_RTS_PIN          
 #define SL_IOSTREAM_USART_VCOM_RTS_PIN           7
-
+#endif
 // [USART_SL_IOSTREAM_USART_VCOM]$
 // <<< sl:end pin_tool >>>
 
