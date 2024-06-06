@@ -27,21 +27,44 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  *
- * @file      commands.c
- * @brief     An example of functions to handle executing Reach commands
- * @copyright (c) Copyright 2023-2024 i3 Product Development. All Rights Reserved.
+ * \brief A minimal implementation of command discovery and handling
  *
- * Original Author: Joseph Peplinski
+ * Original Author: Chuck Peplinski
+ * Script Authors: Joseph Peplinski and Andrew Carlson
+ *
+ * Generated with version 1.0.0 of the C code generator
  *
  ********************************************************************************************/
 
-#include <stdint.h>
+/********************************************************************************************
+ ************************************     Includes     *************************************
+ *******************************************************************************************/
 
+#include "commands.h"
+#include <stdint.h>
 #include "cr_stack.h"
-#include "definitions.h"
 #include "i3_log.h"
 
+/* User code start [commands.c: User Includes] */
+
+#include "files.h"
+#include "parameters.h"
 #include "reach_silabs.h"
+
+/* User code end [commands.c: User Includes] */
+
+/********************************************************************************************
+ *************************************     Defines     **************************************
+ *******************************************************************************************/
+
+/* User code start [commands.c: User Defines] */
+/* User code end [commands.c: User Defines] */
+
+/********************************************************************************************
+ ***********************************     Data Types     ************************************
+ *******************************************************************************************/
+
+/* User code start [commands.c: User Data Types] */
 
 typedef enum
 {
@@ -51,22 +74,197 @@ typedef enum
   SEQUENCE_INACTIVE = 0xFF
 } sequence_t;
 
+/* User code end [commands.c: User Data Types] */
+
+/********************************************************************************************
+ ********************************     Global Variables     *********************************
+ *******************************************************************************************/
+
+/* User code start [commands.c: User Global Variables] */
+/* User code end [commands.c: User Global Variables] */
+
+/********************************************************************************************
+ *****************************     Local/Extern Variables     ******************************
+ *******************************************************************************************/
+
+static int sCommandIndex = 0;
+static const cr_CommandInfo command_desc[] = {
+  {
+    .id = COMMAND_RESET_DEFAULTS,
+    .name = "Reset Defaults",
+    .has_description = true,
+    .description = "Restore factory values."
+  },
+  {
+    .id = COMMAND_CLICK_FOR_WISDOM,
+    .name = "Click for Wisdom",
+    .has_description = true,
+    .description = "Press it and find out"
+  },
+  {
+    .id = COMMAND_NO_LOGGING,
+    .name = "No logging",
+    .has_description = true,
+    .description = "lm 0"
+  },
+  {
+    .id = COMMAND_MUCH_LOGGING,
+    .name = "Much logging",
+    .has_description = true,
+    .description = "lm 1c7"
+  },
+  {
+    .id = COMMAND_NOTIFICATIONS_ON,
+    .name = "Notifications On",
+    .has_description = true,
+    .description = "Enable notifications on changes"
+  },
+  {
+    .id = COMMAND_NOTIFICATIONS_OFF,
+    .name = "Notifications Off",
+    .has_description = true,
+    .description = "disable all notifications"
+  },
+  {
+    .id = COMMAND_REMOTE_CLI_ON,
+    .name = "Remote CLI On",
+    .has_description = true,
+    .description = "To interact remotely"
+  },
+  {
+    .id = COMMAND_REMOTE_CLI_OFF,
+    .name = "Remote CLI Off",
+    .has_description = true,
+    .description = "Avoids heavy communication load"
+  }
+};
+
+/* User code start [commands.c: User Local/Extern Variables] */
+
 static uint32_t times_clicked = 0;
 static uint8_t sequence_position = 0;
 static sequence_t active_sequence = SEQUENCE_INACTIVE;
+
+/* User code end [commands.c: User Local/Extern Variables] */
+
+/********************************************************************************************
+ ***************************     Local Function Declarations     ****************************
+ *******************************************************************************************/
+
+/* User code start [commands.c: User Local Function Declarations] */
+
+int app_command_execute(const uint8_t cid);
+
+/* User code end [commands.c: User Local Function Declarations] */
+
+/********************************************************************************************
+ ********************************     Global Functions     *********************************
+ *******************************************************************************************/
+
+/* User code start [commands.c: User Global Functions] */
+/* User code end [commands.c: User Global Functions] */
+
+/********************************************************************************************
+ *************************     Cygnus Reach Callback Functions     **************************
+ *******************************************************************************************/
+
+int crcb_get_command_count()
+{
+  int i;
+  int numAvailable = 0;
+  for (i=0; i<NUM_COMMANDS; i++)
+  {
+    if (crcb_access_granted(cr_ServiceIds_COMMANDS, command_desc[i].id))
+      numAvailable++;
+  }
+  return numAvailable;
+}
+
+int crcb_command_discover_next(cr_CommandInfo *cmd_desc)
+{
+  if (sCommandIndex >= NUM_COMMANDS)
+  {
+    I3_LOG(LOG_MASK_REACH, "%s: Command index %d indicates discovery complete.", __FUNCTION__, sCommandIndex);
+    return cr_ErrorCodes_NO_DATA;
+  }
+
+  while (!crcb_access_granted(cr_ServiceIds_COMMANDS, command_desc[sCommandIndex].id))
+  {
+    I3_LOG(LOG_MASK_FILES, "%s: sCommandIndex (%d) skip, access not granted", __FUNCTION__, sCommandIndex);
+    sCommandIndex++;
+    if (sCommandIndex >= NUM_COMMANDS)
+    {
+      I3_LOG(LOG_MASK_PARAMS, "%s: skipped to sCommandIndex (%d) >= NUM_COMMANDS (%d)", __FUNCTION__, sCommandIndex, NUM_COMMANDS);
+      return cr_ErrorCodes_NO_DATA;
+    }
+  }
+  *cmd_desc = command_desc[sCommandIndex++];
+  return 0;
+}
+
+int crcb_command_discover_reset(const uint32_t cid)
+{
+  if (cid >= NUM_COMMANDS)
+  {
+    i3_log(LOG_MASK_ERROR, "%s: Command ID %d does not exist.", __FUNCTION__, cid);
+    return cr_ErrorCodes_INVALID_ID;
+  }
+
+  for (sCommandIndex = 0; sCommandIndex < NUM_COMMANDS; sCommandIndex++)
+  {
+    if (command_desc[sCommandIndex].id == cid) {
+      if (!crcb_access_granted(cr_ServiceIds_COMMANDS, command_desc[sCommandIndex].id))
+      {
+        sCommandIndex = 0;
+        break;
+      }
+      I3_LOG(LOG_MASK_PARAMS, "discover command reset (%d) reset to %d", cid, sCommandIndex);
+      return 0;
+    }
+  }
+  sCommandIndex = crcb_get_command_count();
+  I3_LOG(LOG_MASK_PARAMS, "discover command reset (%d) reset defaults to %d", cid, sCommandIndex);
+  return cr_ErrorCodes_INVALID_ID;
+}
 
 int crcb_command_execute(const uint8_t cid)
 {
   int rval = 0;
   switch (cid)
   {
+    /* User code start [Commands: Command Handler] */
+    /* User code end [Commands: Command Handler] */
+    default:
+      rval = cr_ErrorCodes_INVALID_ID;
+      break;
+  }
+  /* User code start [Commands: Command Handler Post-Switch] */
+
+  rval = app_command_execute(cid);
+
+  /* User code end [Commands: Command Handler Post-Switch] */
+  return rval;
+}
+
+/* User code start [commands.c: User Cygnus Reach Callback Functions] */
+/* User code end [commands.c: User Cygnus Reach Callback Functions] */
+
+/********************************************************************************************
+ *********************************     Local Functions     **********************************
+ *******************************************************************************************/
+
+/* User code start [commands.c: User Local Functions] */
+
+int app_command_execute(const uint8_t cid)
+{
+  int rval = 0;
+  switch (cid)
+  {
     case COMMAND_RESET_DEFAULTS:
-      extern int param_repo_reset_nvm(void);
-      rval = param_repo_reset_nvm();
+      rval = parameters_reset_nvm();
       if (rval != 0)
       {
-        extern void files_reset(void);
-        files_reset();
+        files_nvm_reset();
       }
       break;
 
@@ -91,8 +289,6 @@ int crcb_command_execute(const uint8_t cid)
     case COMMAND_REMOTE_CLI_OFF:
       i3_log_set_remote_cli_enable(false);
       break;
-
-
 
     case COMMAND_CLICK_FOR_WISDOM:
     {
@@ -230,3 +426,6 @@ int crcb_command_execute(const uint8_t cid)
   }
   return rval;
 }
+
+/* User code end [commands.c: User Local Functions] */
+

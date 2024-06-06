@@ -27,75 +27,128 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  *
- * @file      cli.c
- * @brief     An example implementation of functions to handle the Reach CLI service
- * @copyright (c) Copyright 2023-2024 i3 Product Development. All Rights Reserved.
+ * \brief A minimal command-line interface implementation
  *
- * Original Author: Joseph Peplinski
+ * Original Author: Chuck Peplinski
+ * Script Authors: Joseph Peplinski and Andrew Carlson
+ *
+ * Generated with version 1.0.0 of the C code generator
  *
  ********************************************************************************************/
 
-#include "nvm3_generic.h"
-#include "sl_bluetooth.h"
-#include "sl_iostream.h"
-#include "sl_iostream_handles.h"
-#include "sl_gsdk_version.h"
+/********************************************************************************************
+ ************************************     Includes     *************************************
+ *******************************************************************************************/
 
-#include "reach-server.h"
+#include "cli.h"
 #include "cr_stack.h"
 #include "i3_log.h"
-#include "app_version.h"
+
+/* User code start [cli.c: User Includes] */
+
+#include "sl_gsdk_version.h"
+#include "sl_iostream.h"
+#include "sl_iostream_handles.h"
+#include "nvm3_generic.h"
 #include "reach_silabs.h"
+#include "app_version.h"
 
-#define CLI_USE_PARAM_REPO_COLOR
+/* User code end [cli.c: User Includes] */
 
-#define TEXT_CLI "%s"
+/********************************************************************************************
+ *************************************     Defines     **************************************
+ *******************************************************************************************/
 
-static void slash(void);
-static void lm(const char *input);
+/* User code start [cli.c: User Defines] */
+/* User code end [cli.c: User Defines] */
 
-extern char * param_repo_get_cli_text_color(void);
+/********************************************************************************************
+ ***********************************     Data Types     ************************************
+ *******************************************************************************************/
 
-static sl_iostream_t *handle;
+/* User code start [cli.c: User Data Types] */
+/* User code end [cli.c: User Data Types] */
+
+/********************************************************************************************
+ ********************************     Global Variables     *********************************
+ *******************************************************************************************/
+
+/* User code start [cli.c: User Global Variables] */
+/* User code end [cli.c: User Global Variables] */
+
+/********************************************************************************************
+ *****************************     Local/Extern Variables     ******************************
+ *******************************************************************************************/
+
 static char input[64];
 static uint8_t input_length = 0;
 
+/* User code start [cli.c: User Local/Extern Variables] */
+
+static sl_iostream_t *handle;
+
+/* User code end [cli.c: User Local/Extern Variables] */
+
+/********************************************************************************************
+ ***************************     Local Function Declarations     ****************************
+ *******************************************************************************************/
+
+static void cli_write_prompt(void);
+static void cli_write(char *text);
+static void cli_write_char(char c);
+static bool cli_read_char(char *received);
+
+/* User code start [cli.c: User Local Function Declarations] */
+
+extern void app_get_num_reads(uint32_t *numReads);
+static void print_versions(void);
+static void slash(void);
+static void lm(const char *input);
+
+/* User code end [cli.c: User Local Function Declarations] */
+
+/********************************************************************************************
+ ********************************     Global Functions     *********************************
+ *******************************************************************************************/
+
 void cli_init(void)
 {
-  handle = sl_iostream_get_handle("vcom");
+  /* User code start [CLI: Init] */
 
-  // Clear the screen and print some information on startup
-  char clear_screen[] = "\033[2J\033]H";
-  sl_iostream_write(handle, clear_screen, sizeof(clear_screen));
+  handle = sl_iostream_get_handle("vcom");
+  // Clear the screen
+  cli_write("\033[2J\033[H");
   print_versions();
-  sl_iostream_putchar(handle, '>');
+
+  /* User code end [CLI: Init] */
+  cli_write_prompt();
 }
 
-void cli_poll(void)
+bool cli_poll(void)
 {
   if (input_length == sizeof(input))
   {
     i3_log(LOG_MASK_WARN, "CLI input too long, clearing");
     memset(input, 0, sizeof(input));
     input_length = 0;
+    cli_write_prompt();
   }
-  if (!sl_iostream_getchar(handle, &input[input_length]))
+  if (cli_read_char(&input[input_length]))
   {
     switch (input[input_length])
     {
       case '\r':
-        sl_iostream_putchar(handle, '\r');
-        sl_iostream_putchar(handle, '\n');
+        cli_write("\r\n");
         if (input_length == 0)
         {
-          sl_iostream_putchar(handle, '>');
+          cli_write_prompt();
           break; // No data, no need to call anything
         }
         input[input_length] = 0; // Null-terminate the string
         crcb_cli_enter((const char*) input);
         input_length = 0;
         memset(input, 0, sizeof(input));
-        sl_iostream_putchar(handle, '>');
+        cli_write_prompt();
         break;
       case '\n':
         break; // Ignore, only expect '\r' for command execution
@@ -104,59 +157,27 @@ void cli_poll(void)
         if (input_length > 0)
         {
           input[--input_length] = 0;
-          sl_iostream_putchar(handle, '\b');
-          sl_iostream_putchar(handle, ' ');
-          sl_iostream_putchar(handle, '\b');
+          cli_write("\b \b");
         }
         break;
       default:
         // Still waiting for an input
-        sl_iostream_putchar(handle, input[input_length]);
+        cli_write_char(input[input_length]);
         if (input_length < sizeof(input))
           input_length++;
         break;
     }
+  return true;
   }
+  return false;
 }
 
-char sAppVersion[CR_STACK_VERSION_LEN];
-const char *get_app_version()
-{
-  #ifdef DEV_BUILD
-    snprintf(sAppVersion, CR_STACK_VERSION_LEN, "%u.%u.%u-rc1", 
-             APP_MAJOR_VERSION, APP_MINOR_VERSION, APP_PATCH_VERSION);
-  #else
-    snprintf(sAppVersion, CR_STACK_VERSION_LEN, "%u.%u.%u", 
-             APP_MAJOR_VERSION, APP_MINOR_VERSION, APP_PATCH_VERSION);
-  #endif
-    return sAppVersion;
-}
+/* User code start [cli.c: User Global Functions] */
+/* User code end [cli.c: User Global Functions] */
 
-
-void print_versions(void)
-{
-    i3_log(LOG_MASK_ALWAYS, TEXT_CLI "!!! Reach Thunderboard demo, built %s, %s", 
-         param_repo_get_cli_text_color(), __DATE__, __TIME__);
-    i3_log(LOG_MASK_ALWAYS, TEXT_CLI "!!!   Silicon Labs Gecko SDK version %s", 
-         param_repo_get_cli_text_color(), SL_GSDK_VERSION_STR);
-    i3_log(LOG_MASK_ALWAYS, TEXT_CLI "!!!   Reach stack version %s", 
-         param_repo_get_cli_text_color(), cr_get_reach_version());
-    i3_log(LOG_MASK_ALWAYS, TEXT_CLI "!!!   Reach protobuf version %s", 
-         param_repo_get_cli_text_color(), cr_get_proto_version());
-    i3_log(LOG_MASK_ALWAYS, TEXT_CLI "!!!   App version %s", 
-         param_repo_get_cli_text_color(), get_app_version());
-
-  #ifdef INCLUDE_CLI_SERVICE
-    if (i3_log_get_remote_cli_enable())
-        i3_log(LOG_MASK_ALWAYS, TEXT_GREEN "!!! Remote CLI support enabled.");
-    else
-        i3_log(LOG_MASK_ALWAYS, TEXT_YELLOW "!!! Remote CLI support built but not enabled.");
-  #else
-    i3_log(LOG_MASK_ALWAYS, TEXT_YELLOW "!!! Remote CLI NOT support built in.");
-  #endif
-}
-
-
+/********************************************************************************************
+ *************************     Cygnus Reach Callback Functions     **************************
+ *******************************************************************************************/
 
 int crcb_cli_enter(const char *ins)
 {
@@ -166,31 +187,117 @@ int crcb_cli_enter(const char *ins)
   }
 
   if ((*ins == '?') || (!strncmp("help", ins, 4)))
-  {
-    i3_log(LOG_MASK_ALWAYS, TEXT_GREEN "!!! Reach Thunderboard demo, built %s, %s", __DATE__, __TIME__);
-    i3_log(LOG_MASK_ALWAYS, TEXT_GREEN "!!! App Version %s", get_app_version());
-    i3_log(LOG_MASK_ALWAYS, TEXT_CLI "Commands:", param_repo_get_cli_text_color());
-    i3_log(LOG_MASK_ALWAYS, TEXT_CLI "  ver : Print versions", param_repo_get_cli_text_color());
-    i3_log(LOG_MASK_ALWAYS, TEXT_CLI "  /   : Display status", param_repo_get_cli_text_color());
-    i3_log(LOG_MASK_ALWAYS, TEXT_CLI "  lm (<new log mask>): Print current log mask, or set a new log mask", param_repo_get_cli_text_color());
-
+    {
+    i3_log(LOG_MASK_ALWAYS, "  ver: Print versions");
+    i3_log(LOG_MASK_ALWAYS, "  /: Display status");
+    i3_log(LOG_MASK_ALWAYS, "  lm (<new log mask>): Print current log mask, or set a new log mask");
+    /* User code start [CLI: Custom help handling] */
+    /* User code end [CLI: Custom help handling] */
     return 0;
   }
 
   crcb_set_command_line(ins);
   // step through remote_command_table and execute if matching
   if (!strncmp("ver", ins, 3))
-    print_versions();
+  {
+    /* User code start [CLI: 'ver' handler] */
+
+	print_versions();
+
+    /* User code end [CLI: 'ver' handler] */
+  }
   else if (!strncmp("/", ins, 1))
-    slash();
+  {
+    /* User code start [CLI: '/' handler] */
+
+	slash();
+
+    /* User code end [CLI: '/' handler] */
+  }
   else if (!strncmp("lm", ins, 2))
-    lm(ins);
+  {
+    /* User code start [CLI: 'lm' handler] */
+
+	lm(ins);
+
+    /* User code end [CLI: 'lm' handler] */
+  }
+  /* User code start [CLI: Custom command handling] */
+  /* User code end [CLI: Custom command handling] */
   else
     i3_log(LOG_MASK_WARN, "CLI command '%s' not recognized.", ins, *ins);
   return 0;
 }
 
-extern void app_get_num_reads(uint32_t *numReads);
+/* User code start [cli.c: User Cygnus Reach Callback Functions] */
+/* User code end [cli.c: User Cygnus Reach Callback Functions] */
+
+/********************************************************************************************
+ *********************************     Local Functions     **********************************
+ *******************************************************************************************/
+
+static void cli_write_prompt(void)
+{
+  /* User code start [CLI: Write Prompt]
+   * This is called after a command is sent and processed, indicating that the CLI is ready for a new prompt.
+   * A typical implementation of this is to send a single '>' character. */
+
+  cli_write_char('>');
+
+  /* User code end [CLI: Write Prompt] */
+}
+
+static void cli_write(char *text)
+{
+  /* User code start [CLI: Write]
+   * This is where other output sources should be handled (for example, writing to a UART port)
+   * This is called for outputs which are not necessary via BLE, such as clearing lines or handling backspaces */
+
+  sl_iostream_write(handle, text, strlen(text));
+
+  /* User code end [CLI: Write] */
+}
+
+static void cli_write_char(char c)
+{
+  /* User code start [CLI: Write Char]
+   * This is used to write single characters, which may be handled differently from longer strings. */
+
+  sl_iostream_putchar(handle, c);
+
+  /* User code end [CLI: Write Char] */
+}
+
+static bool cli_read_char(char *received)
+{
+  /* User code start [CLI: Read]
+   * This is where other input sources (such as a UART) should be handled.
+   * This should be non-blocking, and return true if a character was received, or false if not. */
+
+  return !sl_iostream_getchar(handle, received);
+
+  /* User code end [CLI: Read] */
+}
+
+/* User code start [cli.c: User Local Functions] */
+
+static void print_versions(void)
+{
+  i3_log(LOG_MASK_ALWAYS, "!!! Reach Thunderboard demo, built %s, %s", __DATE__, __TIME__);
+  i3_log(LOG_MASK_ALWAYS, "!!!   Silicon Labs Gecko SDK version %s", SL_GSDK_VERSION_STR);
+  i3_log(LOG_MASK_ALWAYS, "!!!   Reach stack version %s", cr_get_reach_version());
+  i3_log(LOG_MASK_ALWAYS, "!!!   Reach protobuf version %s", cr_get_proto_version());
+  i3_log(LOG_MASK_ALWAYS, "!!!   App version %s", get_app_version());
+
+#ifdef INCLUDE_CLI_SERVICE
+  if (i3_log_get_remote_cli_enable())
+    i3_log(LOG_MASK_ALWAYS, TEXT_GREEN "!!! Remote CLI support enabled.");
+  else
+    i3_log(LOG_MASK_ALWAYS, TEXT_YELLOW "!!! Remote CLI support built but not enabled.");
+#else
+  i3_log(LOG_MASK_ALWAYS, TEXT_YELLOW "!!! Remote CLI NOT support built in.");
+#endif
+}
 
 static void slash(void)
 {
@@ -203,44 +310,44 @@ static void slash(void)
   cr_get_notification_statistics(&numActive, &numSent);
   if (numActive == 0)
   {
-    i3_log(LOG_MASK_ALWAYS, TEXT_CLI "  No notifications are active. %u read%s since last check.", param_repo_get_cli_text_color(), numReads,
+    i3_log(LOG_MASK_ALWAYS, "  No notifications are active. %u read%s since last check.", numReads,
         numReads == 1 ? "" : "s");
   }
   else
   {
-    i3_log(LOG_MASK_ALWAYS, TEXT_CLI "  %u %s active.", param_repo_get_cli_text_color(), numActive, numActive > 1 ? "notifications are" : "notification is");
-    i3_log(LOG_MASK_ALWAYS, TEXT_CLI "  %u %s sent with %u read%s since last check.", param_repo_get_cli_text_color(), numSent,
+    i3_log(LOG_MASK_ALWAYS, "  %u %s active.", numActive, numActive > 1 ? "notifications are" : "notification is");
+    i3_log(LOG_MASK_ALWAYS, "  %u %s sent with %u read%s since last check.", numSent,
         numSent != 1 ? "notifications were" : "notification was", numReads, numReads == 1 ? "" : "s");
   }
-  i3_log(LOG_MASK_ALWAYS, TEXT_CLI "  Current log mask: 0x%x", param_repo_get_cli_text_color(), i3_log_get_mask());
+  i3_log(LOG_MASK_ALWAYS, "  Current log mask: 0x%x", i3_log_get_mask());
 #ifdef ENABLE_REMOTE_CLI
   if (i3_log_get_remote_cli_enable())
-    i3_log(LOG_MASK_ALWAYS, TEXT_CLI "  Remote CLI support enabled.", param_repo_get_cli_text_color());
+    i3_log(LOG_MASK_ALWAYS, "  Remote CLI support enabled.");
   else
-    i3_log(LOG_MASK_ALWAYS, TEXT_CLI "  Remote CLI support built but not enabled.", param_repo_get_cli_text_color());
+    i3_log(LOG_MASK_ALWAYS, "  Remote CLI support built but not enabled.");
 #else
-    i3_log(LOG_MASK_ALWAYS, TEXT_CLI "  !!! Remote CLI NOT support built in.", param_repo_get_cli_text_color());
+    i3_log(LOG_MASK_ALWAYS, "  !!! Remote CLI NOT support built in.");
   #endif
 
   // System information
   bd_addr address;
   uint8_t address_type;
   sl_bt_system_get_identity_address(&address, &address_type);
-  i3_log(LOG_MASK_ALWAYS, TEXT_CLI "  BLE Device Address: %02X:%02X:%02X:%02X:%02X:%02X", param_repo_get_cli_text_color(), address.addr[5], address.addr[4],
+  i3_log(LOG_MASK_ALWAYS, "  BLE Device Address: %02X:%02X:%02X:%02X:%02X:%02X", address.addr[5], address.addr[4],
       address.addr[3], address.addr[2], address.addr[1], address.addr[0]);
-  i3_log(LOG_MASK_ALWAYS, TEXT_CLI "  Uptime: %.3f seconds", param_repo_get_cli_text_color(), ((float) rsl_get_system_uptime()) / 1000);
+  i3_log(LOG_MASK_ALWAYS, "  Uptime: %.3f seconds", ((float) rsl_get_system_uptime()) / 1000);
 
   // NVM statistics
-  i3_log(LOG_MASK_ALWAYS, TEXT_CLI "  NVM3 Storage: %u/%u bytes remaining", param_repo_get_cli_text_color(), nvm3_defaultHandle->unusedNvmSize,
+  i3_log(LOG_MASK_ALWAYS, "  NVM3 Storage: %u/%u bytes remaining", nvm3_defaultHandle->unusedNvmSize,
       nvm3_defaultHandle->nvmSize);
   size_t object_count = nvm3_countObjects(nvm3_defaultHandle);
   size_t deleted_object_count = nvm3_countDeletedObjects(nvm3_defaultHandle);
-  i3_log(LOG_MASK_ALWAYS, TEXT_CLI "                %u object%s present, %u deleted object%s remaining in flash", param_repo_get_cli_text_color(), object_count,
+  i3_log(LOG_MASK_ALWAYS, "                %u object%s present, %u deleted object%s remaining in flash", object_count,
       object_count == 1 ? "" : "s", deleted_object_count, deleted_object_count == 1 ? "" : "s");
   uint32_t erase_count = 0;
   int rval = (int) nvm3_getEraseCount(nvm3_defaultHandle, &erase_count);
   if (!rval)
-    i3_log(LOG_MASK_ALWAYS, TEXT_CLI "                The most-used page of flash has been erased %u time%s", param_repo_get_cli_text_color(), erase_count,
+    i3_log(LOG_MASK_ALWAYS, "                The most-used page of flash has been erased %u time%s", erase_count,
         erase_count == 1 ? "" : "s");
   else
     i3_log(LOG_MASK_ERROR, "                Failed to get flash erase count, error 0x%x", rval);
@@ -254,52 +361,52 @@ static void lm(const char *input)
   {
     lm = i3_log_get_mask();
     // Print current log mask
-    i3_log(LOG_MASK_ALWAYS, TEXT_CLI "Current log mask: 0x%x", param_repo_get_cli_text_color(), lm);
+    i3_log(LOG_MASK_ALWAYS, "Current log mask: 0x%x", lm);
 #ifndef NO_REACH_LOGGING
     // print information about log mask
-    i3_log(LOG_MASK_ALWAYS, TEXT_CLI "  ALWAYS, ERROR and WARN are enabled", param_repo_get_cli_text_color());
+    i3_log(LOG_MASK_ALWAYS, "  ALWAYS, ERROR and WARN are enabled");
     if (lm & LOG_MASK_WEAK)
-      i3_log(LOG_MASK_ALWAYS, TEXT_CLI "  mask 0x%x: WEAK is enabled", param_repo_get_cli_text_color(), LOG_MASK_WEAK);
+      i3_log(LOG_MASK_ALWAYS, "  mask 0x%x: WEAK is enabled", LOG_MASK_WEAK);
     else
-      i3_log(LOG_MASK_ALWAYS, TEXT_CLI "    mask 0x%x: WEAK is disabled", param_repo_get_cli_text_color(), LOG_MASK_WEAK);
+      i3_log(LOG_MASK_ALWAYS, "    mask 0x%x: WEAK is disabled", LOG_MASK_WEAK);
     if (lm & LOG_MASK_WIRE)
-      i3_log(LOG_MASK_ALWAYS, TEXT_CLI "  mask 0x%x: WIRE is enabled", param_repo_get_cli_text_color(), LOG_MASK_WIRE);
+      i3_log(LOG_MASK_ALWAYS, "  mask 0x%x: WIRE is enabled", LOG_MASK_WIRE);
     else
-      i3_log(LOG_MASK_ALWAYS, TEXT_CLI "    mask 0x%x: WIRE is disabled", param_repo_get_cli_text_color(), LOG_MASK_WIRE);
+      i3_log(LOG_MASK_ALWAYS, "    mask 0x%x: WIRE is disabled", LOG_MASK_WIRE);
     if (lm & LOG_MASK_REACH)
-      i3_log(LOG_MASK_ALWAYS, TEXT_CLI "  mask 0x%x: REACH is enabled", param_repo_get_cli_text_color(), LOG_MASK_REACH);
+      i3_log(LOG_MASK_ALWAYS, "  mask 0x%x: REACH is enabled", LOG_MASK_REACH);
     else
-      i3_log(LOG_MASK_ALWAYS, TEXT_CLI "    mask 0x%x: REACH is disabled", param_repo_get_cli_text_color(), LOG_MASK_REACH);
+      i3_log(LOG_MASK_ALWAYS, "    mask 0x%x: REACH is disabled", LOG_MASK_REACH);
     if (lm & LOG_MASK_PARAMS)
-      i3_log(LOG_MASK_ALWAYS, TEXT_CLI "  mask 0x%x: PARAMS is enabled", param_repo_get_cli_text_color(), LOG_MASK_PARAMS);
+      i3_log(LOG_MASK_ALWAYS, "  mask 0x%x: PARAMS is enabled", LOG_MASK_PARAMS);
     else
-      i3_log(LOG_MASK_ALWAYS, TEXT_CLI "    mask 0x%x: PARAMS is disabled", param_repo_get_cli_text_color(), LOG_MASK_PARAMS);
+      i3_log(LOG_MASK_ALWAYS, "    mask 0x%x: PARAMS is disabled", LOG_MASK_PARAMS);
     if (lm & LOG_MASK_FILES)
-      i3_log(LOG_MASK_ALWAYS, TEXT_CLI "  mask 0x%x: FILES is enabled", param_repo_get_cli_text_color(), LOG_MASK_FILES);
+      i3_log(LOG_MASK_ALWAYS, "  mask 0x%x: FILES is enabled", LOG_MASK_FILES);
     else
-      i3_log(LOG_MASK_ALWAYS, TEXT_CLI "    mask 0x%x: FILES is disabled", param_repo_get_cli_text_color(), LOG_MASK_FILES);
+      i3_log(LOG_MASK_ALWAYS, "    mask 0x%x: FILES is disabled", LOG_MASK_FILES);
     if (lm & LOG_MASK_BLE)
-      i3_log(LOG_MASK_ALWAYS, TEXT_CLI "  mask 0x%x: BLE is enabled", param_repo_get_cli_text_color(), LOG_MASK_BLE);
+      i3_log(LOG_MASK_ALWAYS, "  mask 0x%x: BLE is enabled", LOG_MASK_BLE);
     else
-      i3_log(LOG_MASK_ALWAYS, TEXT_CLI "    mask 0x%x: BLE is disabled", param_repo_get_cli_text_color(), LOG_MASK_BLE);
-    i3_log(LOG_MASK_ALWAYS, TEXT_CLI "  Other Valid log masks:", param_repo_get_cli_text_color());
-    i3_log(LOG_MASK_ALWAYS, TEXT_CLI "    LOG_MASK_ACME               0x4000", param_repo_get_cli_text_color());
-    i3_log(LOG_MASK_ALWAYS, TEXT_CLI "    LOG_MASK_DEBUG              0x8000", param_repo_get_cli_text_color());
-    i3_log(LOG_MASK_ALWAYS, TEXT_CLI "    LOG_MASK_TIMEOUT           0x10000", param_repo_get_cli_text_color());
-    i3_log(LOG_MASK_ALWAYS, TEXT_CLI "    LOG_MASK_DATASTREAM_DEBUG 0x100000", param_repo_get_cli_text_color());
-    i3_log(LOG_MASK_ALWAYS, TEXT_CLI "    LOG_MASK_ZIGBEE_DEBUG     0x200000", param_repo_get_cli_text_color());
-    i3_log(LOG_MASK_ALWAYS, TEXT_CLI "    LOG_MASK_ZIGBEE_OTA_DEBUG 0x400000", param_repo_get_cli_text_color());
+      i3_log(LOG_MASK_ALWAYS, "    mask 0x%x: BLE is disabled", LOG_MASK_BLE);
+    i3_log(LOG_MASK_ALWAYS, "  Other Valid log masks:");
+    i3_log(LOG_MASK_ALWAYS, "    LOG_MASK_ACME               0x4000");
+    i3_log(LOG_MASK_ALWAYS, "    LOG_MASK_DEBUG              0x8000");
+    i3_log(LOG_MASK_ALWAYS, "    LOG_MASK_TIMEOUT           0x10000");
 #else
         // Logging is typically disabled to save space, so don't waste it with a bunch of printouts
-        i3_log(LOG_MASK_WARN, TEXT_CLI "Log mask is of limited use, as logging is disabled", param_repo_get_cli_text_color());
+        i3_log(LOG_MASK_WARN, "Log mask is of limited use, as logging is disabled");
 #endif
   }
   else
   {
     i3_log_set_mask(lm);
-    i3_log(LOG_MASK_ALWAYS, TEXT_CLI "The log mask is now 0x%x", param_repo_get_cli_text_color(), lm);
+    i3_log(LOG_MASK_ALWAYS, "The log mask is now 0x%x", lm);
 #ifdef NO_REACH_LOGGING
-        i3_log(LOG_MASK_WARN, TEXT_CLI "Log mask is of limited use, as logging is disabled", param_repo_get_cli_text_color());
+        i3_log(LOG_MASK_WARN, "Log mask is of limited use, as logging is disabled");
 #endif
   }
 }
+
+/* User code end [cli.c: User Local Functions] */
+

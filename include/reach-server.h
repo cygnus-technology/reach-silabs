@@ -41,7 +41,8 @@
 
 /// definitions.h is generated from the reach-utils/c-gen scripts and the "Thunderboard Demo.xlsx" definition file.
 /// A number of defines are in definitions.h, these could be here if the services were being implemented manually
-#include "definitions.h"
+#include "device.h"
+#include "parameters.h"
 
 // Services not yet supported by the reach-util/c-gen code generator
 // #define INCLUDE_WIFI_SERVICE
@@ -89,12 +90,12 @@
 /// With code changes it could be less.
 #define REACH_PARAM_BUFFER_COUNT REACH_COUNT_PARAM_IDS
 
-/// Define this to test compatibility with the Ahsoka header.
-/// You must also change reach.proto.
-#define AHSOKA_HEADER
 
 // prints out buffer sizes for tuning.
 // #define VERBOSE_SIZES
+
+// define to enbable a preliminary test of stream functions.
+// #define TEST_STREAM
 
 #endif  // ndef _REACH_SERVER_H_
 

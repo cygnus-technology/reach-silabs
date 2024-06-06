@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="ASCII"?>
 <model:MDescriptors xmlns:model="http://www.silabs.com/ss/Studio.ecore">
   <descriptors name="reach-silabs">
-    <properties key="projectCommon.sdkId" value="com.silabs.sdk.stack.super:4.4.2._1209416602"/>
+    <properties key="projectCommon.sdkId" value="com.silabs.sdk.stack.super:4.4.3._1519601792"/>
     <properties key="universalConfig.relativeWorkspacePath" value="..\reach-silabs.slcw"/>
     <properties key="universalConfig.generationDirectory" value=""/>
     <properties key="universalConfig.toolchainCompatibility" value="iar gcc"/>
