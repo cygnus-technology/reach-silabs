@@ -10,6 +10,7 @@
 /slick/
 /.uceditor/
 *.bak
+*.bak0
 .trash
 .settings
 .obsidian/
