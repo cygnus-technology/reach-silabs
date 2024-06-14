@@ -37,7 +37,7 @@
  ********************************************************************************************/
 
 /********************************************************************************************
- ************************************     Includes     *************************************
+ *************************************     Includes     *************************************
  *******************************************************************************************/
 
 #include "cr_stack.h"
@@ -55,32 +55,18 @@
 /* User code end [wifi.c: User Defines] */
 
 /********************************************************************************************
- ***********************************     Data Types     ************************************
+ ************************************     Data Types     ************************************
  *******************************************************************************************/
 
 /* User code start [wifi.c: User Data Types] */
 /* User code end [wifi.c: User Data Types] */
 
 /********************************************************************************************
- ********************************     Global Variables     *********************************
+ *********************************     Global Variables     *********************************
  *******************************************************************************************/
 
 /* User code start [wifi.c: User Global Variables] */
 /* User code end [wifi.c: User Global Variables] */
-
-/********************************************************************************************
- *****************************     Local/Extern Variables     ******************************
- *******************************************************************************************/
-
-static uint32_t sWiFi_index = 0;
-static uint32_t sWiFi_count = 0;
-static cr_ConnectionDescription wifi_desc[MAX_NUM_WIFI_ACCESS_POINTS];
-
-/* User code start [wifi.c: User Local/Extern Variables] */
-
-bool first_discover = true;
-
-/* User code end [wifi.c: User Local/Extern Variables] */
 
 /********************************************************************************************
  ***************************     Local Function Declarations     ****************************
@@ -90,7 +76,19 @@ bool first_discover = true;
 /* User code end [wifi.c: User Local Function Declarations] */
 
 /********************************************************************************************
- ********************************     Global Functions     *********************************
+ ******************************     Local/Extern Variables     ******************************
+ *******************************************************************************************/
+
+static uint32_t sWiFi_index = 0;
+static uint32_t sWiFi_count = 0;
+static cr_ConnectionDescription wifi_desc[MAX_NUM_WIFI_ACCESS_POINTS];
+
+/* User code start [wifi.c: User Local/Extern Variables] */
+static bool sFirstDiscover = true;
+/* User code end [wifi.c: User Local/Extern Variables] */
+
+/********************************************************************************************
+ *********************************     Global Functions     *********************************
  *******************************************************************************************/
 
 /* User code start [wifi.c: User Global Functions] */
@@ -100,6 +98,20 @@ bool first_discover = true;
  *************************     Cygnus Reach Callback Functions     **************************
  *******************************************************************************************/
 
+/**
+* @brief   crcb_discover_wifi
+* @details Retrieve the requested information about the WiFi
+ *         system. The discovery process may take some time the
+ *         implementation can choose to return
+ *         cr_ErrorCodes_INCOMPLETE to indicate that the
+ *         discover command needs to be issued again until it
+ *         succeeds. Other errors are reported via the result
+ *         field.
+* @param   request (input) Unused.
+* @param   response (output) The requested info
+* @return  returns cr_ErrorCodes_NO_ERROR or
+*          cr_ErrorCodes_INCOMPLETE.
+*/
 int crcb_discover_wifi(const cr_DiscoverWiFi *request, cr_DiscoverWiFiResponse *response)
 {
   (void)request;
@@ -114,7 +126,7 @@ int crcb_discover_wifi(const cr_DiscoverWiFi *request, cr_DiscoverWiFiResponse *
 
   response->result = 0;
   rval = 0;
-  if (first_discover)
+  if (sFirstDiscover)
   {
     cr_ConnectionDescription temp = {
         .ssid = "Test Network",
@@ -135,13 +147,18 @@ int crcb_discover_wifi(const cr_DiscoverWiFi *request, cr_DiscoverWiFiResponse *
     wifi_desc[0] = temp;
     wifi_desc[1] = temp2;
     sWiFi_count = 2;
-    first_discover = false;
+    sFirstDiscover = false;
   }
 
   /* User code end [WiFi: Discover] */
   return rval;
 }
 
+/**
+* @brief   crcb_get_wifi_count
+* @return  The number of wifi access points available to the
+*          the device.
+*/
 int crcb_get_wifi_count()
 {
   /* User code start [WiFi: Get Count] */
@@ -150,6 +167,18 @@ int crcb_get_wifi_count()
   return sWiFi_count;
 }
 
+/**
+* @brief   crcb_wifi_discover_reset
+* @details The overriding implementation must reset a pointer
+*          into a table of the available wifi access points
+*          such that the next call to
+*          crcb_wifi_discover_next() will return the description
+*          of this access point.
+* @param   cid The ID to which the wifi table pointer
+*              should be reset.  0 for the first AP.
+* @return  cr_ErrorCodes_NO_ERROR on success or a non-zero error like
+*          cr_ErrorCodes_INVALID_PARAMETER.
+*/
 int crcb_wifi_discover_reset(const uint32_t cid)
 {
   if (cid >= sWiFi_count)
@@ -161,6 +190,16 @@ int crcb_wifi_discover_reset(const uint32_t cid)
   return 0;
 }
 
+/**
+* @brief   crcb_wifi_discover_next
+* @details Gets the wifi description for the next wifi.
+*          The overriding implementation must post-increment its pointer into
+*          the wifi table.
+* @param   cmd_desc Pointer to stack provided memory into which the
+*               wifi description is to be copied.
+* @return  cr_ErrorCodes_NO_ERROR on success or cr_ErrorCodes_INVALID_PARAMETER
+*          if the last wifi has already been returned.
+*/
 int crcb_wifi_discover_next(cr_ConnectionDescription *conn_desc)
 {
   if (sWiFi_index >= MAX_NUM_WIFI_ACCESS_POINTS)
@@ -174,11 +213,19 @@ int crcb_wifi_discover_next(cr_ConnectionDescription *conn_desc)
   return 0;
 }
 
+/**
+* @brief   crcb_wifi_connection
+* @details Establish or break a WiFi connection.
+* @param   request (input) what needed to connect
+* @param   response (output) result
+* @return  returns zero or an error code
+*/
 int crcb_wifi_connection(const cr_WiFiConnectionRequest *request, cr_WiFiConnectionResponse *response)
 {
   affirm(request);
   affirm(response);
-
+  int rval = 0;
+  
   /* User code start [WiFi: Connect/Disconnect] */
 
   for (uint32_t i = 0; i < sWiFi_count; i++)
@@ -231,7 +278,7 @@ int crcb_wifi_connection(const cr_WiFiConnectionRequest *request, cr_WiFiConnect
 
   /* User code end [WiFi: Connect/Disconnect] */
 
-  return 0;
+  return rval;
 }
 
 /* User code start [wifi.c: User Cygnus Reach Callback Functions] */

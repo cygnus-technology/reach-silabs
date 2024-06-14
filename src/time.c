@@ -37,16 +37,14 @@
  ********************************************************************************************/
 
 /********************************************************************************************
- ************************************     Includes     *************************************
+ *************************************     Includes     *************************************
  *******************************************************************************************/
 
 #include "cr_stack.h"
 
 /* User code start [time.c: User Includes] */
-
 #include "parameters.h"
 #include "reach_silabs.h"
-
 /* User code end [time.c: User Includes] */
 
 /********************************************************************************************
@@ -57,28 +55,18 @@
 /* User code end [time.c: User Defines] */
 
 /********************************************************************************************
- ***********************************     Data Types     ************************************
+ ************************************     Data Types     ************************************
  *******************************************************************************************/
 
 /* User code start [time.c: User Data Types] */
 /* User code end [time.c: User Data Types] */
 
 /********************************************************************************************
- ********************************     Global Variables     *********************************
+ *********************************     Global Variables     *********************************
  *******************************************************************************************/
 
 /* User code start [time.c: User Global Variables] */
 /* User code end [time.c: User Global Variables] */
-
-/********************************************************************************************
- *****************************     Local/Extern Variables     ******************************
- *******************************************************************************************/
-
-/* User code start [time.c: User Local/Extern Variables] */
-
-static int64_t time_offset = 0;
-
-/* User code end [time.c: User Local/Extern Variables] */
 
 /********************************************************************************************
  ***************************     Local Function Declarations     ****************************
@@ -88,7 +76,15 @@ static int64_t time_offset = 0;
 /* User code end [time.c: User Local Function Declarations] */
 
 /********************************************************************************************
- ********************************     Global Functions     *********************************
+ ******************************     Local/Extern Variables     ******************************
+ *******************************************************************************************/
+
+/* User code start [time.c: User Local/Extern Variables] */
+static int64_t sTimeOffset = 0;
+/* User code end [time.c: User Local/Extern Variables] */
+
+/********************************************************************************************
+ *********************************     Global Functions     *********************************
  *******************************************************************************************/
 
 /* User code start [time.c: User Global Functions] */
@@ -100,11 +96,11 @@ static int64_t time_offset = 0;
 
 int crcb_time_get(cr_TimeGetResponse *response)
 {
+  int rval = 0;
   /* User code start [Time: Get] */
-
-  response->seconds_utc = (rsl_get_system_uptime() + time_offset) / 1000;
+  response->seconds_utc = (rsl_get_system_uptime() + sTimeOffset) / 1000;
   cr_ParameterValue data;
-  int rval = crcb_parameter_read(PARAM_TIMEZONE_ENABLED, &data);
+  rval = crcb_parameter_read(PARAM_TIMEZONE_ENABLED, &data);
   if (rval)
     return cr_ErrorCodes_READ_FAILED;
   response->has_timezone = data.value.bool_value;
@@ -119,16 +115,15 @@ int crcb_time_get(cr_TimeGetResponse *response)
   {
     response->timezone = data.value.int32_value;
   }
-
   /* User code end [Time: Get] */
-  return 0;
+  return rval;
 }
 
 int crcb_time_set(const cr_TimeSetRequest *request)
 {
+  int rval = 0;
   /* User code start [Time: Set] */
-
-  time_offset = (request->seconds_utc * 1000) - rsl_get_system_uptime();
+  sTimeOffset = (request->seconds_utc * 1000) - rsl_get_system_uptime();
   if (request->has_timezone)
   {
     cr_ParameterValue param;
@@ -138,9 +133,8 @@ int crcb_time_set(const cr_TimeSetRequest *request)
     param.value.int32_value = request->timezone;
     crcb_parameter_write(PARAM_TIMEZONE_OFFSET, &param);
   }
-
   /* User code end [Time: Set] */
-  return 0;
+  return rval;
 }
 
 /* User code start [time.c: User Cygnus Reach Callback Functions] */
