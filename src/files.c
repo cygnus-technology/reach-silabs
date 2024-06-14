@@ -37,7 +37,7 @@
  ********************************************************************************************/
 
 /********************************************************************************************
- ************************************     Includes     *************************************
+ *************************************     Includes     *************************************
  *******************************************************************************************/
 
 #include "files.h"
@@ -45,10 +45,8 @@
 #include "i3_log.h"
 
 /* User code start [files.c: User Includes] */
-
 #include "const_files.h"
 #include "nvm3_generic.h"
-
 /* User code end [files.c: User Includes] */
 
 /********************************************************************************************
@@ -56,24 +54,41 @@
  *******************************************************************************************/
 
 /* User code start [files.c: User Defines] */
-
 #define IO_TXT_KEY 0x1010
 #define MAX_IO_TXT_LENGTH 2048
-
 /* User code end [files.c: User Defines] */
 
 /********************************************************************************************
- ***********************************     Data Types     ************************************
+ ************************************     Data Types     ************************************
  *******************************************************************************************/
 
 /* User code start [files.c: User Data Types] */
 /* User code end [files.c: User Data Types] */
 
 /********************************************************************************************
- ********************************     Global Variables     *********************************
+ *********************************     Global Variables     *********************************
  *******************************************************************************************/
 
-cr_FileInfo file_descriptions[] = {
+/* User code start [files.c: User Global Variables] */
+/* User code end [files.c: User Global Variables] */
+
+/********************************************************************************************
+ ***************************     Local Function Declarations     ****************************
+ *******************************************************************************************/
+
+static int sFindIndexFromFid(uint32_t fid, uint32_t *index);
+
+/* User code start [files.c: User Local Function Declarations] */
+void nvm_init(void);
+void nvm_reset(void);
+/* User code end [files.c: User Local Function Declarations] */
+
+/********************************************************************************************
+ ******************************     Local/Extern Variables     ******************************
+ *******************************************************************************************/
+
+static int sFidIndex = 0;
+cr_FileInfo sFileDescriptions[] = {
   {
     .file_id = FILE_IO_TXT,
     .file_name = "io.txt",
@@ -103,37 +118,13 @@ cr_FileInfo file_descriptions[] = {
   }
 };
 
-/* User code start [files.c: User Global Variables] */
-/* User code end [files.c: User Global Variables] */
-
-/********************************************************************************************
- *****************************     Local/Extern Variables     ******************************
- *******************************************************************************************/
-
-static int sFid_index = 0;
-
 /* User code start [files.c: User Local/Extern Variables] */
-
-static char io_txt[MAX_IO_TXT_LENGTH];
-static size_t io_txt_size = 0;
-
+static char sIoTxtContents[MAX_IO_TXT_LENGTH];
+static size_t sIoTxtLength = 0;
 /* User code end [files.c: User Local/Extern Variables] */
 
 /********************************************************************************************
- ***************************     Local Function Declarations     ****************************
- *******************************************************************************************/
-
-static int sFindIndexFromFid(uint32_t fid, uint8_t *index);
-
-/* User code start [files.c: User Local Function Declarations] */
-
-void nvm_init(void);
-void nvm_reset(void);
-
-/* User code end [files.c: User Local Function Declarations] */
-
-/********************************************************************************************
- ********************************     Global Functions     *********************************
+ *********************************     Global Functions     *********************************
  *******************************************************************************************/
 
 void files_init(void)
@@ -146,44 +137,62 @@ void files_init(void)
     if (rval || type != NVM3_OBJECTTYPE_DATA)
     {
       I3_LOG(LOG_MASK_ERROR, "Failed to recover io.txt from flash, rewriting");
-      memcpy(io_txt, default_io_txt, sizeof(default_io_txt));
-      io_txt_size = sizeof(default_io_txt);
-      rval = (int) nvm3_writeData(nvm3_defaultHandle, IO_TXT_KEY, (uint8_t *) io_txt, io_txt_size);
+      memcpy(sIoTxtContents, default_io_txt, sizeof(default_io_txt));
+      sIoTxtLength = sizeof(default_io_txt);
+      rval = (int) nvm3_writeData(nvm3_defaultHandle, IO_TXT_KEY, (uint8_t *) sIoTxtContents, sIoTxtLength);
       if (rval)
         I3_LOG(LOG_MASK_ERROR, "Failed to rewrite default io.txt, error %d", rval);
     }
     else
     {
       // Data exists, try and get it
-      rval = (int) nvm3_readData(nvm3_defaultHandle, IO_TXT_KEY, (uint8_t *) io_txt, object_length);
+      rval = (int) nvm3_readData(nvm3_defaultHandle, IO_TXT_KEY, (uint8_t *) sIoTxtContents, object_length);
       if (rval)
       {
         I3_LOG(LOG_MASK_ERROR, "Failed to read io.txt from flash, error %d.  Attempting to rewrite.", rval);
-        memcpy(io_txt, default_io_txt, sizeof(default_io_txt));
-        io_txt_size = sizeof(default_io_txt);
-        rval = (int) nvm3_writeData(nvm3_defaultHandle, IO_TXT_KEY, (uint8_t *) io_txt, io_txt_size);
+        memcpy(sIoTxtContents, default_io_txt, sizeof(default_io_txt));
+        sIoTxtLength = sizeof(default_io_txt);
+        rval = (int) nvm3_writeData(nvm3_defaultHandle, IO_TXT_KEY, (uint8_t *) sIoTxtContents, sIoTxtLength);
         if (rval)
           I3_LOG(LOG_MASK_ERROR, "Failed to rewrite default io.txt, error %d", rval);
       }
       else
       {
         // Read io.txt contents successfully
-        io_txt_size = object_length;
+        sIoTxtLength = object_length;
       }
     }
-    file_descriptions[FILE_IO_TXT].current_size_bytes = (int32_t) io_txt_size;
+    sFileDescriptions[FILE_IO_TXT].current_size_bytes = (int32_t) sIoTxtLength;
 
   /* User code end [Files: Init] */
+}
+
+int files_set_description(uint32_t fid, cr_FileInfo *file_desc)
+{
+  int rval = 0;
+  affirm(file_desc != NULL);
+  uint32_t idx;
+  rval = sFindIndexFromFid(fid, &idx);
+  if (rval != 0)
+    return rval;
+
+  /* User code start [Files: Set Description]
+   * If the file description needs to be updated (for example, changing the current size), now's the time */
+  /* User code end [Files: Set Description] */
+
+  sFileDescriptions[idx] = *file_desc;
+
+  return rval;
 }
 
 /* User code start [files.c: User Global Functions] */
 
 void files_nvm_reset(void)
 {
-  memset(io_txt, 0, sizeof(io_txt));
-  memcpy(io_txt, default_io_txt, sizeof(default_io_txt));
-  io_txt_size = sizeof(default_io_txt);
-  file_descriptions[FILE_IO_TXT].current_size_bytes = (int32_t) io_txt_size;
+  memset(sIoTxtContents, 0, sizeof(sIoTxtContents));
+  memcpy(sIoTxtContents, default_io_txt, sizeof(default_io_txt));
+  sIoTxtLength = sizeof(default_io_txt);
+  sFileDescriptions[FILE_IO_TXT].current_size_bytes = (int32_t) sIoTxtLength;
   int rval = (int) nvm3_writeData(nvm3_defaultHandle, IO_TXT_KEY, (uint8_t*) default_io_txt, sizeof(default_io_txt));
   if (rval != 0)
     I3_LOG(LOG_MASK_ERROR, "io.txt write failed, error %d", rval);
@@ -199,7 +208,7 @@ int crcb_file_get_description(uint32_t fid, cr_FileInfo *file_desc)
 {
   int rval = 0;
   affirm(file_desc != NULL);
-  uint8_t idx;
+  uint32_t idx;
   rval = sFindIndexFromFid(fid, &idx);
   if (rval != 0)
     return rval;
@@ -208,9 +217,9 @@ int crcb_file_get_description(uint32_t fid, cr_FileInfo *file_desc)
    * If the file description needs to be updated (for example, changing the current size), now's the time */
   /* User code end [Files: Get Description] */
 
-  *file_desc = file_descriptions[idx];
+  *file_desc = sFileDescriptions[idx];
 
-  return 0;
+  return rval;
 }
 
 int crcb_file_get_file_count()
@@ -219,7 +228,7 @@ int crcb_file_get_file_count()
   int numAvailable = 0;
   for (i = 0; i < NUM_FILES; i++)
   {
-    if (crcb_access_granted(cr_ServiceIds_FILES, file_descriptions[i].file_id)) numAvailable++;
+    if (crcb_access_granted(cr_ServiceIds_FILES, sFileDescriptions[i].file_id)) numAvailable++;
   }
   return numAvailable;
 }
@@ -227,48 +236,53 @@ int crcb_file_get_file_count()
 int crcb_file_discover_reset(const uint8_t fid)
 {
   int rval = 0;
-  uint8_t idx;
+  uint32_t idx;
   rval = sFindIndexFromFid(fid, &idx);
   if (0 != rval)
   {
     I3_LOG(LOG_MASK_ERROR, "%s(%d): invalid FID, using NUM_FILES.", __FUNCTION__, fid);
-    sFid_index = NUM_FILES;
+    sFidIndex = NUM_FILES;
     return cr_ErrorCodes_INVALID_ID;
   }
-  if (!crcb_access_granted(cr_ServiceIds_FILES, file_descriptions[sFid_index].file_id))
+  if (!crcb_access_granted(cr_ServiceIds_FILES, sFileDescriptions[sFidIndex].file_id))
   {
     I3_LOG(LOG_MASK_ERROR, "%s(%d): Access not granted, using NUM_FILES.", __FUNCTION__, fid);
-    sFid_index = NUM_FILES;
+    sFidIndex = NUM_FILES;
     return cr_ErrorCodes_BAD_FILE;
   }
-  sFid_index = idx;
+  sFidIndex = idx;
   return 0;
 }
 
 int crcb_file_discover_next(cr_FileInfo *file_desc)
 {
-  if (sFid_index >= NUM_FILES) // end of search
+  if (sFidIndex >= NUM_FILES) // end of search
     return cr_ErrorCodes_NO_DATA;
 
-  while (!crcb_access_granted(cr_ServiceIds_FILES, file_desc[sFid_index].file_id))
+  while (!crcb_access_granted(cr_ServiceIds_FILES, file_desc[sFidIndex].file_id))
   {
-    I3_LOG(LOG_MASK_FILES, "%s: sFid_index (%d) skip, access not granted",
-         __FUNCTION__, sFid_index);
-    sFid_index++;
-    if (sFid_index >= NUM_FILES)
+    I3_LOG(LOG_MASK_FILES, "%s: sFidIndex (%d) skip, access not granted",
+         __FUNCTION__, sFidIndex);
+    sFidIndex++;
+    if (sFidIndex >= NUM_FILES)
     {
-      I3_LOG(LOG_MASK_PARAMS, "%s: skipped to sFid_index (%d) >= NUM_FILES (%d)", __FUNCTION__, sFid_index, NUM_FILES);
+      I3_LOG(LOG_MASK_PARAMS, "%s: skipped to sFidIndex (%d) >= NUM_FILES (%d)", __FUNCTION__, sFidIndex, NUM_FILES);
       return cr_ErrorCodes_NO_DATA;
     }
   }
-  *file_desc = file_descriptions[sFid_index++];
+  *file_desc = sFileDescriptions[sFidIndex++];
   return 0;
 }
 
+// which file
+// offset, negative value specifies current location.
+// how many bytes to read
+// where the data goes
+// bytes actually read, negative for errors.
 int crcb_read_file(const uint32_t fid, const int offset, const size_t bytes_requested, uint8_t *pData, int *bytes_read)
 {
   int rval = 0;
-  uint8_t idx;
+  uint32_t idx;
   rval = sFindIndexFromFid(fid, &idx);
   if (0 != rval)
   {
@@ -287,26 +301,26 @@ int crcb_read_file(const uint32_t fid, const int offset, const size_t bytes_requ
   switch (fid)
   {
     case FILE_IO_TXT:
-      if (offset < 0 || offset >= (int) io_txt_size)
+      if (offset < 0 || offset >= (int) sIoTxtLength)
       {
-        I3_LOG(LOG_MASK_ERROR, "io.txt read: Offset of %d is outside of the file size %d", offset, io_txt_size);
+        I3_LOG(LOG_MASK_ERROR, "io.txt read: Offset of %d is outside of the file size %d", offset, sIoTxtLength);
         return cr_ErrorCodes_READ_FAILED;
       }
       if (offset == 0)
       {
         // Update the local buffer of the file in case a write failed before this read
-        int rval = (int) nvm3_readData(nvm3_defaultHandle, IO_TXT_KEY, (uint8_t*) io_txt, io_txt_size);
+        int rval = (int) nvm3_readData(nvm3_defaultHandle, IO_TXT_KEY, (uint8_t*) sIoTxtContents, sIoTxtLength);
         if (rval != 0)
           I3_LOG(LOG_MASK_ERROR, "io.txt read failed, error %d", rval);
       }
-      I3_LOG(LOG_MASK_FILES, "Read fid %u, offset %d, requested %d, size %d", fid, offset, bytes_requested, io_txt_size);
-      if (offset > (int) io_txt_size)
+      I3_LOG(LOG_MASK_FILES, "Read fid %u, offset %d, requested %d, size %d", fid, offset, bytes_requested, sIoTxtLength);
+      if (offset > (int) sIoTxtLength)
       {
-        I3_LOG(LOG_MASK_ERROR, "io.txt read: Offset of %d is greater than size of %d", offset, io_txt_size);
+        I3_LOG(LOG_MASK_ERROR, "io.txt read: Offset of %d is greater than size of %d", offset, sIoTxtLength);
         return cr_ErrorCodes_READ_FAILED;
       }
-      *bytes_read = ((offset + bytes_requested) > io_txt_size) ? (io_txt_size - offset) : bytes_requested;
-      memcpy(pData, &io_txt[offset], (size_t) *bytes_read);
+      *bytes_read = ((offset + bytes_requested) > sIoTxtLength) ? (sIoTxtLength - offset) : bytes_requested;
+      memcpy(pData, &sIoTxtContents[offset], (size_t) *bytes_read);
       break;
 
     case FILE_CYGNUS_REACH_LOGO_PNG:
@@ -336,7 +350,7 @@ int crcb_read_file(const uint32_t fid, const int offset, const size_t bytes_requ
 int crcb_file_prepare_to_write(const uint32_t fid, const size_t offset, const size_t bytes)
 {
   int rval = 0;
-  uint8_t idx;
+  uint32_t idx;
   rval = sFindIndexFromFid(fid, &idx);
   if (0 != rval)
   {
@@ -352,10 +366,10 @@ int crcb_file_prepare_to_write(const uint32_t fid, const size_t offset, const si
       // Partial writes are currently not supported by this demo
       if (offset != 0)
         return cr_ErrorCodes_INVALID_PARAMETER;
-      if (offset + bytes > sizeof(io_txt))
+      if (offset + bytes > sizeof(sIoTxtContents))
         return cr_ErrorCodes_BUFFER_TOO_SMALL;
-      memset(&io_txt[offset], 0, bytes);
-      io_txt_size = bytes + offset;
+      memset(&sIoTxtContents[offset], 0, bytes);
+      sIoTxtLength = bytes + offset;
       break;
 
     case FILE_DEV_NULL:
@@ -366,13 +380,17 @@ int crcb_file_prepare_to_write(const uint32_t fid, const size_t offset, const si
   }
 
   /* User code end [Files: Pre-Write] */
-  return 0;
+  return rval;
 }
 
+// which file
+// offset, negative value specifies current location.
+// how many bytes to write
+// where to get the data from
 int crcb_write_file(const uint32_t fid, const int offset, const size_t bytes, const uint8_t *pData)
 {
   int rval = 0;
-  uint8_t idx;
+  uint32_t idx;
   rval = sFindIndexFromFid(fid, &idx);
   if (0 != rval)
   {
@@ -385,12 +403,12 @@ int crcb_write_file(const uint32_t fid, const int offset, const size_t bytes, co
   switch (fid)
   {
     case FILE_IO_TXT:
-      if (offset < 0 || offset + bytes > io_txt_size)
+      if (offset < 0 || offset + bytes > sIoTxtLength)
       {
         I3_LOG(LOG_MASK_ERROR, "io.txt write failed outside of limited size, error %d", cr_ErrorCodes_WRITE_FAILED);
         return cr_ErrorCodes_WRITE_FAILED;
       }
-      memcpy(&io_txt[offset], pData, bytes);
+      memcpy(&sIoTxtContents[offset], pData, bytes);
       break;
     case FILE_DEV_NULL:
       I3_LOG(LOG_MASK_FILES, "Write fid %u (dev/null), offset %d, bytes %d", fid, offset, bytes);
@@ -401,13 +419,13 @@ int crcb_write_file(const uint32_t fid, const int offset, const size_t bytes, co
   }
 
   /* User code end [Files: Write] */
-  return 0;
+  return rval;
 }
 
 int crcb_file_transfer_complete(const uint32_t fid)
 {
   int rval = 0;
-  uint8_t idx;
+  uint32_t idx;
   rval = sFindIndexFromFid(fid, &idx);
   if (0 != rval)
   {
@@ -420,10 +438,10 @@ int crcb_file_transfer_complete(const uint32_t fid)
   switch (fid)
   {
     case FILE_IO_TXT:
-      int rval = (int) nvm3_writeData(nvm3_defaultHandle, IO_TXT_KEY, (uint8_t*) io_txt, io_txt_size);
+      int rval = (int) nvm3_writeData(nvm3_defaultHandle, IO_TXT_KEY, (uint8_t*) sIoTxtContents, sIoTxtLength);
       if (rval != 0)
         I3_LOG(LOG_MASK_ERROR, "io.txt write failed, error %d", rval);
-      file_descriptions[FILE_IO_TXT].current_size_bytes = (int32_t) io_txt_size;
+      sFileDescriptions[FILE_IO_TXT].current_size_bytes = (int32_t) sIoTxtLength;
       break;
 
     case FILE_DEV_NULL:
@@ -434,13 +452,14 @@ int crcb_file_transfer_complete(const uint32_t fid)
   }
 
   /* User code end [Files: Write Complete] */
-  return 0;
+  return rval;
 }
 
+// returns zero or an error code
 int crcb_erase_file(const uint32_t fid)
 {
   int rval = 0;
-  uint8_t idx;
+  uint32_t idx;
   rval = sFindIndexFromFid(fid, &idx);
   if (0 != rval)
   {
@@ -456,16 +475,16 @@ int crcb_erase_file(const uint32_t fid)
       int rval = nvm3_deleteObject(nvm3_defaultHandle, IO_TXT_KEY);
       if (rval != 0)
         I3_LOG(LOG_MASK_ERROR, "Failed to erase io.txt, error %d", rval);
-      io_txt_size = 0;
-      memset(io_txt, 0, sizeof(io_txt));
-      file_descriptions[FILE_IO_TXT].current_size_bytes = (int32_t) io_txt_size;
+      sIoTxtLength = 0;
+      memset(sIoTxtContents, 0, sizeof(sIoTxtContents));
+      sFileDescriptions[FILE_IO_TXT].current_size_bytes = (int32_t) sIoTxtLength;
       break;
     default:
       return cr_ErrorCodes_BAD_FILE;
   }
 
   /* User code end [Files: Erase] */
-  return 0;
+  return rval;
 }
 
 /* User code start [files.c: User Cygnus Reach Callback Functions] */
@@ -475,12 +494,12 @@ int crcb_erase_file(const uint32_t fid)
  *********************************     Local Functions     **********************************
  *******************************************************************************************/
 
-static int sFindIndexFromFid(uint32_t fid, uint8_t *index)
+static int sFindIndexFromFid(uint32_t fid, uint32_t *index)
 {
-  uint8_t idx;
+  uint32_t idx;
   for (idx = 0; idx < NUM_FILES; idx++)
   {
-    if (file_descriptions[idx].file_id == fid)
+    if (sFileDescriptions[idx].file_id == fid)
     {
       *index = idx;
       return 0;

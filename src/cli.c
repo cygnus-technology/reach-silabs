@@ -37,7 +37,7 @@
  ********************************************************************************************/
 
 /********************************************************************************************
- ************************************     Includes     *************************************
+ *************************************     Includes     *************************************
  *******************************************************************************************/
 
 #include "cli.h"
@@ -45,49 +45,39 @@
 #include "i3_log.h"
 
 /* User code start [cli.c: User Includes] */
-
 #include "sl_gsdk_version.h"
 #include "sl_iostream.h"
 #include "sl_iostream_handles.h"
 #include "nvm3_generic.h"
 #include "reach_silabs.h"
 #include "app_version.h"
-
+#include "parameters.h"
 /* User code end [cli.c: User Includes] */
 
 /********************************************************************************************
  *************************************     Defines     **************************************
  *******************************************************************************************/
 
+#ifndef CLI_MAX_LINE_LENGTH
+#define CLI_MAX_LINE_LENGTH 64
+#endif // CLI_MAX_LINE_LENGTH
+
 /* User code start [cli.c: User Defines] */
 /* User code end [cli.c: User Defines] */
 
 /********************************************************************************************
- ***********************************     Data Types     ************************************
+ ************************************     Data Types     ************************************
  *******************************************************************************************/
 
 /* User code start [cli.c: User Data Types] */
 /* User code end [cli.c: User Data Types] */
 
 /********************************************************************************************
- ********************************     Global Variables     *********************************
+ *********************************     Global Variables     *********************************
  *******************************************************************************************/
 
 /* User code start [cli.c: User Global Variables] */
 /* User code end [cli.c: User Global Variables] */
-
-/********************************************************************************************
- *****************************     Local/Extern Variables     ******************************
- *******************************************************************************************/
-
-static char input[64];
-static uint8_t input_length = 0;
-
-/* User code start [cli.c: User Local/Extern Variables] */
-
-static sl_iostream_t *handle;
-
-/* User code end [cli.c: User Local/Extern Variables] */
 
 /********************************************************************************************
  ***************************     Local Function Declarations     ****************************
@@ -99,72 +89,82 @@ static void cli_write_char(char c);
 static bool cli_read_char(char *received);
 
 /* User code start [cli.c: User Local Function Declarations] */
-
-extern void app_get_num_reads(uint32_t *numReads);
 static void print_versions(void);
 static void slash(void);
 static void lm(const char *input);
-
 /* User code end [cli.c: User Local Function Declarations] */
 
 /********************************************************************************************
- ********************************     Global Functions     *********************************
+ ******************************     Local/Extern Variables     ******************************
+ *******************************************************************************************/
+
+static char sInput[CLI_MAX_LINE_LENGTH];
+static uint8_t sInputLength = 0;
+
+/* User code start [cli.c: User Local/Extern Variables] */
+static sl_iostream_t *sHandle;
+/* User code end [cli.c: User Local/Extern Variables] */
+
+/********************************************************************************************
+ *********************************     Global Functions     *********************************
  *******************************************************************************************/
 
 void cli_init(void)
 {
   /* User code start [CLI: Init] */
-
-  handle = sl_iostream_get_handle("vcom");
+  sHandle = sl_iostream_get_handle("vcom");
   // Clear the screen
-  cli_write("\033[2J\033[H");
+  cli_write("\033[2J\033]H");
   print_versions();
-
-  /* User code end [CLI: Init] */
   cli_write_prompt();
+  /* User code end [CLI: Init] */
 }
 
+/**
+ * Gets and processes data from the command line
+ * @return True if CLI data was received during the poll (from sources other than BLE), or false otherwise.
+ */
 bool cli_poll(void)
 {
-  if (input_length == sizeof(input))
+  if (sInputLength == sizeof(sInput))
   {
     i3_log(LOG_MASK_WARN, "CLI input too long, clearing");
-    memset(input, 0, sizeof(input));
-    input_length = 0;
+    memset(sInput, 0, sizeof(sInput));
+    sInputLength = 0;
     cli_write_prompt();
   }
-  if (cli_read_char(&input[input_length]))
+  if (cli_read_char(&sInput[sInputLength]))
   {
-    switch (input[input_length])
+    switch (sInput[sInputLength])
     {
       case '\r':
         cli_write("\r\n");
-        if (input_length == 0)
+        if (sInputLength == 0)
         {
           cli_write_prompt();
           break; // No data, no need to call anything
         }
-        input[input_length] = 0; // Null-terminate the string
-        crcb_cli_enter((const char*) input);
-        input_length = 0;
-        memset(input, 0, sizeof(input));
+        sInput[sInputLength] = 0; // Null-terminate the string
+        crcb_cli_enter((const char*) sInput);
+        sInputLength = 0;
+        memset(sInput, 0, sizeof(sInput));
         cli_write_prompt();
         break;
       case '\n':
         break; // Ignore, only expect '\r' for command execution
       case '\b':
         // Received a backspace
-        if (input_length > 0)
+        if (sInputLength > 0)
         {
-          input[--input_length] = 0;
+          sInput[--sInputLength] = 0;
           cli_write("\b \b");
         }
         break;
       default:
         // Still waiting for an input
-        cli_write_char(input[input_length]);
-        if (input_length < sizeof(input))
-          input_length++;
+        cli_write_char(sInput[sInputLength]);
+        if (sInputLength < sizeof(sInput))
+          sInputLength++;
         break;
     }
   return true;
@@ -201,25 +201,19 @@ int crcb_cli_enter(const char *ins)
   if (!strncmp("ver", ins, 3))
   {
     /* User code start [CLI: 'ver' handler] */
-
 	print_versions();
-
     /* User code end [CLI: 'ver' handler] */
   }
   else if (!strncmp("/", ins, 1))
   {
     /* User code start [CLI: '/' handler] */
-
 	slash();
-
     /* User code end [CLI: '/' handler] */
   }
   else if (!strncmp("lm", ins, 2))
   {
     /* User code start [CLI: 'lm' handler] */
-
 	lm(ins);
-
     /* User code end [CLI: 'lm' handler] */
   }
   /* User code start [CLI: Custom command handling] */
@@ -241,9 +235,7 @@ static void cli_write_prompt(void)
   /* User code start [CLI: Write Prompt]
    * This is called after a command is sent and processed, indicating that the CLI is ready for a new prompt.
    * A typical implementation of this is to send a single '>' character. */
-
   cli_write_char('>');
-
   /* User code end [CLI: Write Prompt] */
 }
 
@@ -252,9 +244,7 @@ static void cli_write(char *text)
   /* User code start [CLI: Write]
    * This is where other output sources should be handled (for example, writing to a UART port)
    * This is called for outputs which are not necessary via BLE, such as clearing lines or handling backspaces */
-
-  sl_iostream_write(handle, text, strlen(text));
-
+  sl_iostream_write(sHandle, text, strlen(text));
   /* User code end [CLI: Write] */
 }
 
@@ -262,9 +252,7 @@ static void cli_write_char(char c)
 {
   /* User code start [CLI: Write Char]
    * This is used to write single characters, which may be handled differently from longer strings. */
-
-  sl_iostream_putchar(handle, c);
-
+  sl_iostream_putchar(sHandle, c);
   /* User code end [CLI: Write Char] */
 }
 
@@ -273,9 +261,7 @@ static bool cli_read_char(char *received)
   /* User code start [CLI: Read]
    * This is where other input sources (such as a UART) should be handled.
    * This should be non-blocking, and return true if a character was received, or false if not. */
-
-  return !sl_iostream_getchar(handle, received);
-
+  return !sl_iostream_getchar(sHandle, received);
   /* User code end [CLI: Read] */
 }
 
@@ -306,7 +292,7 @@ static void slash(void)
   // Reach information
   uint32_t numActive, numSent;
   uint32_t numReads;
-  app_get_num_reads(&numReads);
+  parameters_get_read_count(&numReads);
   cr_get_notification_statistics(&numActive, &numSent);
   if (numActive == 0)
   {
