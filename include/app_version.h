@@ -7,10 +7,10 @@
 #define _APP_VERSION_H_
 
 #define APP_MAJOR_VERSION 4
-#define APP_MINOR_VERSION 1
-#define APP_PATCH_VERSION 5
+#define APP_MINOR_VERSION 2
+#define APP_PATCH_VERSION 0
 
 // appends a note string to the version
-#define DEV_BUILD
+// #define DEV_BUILD
 
 #endif  // ndef _APP_VERSION_H_
