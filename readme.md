@@ -42,7 +42,10 @@ The `Reset Defaults` command will reset all user-controlled parameters to their 
 The time service allows the Thunderboard to report its internal time, and for the app/web portal to align the Thunderboard to the correct time.  The time service is designed to support both devices which keep track of only the time and date, and devices which also keep track of their timezone (often relevant for devices with battery-backed real-time clocks).  Typically, a device would be one or the other, but the `Timezone Enabled` parameter has been provided to show how the app and web portal behave with either mode.  The `Timezone Offset` parameter shows the current timezone offset, which can be set manually as well as through the time service.  Setting it manually and then getting the time from the device should show the device time with the new offset.
 
 The Thunderboard does not have a real-time clock, just a real-time counter which does not persist between reboots.  When the demo starts, its UTC time will be initialized to January 1st, 1970 (a Unix timestamp of 0).
-	
+
+#### Wi-Fi Service
+This demo includes a dummy implementation of the Wi-Fi service.  Two networks are available to connect to, one with a password and one without.  These do not correspond to any real Wi-Fi connection.
+
 ### OTA Updates
 OTA updates may be done using the EFR Connect app, with the general process being described [here](https://docs.silabs.com/bluetooth/3.2/general/firmware-upgrade/using-efr-connect-mobile-app-for-ota-dfu). Steps 1-6 under “First Steps” describe how to generate the OTA file, which can be ignored. To do an OTA update, use the release's `reach-silabs-v<version>-ota.gbl` file. There have been some UI changes since that tutorial was created, so now after the update finishes uploading, hit “End” to complete the update process.
 
