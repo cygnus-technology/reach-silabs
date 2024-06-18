@@ -94,6 +94,18 @@ static int handle_execute(const uint8_t cid);
 static int sCommandIndex = 0;
 static const cr_CommandInfo sCommandDescriptions[] = {
   {
+    .id = COMMAND_PRESET_NOTIFICATIONS_ON,
+    .name = "Preset Notifications On",
+    .has_description = true,
+    .description = "Also done when connecting"
+  },
+  {
+    .id = COMMAND_NOTIFICATIONS_OFF,
+    .name = "Notifications Off",
+    .has_description = true,
+    .description = "Disable all notifications"
+  },
+  {
     .id = COMMAND_RESET_DEFAULTS,
     .name = "Reset Defaults",
     .has_description = true,
@@ -107,27 +119,15 @@ static const cr_CommandInfo sCommandDescriptions[] = {
   },
   {
     .id = COMMAND_NO_LOGGING,
-    .name = "No logging",
+    .name = "No Logging",
     .has_description = true,
-    .description = "lm 0"
+    .description = "Equivalent of 'lm 0'"
   },
   {
-    .id = COMMAND_MUCH_LOGGING,
-    .name = "Much logging",
+    .id = COMMAND_VERBOSE_LOGGING,
+    .name = "Verbose Logging",
     .has_description = true,
-    .description = "lm 1c7"
-  },
-  {
-    .id = COMMAND_NOTIFICATIONS_ON,
-    .name = "Notifications On",
-    .has_description = true,
-    .description = "Enable notifications on changes"
-  },
-  {
-    .id = COMMAND_NOTIFICATIONS_OFF,
-    .name = "Notifications Off",
-    .has_description = true,
-    .description = "disable all notifications"
+    .description = "Equivalent of 'lm 1c7'"
   },
   {
     .id = COMMAND_REMOTE_CLI_ON,
@@ -265,25 +265,23 @@ static int handle_execute(const uint8_t cid)
     case COMMAND_NO_LOGGING:
       i3_log_set_mask(0);
       break;
-    case COMMAND_MUCH_LOGGING:
+    case COMMAND_VERBOSE_LOGGING:
       i3_log_set_mask(0x1C7);
       break;
     case COMMAND_NOTIFICATIONS_OFF:
       cr_clear_param_notifications();
-      I3_LOG(LOG_MASK_ALWAYS, "Notifications are disabled.");
+      I3_LOG(LOG_MASK_ALWAYS, "All notifications have been disabled.");
       break;
-    case COMMAND_NOTIFICATIONS_ON:
+    case COMMAND_PRESET_NOTIFICATIONS_ON:
       cr_init_param_notifications();
-      I3_LOG(LOG_MASK_ALWAYS, "Notifications are installed.");
+      I3_LOG(LOG_MASK_ALWAYS, "Preset notifications have been enabled.");
       break;
-
     case COMMAND_REMOTE_CLI_ON:
       i3_log_set_remote_cli_enable(true);
       break;
     case COMMAND_REMOTE_CLI_OFF:
       i3_log_set_remote_cli_enable(false);
       break;
-
     case COMMAND_CLICK_FOR_WISDOM:
     {
       I3_LOG(LOG_MASK_ALWAYS, TEXT_BOLDMAGENTA "Dispensing wisdom*...");

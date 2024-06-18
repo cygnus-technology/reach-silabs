@@ -122,6 +122,38 @@ static const cr_ParameterInfo sParameterDescriptions[] = {
     .desc.string_desc.max_size = 29
   },
   {
+    .id = PARAM_TIMEZONE_ENABLED,
+    .name = "Timezone Enabled",
+    .access = cr_AccessLevel_READ_WRITE,
+    .storage_location = cr_StorageLocation_NONVOLATILE,
+    .which_desc = cr_ParameterDataType_BOOL + cr_ParameterInfo_uint32_desc_tag,
+    .desc.bool_desc.has_default_value = true,
+    .desc.bool_desc.default_value = true
+  },
+  {
+    .id = PARAM_TIMEZONE_OFFSET,
+    .name = "Timezone Offset",
+    .access = cr_AccessLevel_READ_WRITE,
+    .storage_location = cr_StorageLocation_NONVOLATILE,
+    .which_desc = cr_ParameterDataType_INT32 + cr_ParameterInfo_uint32_desc_tag,
+    .desc.int32_desc.has_units = true,
+    .desc.int32_desc.units = "seconds",
+    .desc.int32_desc.has_range_min = true,
+    .desc.int32_desc.range_min = -43200,
+    .desc.int32_desc.has_default_value = true,
+    .desc.int32_desc.default_value = 0,
+    .desc.int32_desc.has_range_max = true,
+    .desc.int32_desc.range_max = 43200
+  },
+  {
+    .id = PARAM_BT_DEVICE_ADDRESS,
+    .name = "BT Device Address",
+    .access = cr_AccessLevel_READ,
+    .storage_location = cr_StorageLocation_RAM,
+    .which_desc = cr_ParameterDataType_BYTE_ARRAY + cr_ParameterInfo_uint32_desc_tag,
+    .desc.bytearray_desc.max_size = 6
+  },
+  {
     .id = PARAM_UPTIME,
     .name = "Uptime",
     .access = cr_AccessLevel_READ,
@@ -334,96 +366,44 @@ static const cr_ParameterInfo sParameterDescriptions[] = {
     .desc.float32_desc.range_max = 50,
     .desc.float32_desc.has_precision = true,
     .desc.float32_desc.precision = 2
-  },
-  {
-    .id = PARAM_TIMEZONE_ENABLED,
-    .name = "Timezone Enabled",
-    .access = cr_AccessLevel_READ_WRITE,
-    .storage_location = cr_StorageLocation_NONVOLATILE,
-    .which_desc = cr_ParameterDataType_BOOL + cr_ParameterInfo_uint32_desc_tag,
-    .desc.bool_desc.has_default_value = true,
-    .desc.bool_desc.default_value = true
-  },
-  {
-    .id = PARAM_TIMEZONE_OFFSET,
-    .name = "Timezone Offset",
-    .access = cr_AccessLevel_READ_WRITE,
-    .storage_location = cr_StorageLocation_NONVOLATILE,
-    .which_desc = cr_ParameterDataType_INT32 + cr_ParameterInfo_uint32_desc_tag,
-    .desc.int32_desc.has_units = true,
-    .desc.int32_desc.units = "seconds",
-    .desc.int32_desc.has_range_min = true,
-    .desc.int32_desc.range_min = -43200,
-    .desc.int32_desc.has_default_value = true,
-    .desc.int32_desc.default_value = 0,
-    .desc.int32_desc.has_range_max = true,
-    .desc.int32_desc.range_max = 43200
-  },
-  {
-    .id = PARAM_BT_DEVICE_ADDRESS,
-    .name = "BT Device Address",
-    .access = cr_AccessLevel_READ,
-    .storage_location = cr_StorageLocation_RAM,
-    .which_desc = cr_ParameterDataType_BYTE_ARRAY + cr_ParameterInfo_uint32_desc_tag,
-    .desc.bytearray_desc.max_size = 6
   }
 };
 
 static cr_ParameterNotifyConfig sParameterDefaultNotifications[] = {
   {
+    .parameter_id = PARAM_TIMEZONE_ENABLED,
+    .minimum_notification_period = 1000,
+    .minimum_delta = 1
+  },
+  {
+    .parameter_id = PARAM_UPTIME,
+    .minimum_notification_period = 1000,
+    .minimum_delta = 1
+  },
+  {
+    .parameter_id = PARAM_BUTTON_PRESSED,
+    .minimum_notification_period = 512,
+    .minimum_delta = 1
+  },
+  {
     .parameter_id = PARAM_IDENTIFY_LED,
-    .minimum_notification_period = 302,
+    .minimum_notification_period = 485,
+    .minimum_delta = 1
+  },
+  {
+    .parameter_id = PARAM_COLOR_DEMO_RGB_STATE,
+    .minimum_notification_period = 1015,
+    .minimum_delta = 1
+  },
+  {
+    .parameter_id = PARAM_COLOR_DEMO_ENUMERATION,
+    .minimum_notification_period = 1035,
     .minimum_delta = 1
   },
   {
     .parameter_id = PARAM_IDENTIFY,
-    .minimum_notification_period = 501,
+    .minimum_notification_period = 1045,
     .minimum_delta = 1
-  },
-  {
-    .parameter_id = PARAM_RELATIVE_HUMIDITY,
-    .minimum_notification_period = 2010,
-    .maximum_notification_period = 60000,
-    .minimum_delta = 1
-  },
-  {
-    .parameter_id = PARAM_TEMPERATURE,
-    .minimum_notification_period = 2020,
-    .maximum_notification_period = 60000,
-    .minimum_delta = 0.2
-  },
-  {
-    .parameter_id = PARAM_LIGHT_LEVEL,
-    .minimum_notification_period = 1020,
-    .maximum_notification_period = 60000,
-    .minimum_delta = 20
-  },
-  {
-    .parameter_id = PARAM_UV_INDEX,
-    .minimum_notification_period = 3031,
-    .maximum_notification_period = 60000,
-    .minimum_delta = 1
-  },
-  {
-    .parameter_id = PARAM_MAGNETIC_FIELD_STRENGTH,
-    .minimum_notification_period = 3019,
-    .maximum_notification_period = 60000,
-    .minimum_delta = 0.2
-  },
-  {
-    .parameter_id = PARAM_ACCELERATION_X_AXIS,
-    .minimum_notification_period = 2037,
-    .minimum_delta = 0.2
-  },
-  {
-    .parameter_id = PARAM_ACCELERATION_Y_AXIS,
-    .minimum_notification_period = 2047,
-    .minimum_delta = 0.2
-  },
-  {
-    .parameter_id = PARAM_ACCELERATION_Z_AXIS,
-    .minimum_notification_period = 2057,
-    .minimum_delta = 0.2
   }
 };
 

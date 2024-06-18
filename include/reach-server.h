@@ -64,7 +64,7 @@
 #define ENABLE_REMOTE_CLI
 #ifdef ENABLE_REMOTE_CLI
   // If false use a command to enable it.
-  #define REMOTE_CLI_ECHO_ON_DEFAULT    false
+  #define REMOTE_CLI_ECHO_ON_DEFAULT    true
 #endif
 
 // Use this to set the default logging level.  0x0 will only report high-priority text and warnings/errors

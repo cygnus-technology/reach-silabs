@@ -1,3 +1,3 @@
 :: Run the script with the appropriate arguments
 
-python reach-util/c-gen/CodeGenerator.py -d "Reach_silabs.json" -i include -s src --spaces=2
+python reach-util/c-gen/CodeGenerator.py -d "Reach Thunderboard.json" -i include -s src --spaces=2

@@ -221,3 +221,18 @@ void sl_button_on_change (const sl_button_t *handle)
   else
     button_pressed = false;
 }
+
+void rsl_app_handle_ble_connection(void)
+{
+  cr_set_comm_link_connected(true);
+  cr_init_param_notifications();
+  I3_LOG(LOG_MASK_ALWAYS, "BLE connected");
+  return;
+}
+
+void rsl_app_handle_ble_disconnection(void)
+{
+  cr_clear_param_notifications();
+  I3_LOG(LOG_MASK_ALWAYS, "BLE disconnected");
+  return;
+}

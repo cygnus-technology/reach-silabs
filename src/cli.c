@@ -114,7 +114,7 @@ void cli_init(void)
   /* User code start [CLI: Init] */
   sHandle = sl_iostream_get_handle("vcom");
   // Clear the screen
-  cli_write("\033[2J\033]H");
+  cli_write("\033[2J\033[H");
   print_versions();
   cli_write_prompt();
   /* User code end [CLI: Init] */
@@ -191,6 +191,7 @@ int crcb_cli_enter(const char *ins)
     i3_log(LOG_MASK_ALWAYS, "  ver: Print versions");
     i3_log(LOG_MASK_ALWAYS, "  /: Display status");
     i3_log(LOG_MASK_ALWAYS, "  lm (<new log mask>): Print current log mask, or set a new log mask");
+    i3_log(LOG_MASK_ALWAYS, "  color: Display the status of the 'Color Demo' parameters, with the text color being this color as well");
     /* User code start [CLI: Custom help handling] */
     /* User code end [CLI: Custom help handling] */
     return 0;
@@ -215,6 +216,23 @@ int crcb_cli_enter(const char *ins)
     /* User code start [CLI: 'lm' handler] */
 	lm(ins);
     /* User code end [CLI: 'lm' handler] */
+  }
+  else if (!strncmp("color", ins, 5))
+  {
+    /* User code start [CLI: 'color' handler] */
+    cr_ParameterValue data;
+    crcb_parameter_read(PARAM_COLOR_DEMO_ENUMERATION, &data);
+    char text_color[] = TEXT_BOLDBLACK;
+    if (data.value.enum_value == RGB_STATE_TRANSLATION_OFF)
+    {
+      memset(text_color, 0, sizeof(text_color));
+    }
+    else
+    {
+      text_color[7] = '0' + data.value.enum_value;
+    }
+    i3_log(LOG_MASK_ALWAYS, "%sThe current RGB color is '%s' (0x%x)" TEXT_RESET, text_color, parameters_get_ei_label(PARAM_EI_RGB_STATE_TRANSLATION, data.value.enum_value), data.value.enum_value);
+    /* User code end [CLI: 'color' handler] */
   }
   /* User code start [CLI: Custom command handling] */
   /* User code end [CLI: Custom command handling] */
