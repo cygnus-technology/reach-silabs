@@ -331,7 +331,7 @@ static void slash(void)
     i3_log(LOG_MASK_ALWAYS, "  Remote CLI support built but not enabled.");
 #else
     i3_log(LOG_MASK_ALWAYS, "  !!! Remote CLI NOT support built in.");
-  #endif
+#endif
 
   // System information
   bd_addr address;

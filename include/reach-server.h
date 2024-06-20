@@ -61,18 +61,12 @@
 #define APP_ADVERTISED_NAME_LENGTH 27
 
 // appends a note string to the version, sets default for debug
-#define DEV_BUILD
+// #define DEV_BUILD
 #ifdef DEV_BUILD
   #define ENABLE_REMOTE_CLI
   #define DEFAULT_LOG_MASK 0x1C7
   #define SKIP_NOTIFICATIONS_AT_CONNECT
 #endif // DEV_BUILD
-
-/// Define this to enable remote CLI via a buffer.
-#ifdef ENABLE_REMOTE_CLI
-  // If false use a command to enable it.
-  #define REMOTE_CLI_ECHO_ON_DEFAULT    true
-#endif
 
 // Setting this to zero removes support for unpolled parameter change notification
 // Defines the size of the array holding param notification specifications.
