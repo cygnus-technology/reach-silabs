@@ -225,7 +225,9 @@ void sl_button_on_change (const sl_button_t *handle)
 void rsl_app_handle_ble_connection(void)
 {
   cr_set_comm_link_connected(true);
+ #ifndef SKIP_NOTIFICATIONS_AT_CONNECT
   cr_init_param_notifications();
+ #endif
   I3_LOG(LOG_MASK_ALWAYS, "BLE connected");
   return;
 }
