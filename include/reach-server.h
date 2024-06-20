@@ -63,7 +63,7 @@
 // appends a note string to the version, sets default for debug
 // #define DEV_BUILD
 #ifdef DEV_BUILD
-  #define ENABLE_REMOTE_CLI
+  #define DISABLE_REMOTE_CLI
   #define DEFAULT_LOG_MASK 0x1C7
   #define SKIP_NOTIFICATIONS_AT_CONNECT
 #endif // DEV_BUILD
